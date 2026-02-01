@@ -760,10 +760,7 @@ bool mceltest_end_to_end(void)
         /* tampered signature must fail */
         if (res == true)
         {
-            mcel_checkpoint_header vhdr;
             uint8_t badbundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE];
-            uint8_t vcommit[MCEL_BLOCK_HASH_SIZE] = { 0U };
-            uint8_t vblkroot[MCEL_BLOCK_HASH_SIZE] = { 0U };
             uint8_t vprev[MCEL_BLOCK_HASH_SIZE] = { 0U };
 
             qsc_memutils_copy(badbundle, bundle, sizeof(bundle));
