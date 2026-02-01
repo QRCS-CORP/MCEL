@@ -24,7 +24,7 @@ bool mceltest_hash(void)
 
     if (res == true)
     {
-        qsc_cshake256_compute(h2, MCEL_BLOCK_HASH_SIZE, msg, sizeof(msg), MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, 
+        qsc_cshake256_compute(h2, MCEL_BLOCK_HASH_SIZE, msg, sizeof(msg), (const uint8_t*)MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, 
             crec, MCEL_DOMAIN_STRING_WIDTH - 1U);
 
         res = (qsc_intutils_are_equal8(h1, h2, MCEL_BLOCK_HASH_SIZE) == true);
@@ -39,7 +39,7 @@ bool mceltest_hash(void)
 
         if (res == true)
         {
-            qsc_cshake256_compute(h2, MCEL_BLOCK_HASH_SIZE, MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, 
+            qsc_cshake256_compute(h2, MCEL_BLOCK_HASH_SIZE, (const uint8_t*)MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, 
                 NULL, 0U, crec, MCEL_DOMAIN_STRING_WIDTH - 1U);
 
             res = (qsc_intutils_are_equal8(h1, h2, MCEL_BLOCK_HASH_SIZE) == true);
@@ -51,11 +51,9 @@ bool mceltest_hash(void)
         qsc_memutils_clear(h1, sizeof(h1));
         qsc_memutils_clear(h2, sizeof(h2));
 
-        qsc_cshake256_compute(h1, MCEL_BLOCK_HASH_SIZE, msg, sizeof(msg), MCEL_DOMAIN_NAME_STRING, 
-            sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, crec, MCEL_DOMAIN_STRING_WIDTH - 1U);
+        qsc_cshake256_compute(h1, MCEL_BLOCK_HASH_SIZE, msg, sizeof(msg), (const uint8_t*)MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, crec, MCEL_DOMAIN_STRING_WIDTH - 1U);
 
-        qsc_cshake256_compute(h2, MCEL_BLOCK_HASH_SIZE, msg, sizeof(msg), MCEL_DOMAIN_NAME_STRING, 
-            sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, cnde, MCEL_DOMAIN_STRING_WIDTH - 1U);
+        qsc_cshake256_compute(h2, MCEL_BLOCK_HASH_SIZE, msg, sizeof(msg), (const uint8_t*)MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, cnde, MCEL_DOMAIN_STRING_WIDTH - 1U);
 
         res = (qsc_intutils_are_equal8(h1, h2, MCEL_BLOCK_HASH_SIZE) == false);
     }
@@ -244,7 +242,7 @@ bool mceltest_record_commit(void)
             const uint8_t* custptxt = (const uint8_t*)mcel_domain_to_name(mcel_domain_plaintext);
 
             qsc_cshake256_compute(ptxtr, MCEL_BLOCK_HASH_SIZE, payload, sizeof(payload),
-                MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U,
+                (const uint8_t*)MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U,
                 custptxt, MCEL_DOMAIN_STRING_WIDTH - 1U);
 
             res = (qsc_intutils_are_equal8(pldptxt, ptxtr, MCEL_BLOCK_HASH_SIZE) == true);
@@ -255,7 +253,7 @@ bool mceltest_record_commit(void)
                 const uint8_t* custctxt = (const uint8_t*)mcel_domain_to_name(mcel_domain_ciphertext);
 
                 qsc_cshake256_compute(pctxtb, MCEL_BLOCK_HASH_SIZE, payload, sizeof(payload),
-                    MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U,
+                    (const uint8_t*)MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U,
                     custctxt, MCEL_DOMAIN_STRING_WIDTH - 1U);
 
                 res = (qsc_intutils_are_equal8(pctxta, pctxtb, MCEL_BLOCK_HASH_SIZE) == true);
@@ -288,7 +286,7 @@ bool mceltest_record_commit(void)
                 qsc_memutils_copy(msg + (size_t)MCEL_RECORD_HEADER_ENCODED_SIZE, pldptxt, MCEL_BLOCK_HASH_SIZE);
 
                 qsc_cshake256_compute(recptxtr, MCEL_BLOCK_HASH_SIZE, msg, sizeof(msg),
-                    MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U,
+                    (const uint8_t*)MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U,
                     custrecd, MCEL_DOMAIN_STRING_WIDTH - 1U);
 
                 res = (qsc_intutils_are_equal8(recptxt, recptxtr, MCEL_BLOCK_HASH_SIZE) == true);
@@ -809,7 +807,7 @@ bool mceltest_end_to_end(void)
     return res;
 }
 
-bool mceltest_functions_run()
+bool mceltest_functions_run(void)
 {
     bool res;
 

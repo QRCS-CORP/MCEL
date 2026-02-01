@@ -137,6 +137,6 @@ bool mceltest_end_to_end(void);
  *
  * \return Returns true if the test passed.
  */
-bool mceltest_functions_run();
+bool mceltest_functions_run(void);
 
 #endif
