@@ -21,8 +21,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(QSC)
 
 # MCEL Static Library
-file(GLOB_RECURSE UDIF_SOURCES "Source/MCEL/*.c")
-file(GLOB_RECURSE UDIF_HEADERS "Source/MCEL/include/*.h")
+file(GLOB_RECURSE MCEL_SOURCES "Source/MCEL/*.c")
+file(GLOB_RECURSE MCEL_HEADERS "Source/MCEL/include/*.h")
 
 add_library(mcel STATIC ${MCEL_SOURCES} ${MCEL_HEADERS})
 target_include_directories(mcel PUBLIC "Source/MCEL")
