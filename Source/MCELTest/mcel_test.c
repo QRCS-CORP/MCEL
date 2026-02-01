@@ -1,5 +1,6 @@
 #include "functions_test.h"
 #include "consoleutils.h"
+#include "stringutils.h"
 
 static void mclr_test_print_message(const char* message)
 {
