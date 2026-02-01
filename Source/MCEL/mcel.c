@@ -1559,8 +1559,7 @@ bool mcel_policy_apply(mcel_policy_errors* perr, const mcel_policy* policy, cons
     return (*perr == mcel_policyerr_none);
 }
 
-bool mcel_record_decrypt_payload(uint8_t* output, size_t outlen, const uint8_t* ciphertext, size_t ctlen, 
-    const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce)
+bool mcel_record_decrypt_payload(uint8_t* output, const uint8_t* ciphertext, size_t ctlen, const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce)
 {
     MCEL_ASSERT(output != NULL);
     MCEL_ASSERT(ciphertext != NULL);
@@ -1627,8 +1626,7 @@ bool mcel_record_encode_header(uint8_t* output, const mcel_record_header* header
     return res;
 }
 
-void mcel_record_encrypt_payload(uint8_t* output, size_t outlen, const uint8_t* plaintext, size_t ptlen, 
-    const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce)
+void mcel_record_encrypt_payload(uint8_t* output, const uint8_t* plaintext, size_t ptlen, const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce)
 {
     MCEL_ASSERT(output != NULL);
     MCEL_ASSERT(plaintext != NULL);

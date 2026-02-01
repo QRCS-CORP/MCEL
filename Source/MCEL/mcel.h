@@ -1100,7 +1100,6 @@ MCEL_EXPORT_API bool mcel_policy_apply(mcel_policy_errors* perr, const mcel_poli
  * \brief Decrypt a record payload using the AEAD cipher.
  *
  * \param output A pointer to the plaintext output buffer.
- * \param outlen The length of the output buffer in bytes.
  * \param ciphertext [const] A pointer to the ciphertext input buffer (includes tag).
  * \param ctlen The length of the ciphertext in bytes.
  * \param ad [const] A pointer to associated data, can be NULL if \c adlen is 0.
@@ -1110,14 +1109,13 @@ MCEL_EXPORT_API bool mcel_policy_apply(mcel_policy_errors* perr, const mcel_poli
  *
  * \return Returns true if the transform completed, false on parameter or length failure.
  */
-MCEL_EXPORT_API bool mcel_record_decrypt_payload(uint8_t* output, size_t outlen, const uint8_t* ciphertext, size_t ctlen, 
+MCEL_EXPORT_API bool mcel_record_decrypt_payload(uint8_t* output, const uint8_t* ciphertext, size_t ctlen, 
     const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce);
 
 /*!
  * \brief Encrypt a record payload using the AEAD cipher.
  *
  * \param output A pointer to the ciphertext output buffer.
- * \param outlen The length of the output buffer in bytes.
  * \param plaintext [const] A pointer to the plaintext input buffer.
  * \param ptlen The length of the plaintext in bytes.
  * \param ad [const] A pointer to associated data, can be NULL if \c adlen is 0.
@@ -1125,7 +1123,7 @@ MCEL_EXPORT_API bool mcel_record_decrypt_payload(uint8_t* output, size_t outlen,
  * \param key [const] A pointer to the cipher key.
  * \param nonce A pointer to the nonce array of size \c MCEL_RCS_NONCE_SIZE.
  */
-MCEL_EXPORT_API void mcel_record_encrypt_payload(uint8_t* output, size_t outlen, const uint8_t* plaintext, size_t ptlen,
+MCEL_EXPORT_API void mcel_record_encrypt_payload(uint8_t* output, const uint8_t* plaintext, size_t ptlen,
     const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce);
 
 /*!
