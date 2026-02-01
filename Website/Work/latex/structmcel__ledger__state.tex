@@ -1,0 +1,83 @@
+\doxysection{mcel\+\_\+ledger\+\_\+state Struct Reference}
+\hypertarget{structmcel__ledger__state}{}\label{structmcel__ledger__state}\index{mcel\_ledger\_state@{mcel\_ledger\_state}}
+
+
+The MCEL ledger instance state.  
+
+
+
+
+{\ttfamily \#include $<$mcel.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structmcel__store__callbacks}{mcel\+\_\+store\+\_\+callbacks}} \mbox{\hyperlink{structmcel__ledger__state_abf78fa386dba7a08725048e8e1cb6c03}{store}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__ledger__state_aeeeb467710cc2ae99bbb94ca1eaf9588}{nsid}} \mbox{[}\mbox{\hyperlink{mcel_8h_a2726f8172097d7b4a82c90ff2d96722c}{MCEL\+\_\+\+LEDGER\+\_\+\+NAMESPACE\+\_\+\+ID\+\_\+\+MAX}}\mbox{]}
+\item 
+size\+\_\+t \mbox{\hyperlink{structmcel__ledger__state_a757708a0acf67ec2fae3a131c4ede48e}{nsidlen}}
+\item 
+const uint8\+\_\+t \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structmcel__ledger__state_ab8f13770787b7be1aea8d638d6755e55}{publickey}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__ledger__state_ad0e9f0430189900b084406924c02cf92}{head\+\_\+commit}} \mbox{[}\mbox{\hyperlink{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6}{MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}
+\item 
+\mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \mbox{\hyperlink{structmcel__ledger__state_ac42465955a577a21e8e772c3a7af402e}{head\+\_\+header}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__ledger__state_a28fcef5af31e2b90a89bbfa09d73b78d}{have\+\_\+head}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The MCEL ledger instance state. 
+
+\label{doc-variable-members}
+\Hypertarget{structmcel__ledger__state_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{structmcel__ledger__state_a28fcef5af31e2b90a89bbfa09d73b78d}\index{mcel\_ledger\_state@{mcel\_ledger\_state}!have\_head@{have\_head}}
+\index{have\_head@{have\_head}!mcel\_ledger\_state@{mcel\_ledger\_state}}
+\doxysubsubsection{\texorpdfstring{have\_head}{have\_head}}
+{\footnotesize\ttfamily \label{structmcel__ledger__state_a28fcef5af31e2b90a89bbfa09d73b78d} 
+uint8\+\_\+t have\+\_\+head}
+
+Non-\/zero if a head checkpoint is loaded \Hypertarget{structmcel__ledger__state_ad0e9f0430189900b084406924c02cf92}\index{mcel\_ledger\_state@{mcel\_ledger\_state}!head\_commit@{head\_commit}}
+\index{head\_commit@{head\_commit}!mcel\_ledger\_state@{mcel\_ledger\_state}}
+\doxysubsubsection{\texorpdfstring{head\_commit}{head\_commit}}
+{\footnotesize\ttfamily \label{structmcel__ledger__state_ad0e9f0430189900b084406924c02cf92} 
+uint8\+\_\+t head\+\_\+commit\mbox{[}\mbox{\hyperlink{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6}{MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}}
+
+The current head checkpoint commitment \Hypertarget{structmcel__ledger__state_ac42465955a577a21e8e772c3a7af402e}\index{mcel\_ledger\_state@{mcel\_ledger\_state}!head\_header@{head\_header}}
+\index{head\_header@{head\_header}!mcel\_ledger\_state@{mcel\_ledger\_state}}
+\doxysubsubsection{\texorpdfstring{head\_header}{head\_header}}
+{\footnotesize\ttfamily \label{structmcel__ledger__state_ac42465955a577a21e8e772c3a7af402e} 
+\mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} head\+\_\+header}
+
+The current head checkpoint header \Hypertarget{structmcel__ledger__state_aeeeb467710cc2ae99bbb94ca1eaf9588}\index{mcel\_ledger\_state@{mcel\_ledger\_state}!nsid@{nsid}}
+\index{nsid@{nsid}!mcel\_ledger\_state@{mcel\_ledger\_state}}
+\doxysubsubsection{\texorpdfstring{nsid}{nsid}}
+{\footnotesize\ttfamily \label{structmcel__ledger__state_aeeeb467710cc2ae99bbb94ca1eaf9588} 
+uint8\+\_\+t nsid\mbox{[}\mbox{\hyperlink{mcel_8h_a2726f8172097d7b4a82c90ff2d96722c}{MCEL\+\_\+\+LEDGER\+\_\+\+NAMESPACE\+\_\+\+ID\+\_\+\+MAX}}\mbox{]}}
+
+The namespace identifier \Hypertarget{structmcel__ledger__state_a757708a0acf67ec2fae3a131c4ede48e}\index{mcel\_ledger\_state@{mcel\_ledger\_state}!nsidlen@{nsidlen}}
+\index{nsidlen@{nsidlen}!mcel\_ledger\_state@{mcel\_ledger\_state}}
+\doxysubsubsection{\texorpdfstring{nsidlen}{nsidlen}}
+{\footnotesize\ttfamily \label{structmcel__ledger__state_a757708a0acf67ec2fae3a131c4ede48e} 
+size\+\_\+t nsidlen}
+
+The namespace identifier length \Hypertarget{structmcel__ledger__state_ab8f13770787b7be1aea8d638d6755e55}\index{mcel\_ledger\_state@{mcel\_ledger\_state}!publickey@{publickey}}
+\index{publickey@{publickey}!mcel\_ledger\_state@{mcel\_ledger\_state}}
+\doxysubsubsection{\texorpdfstring{publickey}{publickey}}
+{\footnotesize\ttfamily \label{structmcel__ledger__state_ab8f13770787b7be1aea8d638d6755e55} 
+const uint8\+\_\+t\texorpdfstring{$\ast$}{*} publickey}
+
+The Dilithium public key used for checkpoint verification \Hypertarget{structmcel__ledger__state_abf78fa386dba7a08725048e8e1cb6c03}\index{mcel\_ledger\_state@{mcel\_ledger\_state}!store@{store}}
+\index{store@{store}!mcel\_ledger\_state@{mcel\_ledger\_state}}
+\doxysubsubsection{\texorpdfstring{store}{store}}
+{\footnotesize\ttfamily \label{structmcel__ledger__state_abf78fa386dba7a08725048e8e1cb6c03} 
+\mbox{\hyperlink{structmcel__store__callbacks}{mcel\+\_\+store\+\_\+callbacks}} store}
+
+The host storage callbacks 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+MCEL/\+MCEL/\mbox{\hyperlink{mcel_8h}{mcel.\+h}}\end{DoxyCompactItemize}

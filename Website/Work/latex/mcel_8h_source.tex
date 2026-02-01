@@ -1,0 +1,446 @@
+\doxysection{mcel.\+h}
+\hypertarget{mcel_8h_source}{}\label{mcel_8h_source}\index{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/MCEL/MCEL/mcel.h@{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/MCEL/MCEL/mcel.h}}
+\mbox{\hyperlink{mcel_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ 2025-\/2026\ Quantum\ Resistant\ Cryptographic\ Solutions\ Corporation}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ All\ Rights\ Reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ NOTICE:}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ software\ and\ all\ accompanying\ materials\ are\ the\ exclusive\ property\ of}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Quantum\ Resistant\ Cryptographic\ Solutions\ Corporation\ (QRCS).\ The\ intellectual}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ and\ technical\ concepts\ contained\ herein\ are\ proprietary\ to\ QRCS\ and\ are}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ protected\ under\ applicable\ Canadian,\ U.S.,\ and\ international\ copyright,}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ patent,\ and\ trade\ secret\ laws.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ CRYPTOGRAPHIC\ ALGORITHMS\ AND\ IMPLEMENTATIONS:}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ -\/\ This\ software\ includes\ implementations\ of\ cryptographic\ primitives\ and}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ \ \ algorithms\ that\ are\ standardized\ or\ in\ the\ public\ domain,\ such\ as\ AES}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ \ \ and\ SHA-\/3,\ which\ are\ not\ proprietary\ to\ QRCS.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *\ -\/\ This\ software\ also\ includes\ cryptographic\ primitives,\ constructions,\ and}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *\ \ \ algorithms\ designed\ by\ QRCS,\ including\ but\ not\ limited\ to\ RCS,\ SCB,\ CSX,\ QMAC,\ and}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ \ \ related\ components,\ which\ are\ proprietary\ to\ QRCS.}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ *\ -\/\ All\ source\ code,\ implementations,\ protocol\ compositions,\ optimizations,}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ *\ \ \ parameter\ selections,\ and\ engineering\ work\ contained\ in\ this\ software\ are}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ *\ \ \ original\ works\ of\ QRCS\ and\ are\ protected\ under\ this\ license.}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ *\ LICENSE\ AND\ USE\ RESTRICTIONS:}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ *\ -\/\ This\ software\ is\ licensed\ under\ the\ Quantum\ Resistant\ Cryptographic\ Solutions}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ *\ \ \ Public\ Research\ and\ Evaluation\ License\ (QRCS-\/PREL),\ 2025-\/2026.}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ *\ -\/\ Permission\ is\ granted\ solely\ for\ non-\/commercial\ evaluation,\ academic\ research,}}
+\DoxyCodeLine{00026\ \textcolor{comment}{\ *\ \ \ cryptographic\ analysis,\ interoperability\ testing,\ and\ feasibility\ assessment.}}
+\DoxyCodeLine{00027\ \textcolor{comment}{\ *\ -\/\ Commercial\ use,\ production\ deployment,\ commercial\ redistribution,\ or}}
+\DoxyCodeLine{00028\ \textcolor{comment}{\ *\ \ \ integration\ into\ products\ or\ services\ is\ strictly\ prohibited\ without\ a}}
+\DoxyCodeLine{00029\ \textcolor{comment}{\ *\ \ \ separate\ written\ license\ agreement\ executed\ with\ QRCS.}}
+\DoxyCodeLine{00030\ \textcolor{comment}{\ *\ -\/\ Licensing\ and\ authorized\ distribution\ are\ solely\ at\ the\ discretion\ of\ QRCS.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00032\ \textcolor{comment}{\ *\ EXPERIMENTAL\ CRYPTOGRAPHY\ NOTICE:}}
+\DoxyCodeLine{00033\ \textcolor{comment}{\ *\ Portions\ of\ this\ software\ may\ include\ experimental,\ novel,\ or\ evolving}}
+\DoxyCodeLine{00034\ \textcolor{comment}{\ *\ cryptographic\ designs.\ Use\ of\ this\ software\ is\ entirely\ at\ the\ user's\ risk.}}
+\DoxyCodeLine{00035\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00036\ \textcolor{comment}{\ *\ DISCLAIMER:}}
+\DoxyCodeLine{00037\ \textcolor{comment}{\ *\ THIS\ SOFTWARE\ IS\ PROVIDED\ "{}AS\ IS"{},\ WITHOUT\ WARRANTY\ OF\ ANY\ KIND,\ EXPRESS\ OR}}
+\DoxyCodeLine{00038\ \textcolor{comment}{\ *\ IMPLIED,\ INCLUDING\ BUT\ NOT\ LIMITED\ TO\ WARRANTIES\ OF\ MERCHANTABILITY,\ FITNESS}}
+\DoxyCodeLine{00039\ \textcolor{comment}{\ *\ FOR\ A\ PARTICULAR\ PURPOSE,\ SECURITY,\ OR\ NON-\/INFRINGEMENT.\ QRCS\ DISCLAIMS\ ALL}}
+\DoxyCodeLine{00040\ \textcolor{comment}{\ *\ LIABILITY\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,\ OR\ CONSEQUENTIAL\ DAMAGES}}
+\DoxyCodeLine{00041\ \textcolor{comment}{\ *\ ARISING\ FROM\ THE\ USE\ OR\ MISUSE\ OF\ THIS\ SOFTWARE.}}
+\DoxyCodeLine{00042\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00043\ \textcolor{comment}{\ *\ FULL\ LICENSE:}}
+\DoxyCodeLine{00044\ \textcolor{comment}{\ *\ This\ software\ is\ subject\ to\ the\ Quantum\ Resistant\ Cryptographic\ Solutions}}
+\DoxyCodeLine{00045\ \textcolor{comment}{\ *\ Public\ Research\ and\ Evaluation\ License\ (QRCS-\/PREL),\ 2025-\/2026.\ The\ complete\ license\ terms}}
+\DoxyCodeLine{00046\ \textcolor{comment}{\ *\ are\ provided\ in\ the\ accompanying\ LICENSE\ file\ or\ at\ https://www.qrcscorp.ca.}}
+\DoxyCodeLine{00047\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00048\ \textcolor{comment}{\ *\ Written\ by:\ John\ G.\ Underhill}}
+\DoxyCodeLine{00049\ \textcolor{comment}{\ *\ Contact:\ contact\(\backslash\)qrcscorp.ca}}
+\DoxyCodeLine{00050\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00053\ \textcolor{comment}{\ *\ \(\backslash\)file\ mcel.h}}
+\DoxyCodeLine{00054\ \textcolor{comment}{\ *\ \(\backslash\)brief\ MCEL\ support\ header}}
+\DoxyCodeLine{00055\ \textcolor{comment}{\ *\ }}
+\DoxyCodeLine{00056\ \textcolor{comment}{\ *\ Merkle\ Chained\ Event\ Ledger\ (MCEL)}}
+\DoxyCodeLine{00057\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00058\ \textcolor{comment}{\ *\ MCEL\ implements\ an\ append-\/only,\ cryptographically\ verifiable\ event\ ledger}}
+\DoxyCodeLine{00059\ \textcolor{comment}{\ *\ designed\ for\ long-\/lived\ audit,\ provenance,\ and\ integrity\ assurance.}}
+\DoxyCodeLine{00060\ \textcolor{comment}{\ *\ The\ ledger\ records\ discrete\ events\ as\ immutable\ records,\ batches\ records}}
+\DoxyCodeLine{00061\ \textcolor{comment}{\ *\ into\ Merkle\ trees,\ and\ chains\ those\ batches\ using\ signed\ checkpoint}}
+\DoxyCodeLine{00062\ \textcolor{comment}{\ *\ commitments\ to\ form\ a\ tamper-\/evident\ history.}}
+\DoxyCodeLine{00063\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00064\ \textcolor{comment}{\ *\ MCEL\ is\ optimized\ for\ environments\ with\ a\ bounded\ set\ of\ writers\ and\ a}}
+\DoxyCodeLine{00065\ \textcolor{comment}{\ *\ potentially\ unbounded\ set\ of\ verifiers.\ It\ provides\ strong\ integrity,}}
+\DoxyCodeLine{00066\ \textcolor{comment}{\ *\ ordering,\ and\ non-\/repudiation\ guarantees\ without\ requiring\ distributed}}
+\DoxyCodeLine{00067\ \textcolor{comment}{\ *\ consensus,\ peer-\/to-\/peer\ networking,\ or\ economic\ mechanisms.}}
+\DoxyCodeLine{00068\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00069\ \textcolor{comment}{\ *\ Core\ properties:}}
+\DoxyCodeLine{00070\ \textcolor{comment}{\ *\ -\/\ Append-\/only\ event\ records\ with\ canonical\ serialization}}
+\DoxyCodeLine{00071\ \textcolor{comment}{\ *\ -\/\ Domain-\/separated\ cryptographic\ commitments\ for\ all\ object\ types}}
+\DoxyCodeLine{00072\ \textcolor{comment}{\ *\ -\/\ Merkle\ tree\ batching\ for\ scalable\ inclusion\ proofs}}
+\DoxyCodeLine{00073\ \textcolor{comment}{\ *\ -\/\ Hash-\/chained\ checkpoints\ with\ asymmetric\ signatures}}
+\DoxyCodeLine{00074\ \textcolor{comment}{\ *\ -\/\ Portable\ checkpoint\ bundles\ for\ independent\ verification}}
+\DoxyCodeLine{00075\ \textcolor{comment}{\ *\ -\/\ Support\ for\ audit\ paths,\ integrity\ verification,\ and\ key\ rotation}}
+\DoxyCodeLine{00076\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00077\ \textcolor{comment}{\ *\ MCEL\ is\ intended\ to\ serve\ as\ an\ integrity\ spine\ for\ higher-\/level\ systems}}
+\DoxyCodeLine{00078\ \textcolor{comment}{\ *\ such\ as\ digital\ identity\ frameworks,\ compliance\ and\ evidence\ ledgers,}}
+\DoxyCodeLine{00079\ \textcolor{comment}{\ *\ authorization\ workflows,\ and\ regulated\ institutional\ records.}}
+\DoxyCodeLine{00080\ \textcolor{comment}{\ *\ Payload\ semantics\ are\ intentionally\ opaque\ to\ the\ ledger,\ allowing}}
+\DoxyCodeLine{00081\ \textcolor{comment}{\ *\ application-\/specific\ object\ models\ to\ evolve\ independently.}}
+\DoxyCodeLine{00082\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00083\ \textcolor{comment}{\ *\ The\ implementation\ assumes\ a\ trusted\ storage\ backend\ providing\ append}}
+\DoxyCodeLine{00084\ \textcolor{comment}{\ *\ semantics\ and\ optional\ overwrite\ support\ for\ the\ current\ ledger\ head.}}
+\DoxyCodeLine{00085\ \textcolor{comment}{\ *\ All\ security\ guarantees\ derive\ from\ cryptographic\ verification\ rather}}
+\DoxyCodeLine{00086\ \textcolor{comment}{\ *\ than\ trust\ in\ storage\ correctness.}}
+\DoxyCodeLine{00087\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{preprocessor}{\#ifndef\ MCEL\_H}}
+\DoxyCodeLine{00090\ \textcolor{preprocessor}{\#define\ MCEL\_H}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{preprocessor}{\#include\ "{}mcelcommon.h"{}}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \textcolor{preprocessor}{\#if\ (!defined(MCEL\_CONFIG\_DILITHIUM)\ \&\&\ !defined(MCEL\_CONFIG\_SPHINCSPLUS))}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00099\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_CONFIG\_DILITHIUM}}
+\DoxyCodeLine{00100\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\#if\ defined(MCEL\_CONFIG\_DILITHIUM)}}
+\DoxyCodeLine{00103\ \textcolor{preprocessor}{\#\ \ \ include\ "{}dilithium.h"{}}}
+\DoxyCodeLine{00104\ \textcolor{preprocessor}{\#elif\ defined(MCEL\_CONFIG\_SPHINCSPLUS)}}
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\#\ \ \ include\ "{}sphincsplus.h"{}}}
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\#\ \ \ error\ Invalid\ parameter\ set!}}
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\#define\ MCEL\_USE\_RCS\_ENCRYPTION}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\#if\ defined(MCEL\_USE\_RCS\_ENCRYPTION)}}
+\DoxyCodeLine{00119\ \textcolor{preprocessor}{\#\ \ \ include\ "{}rcs.h"{}}}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_state\ qsc\_rcs\_state}}
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_dispose\ qsc\_rcs\_dispose}}
+\DoxyCodeLine{00122\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_initialize\ qsc\_rcs\_initialize}}
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_keyparams\ qsc\_rcs\_keyparams}}
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_set\_associated\ qsc\_rcs\_set\_associated}}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_transform\ qsc\_rcs\_transform}}
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\#\ \ \ include\ "{}aes.h"{}}}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_state\ qsc\_aes\_gcm256\_state}}
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_dispose\ qsc\_aes\_gcm256\_dispose}}
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_initialize\ qsc\_aes\_gcm256\_initialize}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_keyparams\ qsc\_aes\_keyparams}}
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_set\_associated\ qsc\_aes\_gcm256\_set\_associated}}
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_cipher\_transform\ qsc\_aes\_gcm256\_transform}}
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\#endif}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \textcolor{preprocessor}{\#if\ defined(MCEL\_CONFIG\_DILITHIUM)}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00192\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_ASYMMETRIC\_SIGNING\_KEY\_SIZE\ (QSC\_DILITHIUM\_PRIVATEKEY\_SIZE)}}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00198\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_ASYMMETRIC\_VERIFY\_KEY\_SIZE\ (QSC\_DILITHIUM\_PUBLICKEY\_SIZE)}}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00204\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_ASYMMETRIC\_SIGNATURE\_SIZE\ (QSC\_DILITHIUM\_SIGNATURE\_SIZE)}}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \textcolor{preprocessor}{\#\ \ \ if\ defined(QSC\_DILITHIUM\_S1P44)}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00211\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MCEL\_PARAMETER\_SET\ 1U}}
+\DoxyCodeLine{00212\ \textcolor{preprocessor}{\#\ \ \ elif\ defined(QSC\_DILITHIUM\_S3P65)}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00217\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MCEL\_PARAMETER\_SET\ 2U}}
+\DoxyCodeLine{00218\ \textcolor{preprocessor}{\#\ \ \ elif\ defined(QSC\_DILITHIUM\_S5P87)}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00223\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MCEL\_PARAMETER\_SET\ 3U}}
+\DoxyCodeLine{00224\ \textcolor{preprocessor}{\#\ \ \ else}}
+\DoxyCodeLine{00225\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ error\ "{}The\ parameter\ set\ is\ not\ supported!"{}}}
+\DoxyCodeLine{00226\ \textcolor{preprocessor}{\#\ \ \ endif}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00231\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_signature\_generate\_keypair\ qsc\_dilithium\_generate\_keypair}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00236\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_signature\_sign\ qsc\_dilithium\_sign}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00241\ \textcolor{preprocessor}{\#\ \ \ define\ mcel\_signature\_verify\ qsc\_dilithium\_verify}}
+\DoxyCodeLine{00242\ \textcolor{preprocessor}{\#else}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00247\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_ASYMMETRIC\_SIGNING\_KEY\_SIZE\ (QSC\_SPHINCSPLUS\_PRIVATEKEY\_SIZE)}}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00253\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_ASYMMETRIC\_VERIFY\_KEY\_SIZE\ (QSC\_SPHINCSPLUS\_PUBLICKEY\_SIZE)}}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00259\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_ASYMMETRIC\_SIGNATURE\_SIZE\ (QSC\_SPHINCSPLUS\_SIGNATURE\_SIZE)}}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00265\ \textcolor{preprocessor}{\#\ \ \ if\ defined(QSC\_SPHINCSPLUS\_S1S128SHAKERS)}}
+\DoxyCodeLine{00266\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MCEL\_PARAMETER\_SET\ 4U}}
+\DoxyCodeLine{00267\ \textcolor{preprocessor}{\#\ \ \ elif\ defined(QSC\_SPHINCSPLUS\_S3S192SHAKERS)}}
+\DoxyCodeLine{00268\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MCEL\_PARAMETER\_SET\ 5U}}
+\DoxyCodeLine{00269\ \textcolor{preprocessor}{\#\ \ \ elif\ defined(QSC\_SPHINCSPLUS\_S5S256SHAKERS)}}
+\DoxyCodeLine{00270\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MCEL\_PARAMETER\_SET\ 6U}}
+\DoxyCodeLine{00271\ \textcolor{preprocessor}{\#\ \ \ elif\ defined(QSC\_SPHINCSPLUS\_S6S512SHAKERS)}}
+\DoxyCodeLine{00272\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MCEL\_PARAMETER\_SET\ 7U}}
+\DoxyCodeLine{00273\ \textcolor{preprocessor}{\#\ \ \ else}}
+\DoxyCodeLine{00274\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ error\ "{}The\ parameter\ set\ is\ not\ supported!"{}}}
+\DoxyCodeLine{00275\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00281\ \textcolor{preprocessor}{\#\ \ \ define\ udif\_signature\_generate\_keypair\ qsc\_sphincsplus\_generate\_keypair}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00286\ \textcolor{preprocessor}{\#\ \ \ define\ udif\_signature\_sign\ qsc\_sphincsplus\_sign}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00291\ \textcolor{preprocessor}{\#\ \ \ define\ udif\_signature\_verify\ qsc\_sphincsplus\_verify}}
+\DoxyCodeLine{00292\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00293\ }
+\DoxyCodeLine{00298\ \textcolor{preprocessor}{\#define\ MCEL\_BLOCK\_HASH\_SIZE\ 32U}}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00304\ \textcolor{preprocessor}{\#define\ MCEL\_BLOCK\_HEADER\_ENCODED\_SIZE\ 62U}}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00310\ \textcolor{preprocessor}{\#define\ MCEL\_BLOCK\_ENCODED\_FIXED\_SIZE\ ((size\_t)MCEL\_BLOCK\_HEADER\_ENCODED\_SIZE\ +\ ((size\_t)MCEL\_BLOCK\_HASH\_SIZE\ *\ 2U))}}
+\DoxyCodeLine{00311\ }
+\DoxyCodeLine{00316\ \textcolor{preprocessor}{\#define\ MCEL\_BLOCK\_KEYID\_SIZE\ 32U}}
+\DoxyCodeLine{00317\ }
+\DoxyCodeLine{00322\ \textcolor{preprocessor}{\#define\ MCEL\_BLOCK\_VERSION\ 1U}}
+\DoxyCodeLine{00323\ }
+\DoxyCodeLine{00328\ \textcolor{preprocessor}{\#define\ MCEL\_CHECKPOINT\_HEADER\_ENCODED\_SIZE\ 62U}}
+\DoxyCodeLine{00329\ }
+\DoxyCodeLine{00334\ \textcolor{preprocessor}{\#define\ MCEL\_CHECKPOINT\_BUNDLE\_FIXED\_SIZE\ (MCEL\_CHECKPOINT\_HEADER\_ENCODED\_SIZE\ +\ (MCEL\_BLOCK\_HASH\_SIZE\ *\ 2U))}}
+\DoxyCodeLine{00335\ }
+\DoxyCodeLine{00340\ \textcolor{preprocessor}{\#define\ MCEL\_CHECKPOINT\_BUNDLE\_ENCODED\_SIZE\ (MCEL\_ASYMMETRIC\_SIGNATURE\_SIZE\ +\ MCEL\_BLOCK\_HASH\_SIZE\ +\ MCEL\_CHECKPOINT\_BUNDLE\_FIXED\_SIZE)}}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00346\ \textcolor{preprocessor}{\#define\ MCEL\_CHECKPOINT\_KEYID\_SIZE\ 32U}}
+\DoxyCodeLine{00347\ }
+\DoxyCodeLine{00352\ \textcolor{preprocessor}{\#define\ MCEL\_CHECKPOINT\_SIGNED\_COMMIT\_SIZE\ (MCEL\_ASYMMETRIC\_SIGNATURE\_SIZE\ +\ MCEL\_BLOCK\_HASH\_SIZE)}}
+\DoxyCodeLine{00353\ }
+\DoxyCodeLine{00358\ \textcolor{preprocessor}{\#define\ MCEL\_CHECKPOINT\_VERSION\ 1U}}
+\DoxyCodeLine{00359\ }
+\DoxyCodeLine{00364\ \textcolor{preprocessor}{\#define\ MCEL\_KEYROTATE\_PAYLOAD\_VERSION\ 0x01U}}
+\DoxyCodeLine{00365\ }
+\DoxyCodeLine{00370\ \textcolor{preprocessor}{\#define\ MCEL\_KEYROTATE\_PAYLOAD\_FIXED\_SIZE\ (1U\ +\ 1U\ +\ (uint32\_t)MCEL\_CHECKPOINT\_KEYID\_SIZE\ +\ 2U)}}
+\DoxyCodeLine{00371\ }
+\DoxyCodeLine{00376\ \textcolor{preprocessor}{\#define\ MCEL\_KEYROTATE\_PAYLOAD\_KEY\_SIZE\ (MCEL\_KEYROTATE\_PAYLOAD\_FIXED\_SIZE\ +\ MCEL\_ASYMMETRIC\_VERIFY\_KEY\_SIZE)}}
+\DoxyCodeLine{00377\ }
+\DoxyCodeLine{00382\ \textcolor{preprocessor}{\#define\ MCEL\_LEDGER\_NAMESPACE\_ID\_MAX\ 64U}}
+\DoxyCodeLine{00383\ }
+\DoxyCodeLine{00388\ \textcolor{preprocessor}{\#define\ MCEL\_PAYLOAD\_MAX\_SIZE\ 0xFFFFFFFFUL}}
+\DoxyCodeLine{00389\ }
+\DoxyCodeLine{00394\ \textcolor{preprocessor}{\#define\ MCEL\_RCS256\_KEY\_SIZE\ 32U}}
+\DoxyCodeLine{00395\ }
+\DoxyCodeLine{00400\ \textcolor{preprocessor}{\#define\ MCEL\_RCS256\_MAC\_SIZE\ 32U}}
+\DoxyCodeLine{00401\ }
+\DoxyCodeLine{00406\ \textcolor{preprocessor}{\#define\ MCEL\_RCS\_NONCE\_SIZE\ 32U}}
+\DoxyCodeLine{00407\ }
+\DoxyCodeLine{00412\ \textcolor{preprocessor}{\#define\ MCEL\_RCS\_INFO\_SIZE\ 48U}}
+\DoxyCodeLine{00413\ }
+\DoxyCodeLine{00418\ \textcolor{preprocessor}{\#define\ MCEL\_RECORD\_FLAG\_ENCRYPTED\ 0x01U}}
+\DoxyCodeLine{00419\ }
+\DoxyCodeLine{00424\ \textcolor{preprocessor}{\#define\ MCEL\_RECORD\_VERSION\ 1U}}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00430\ \textcolor{preprocessor}{\#define\ MCEL\_RECORD\_KEYID\_SIZE\ 32U}}
+\DoxyCodeLine{00431\ }
+\DoxyCodeLine{00436\ \textcolor{preprocessor}{\#define\ MCEL\_RECORD\_HEADER\_ENCODED\_SIZE\ 58U}}
+\DoxyCodeLine{00437\ }
+\DoxyCodeLine{00442\ \textcolor{preprocessor}{\#define\ MCEL\_RECORD\_TYPE\_KEYROTATE\ 0x3U}}
+\DoxyCodeLine{00443\ }
+\DoxyCodeLine{00448\ \textcolor{preprocessor}{\#define\ MCEL\_SIGNED\_HASH\_SIZE\ (MCEL\_ASYMMETRIC\_SIGNATURE\_SIZE\ +\ MCEL\_BLOCK\_HASH\_SIZE)}}
+\DoxyCodeLine{00449\ }
+\DoxyCodeLine{00454\ \textcolor{preprocessor}{\#if\ defined(QSC\_SYSTEM\_OS\_WINDOWS)}}
+\DoxyCodeLine{00455\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_STORE\_LOC\_BLOCKS\ "{}mcel\(\backslash\)\(\backslash\)blocks"{}}}
+\DoxyCodeLine{00456\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00457\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_STORE\_LOC\_BLOCKS\ "{}mcel/blocks"{}}}
+\DoxyCodeLine{00458\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00459\ }
+\DoxyCodeLine{00464\ \textcolor{preprocessor}{\#if\ defined(QSC\_SYSTEM\_OS\_WINDOWS)}}
+\DoxyCodeLine{00465\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_STORE\_LOC\_CHECKPOINTS\ "{}mcel\(\backslash\)\(\backslash\)checkpoints"{}}}
+\DoxyCodeLine{00466\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00467\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_STORE\_LOC\_CHECKPOINTS\ "{}mcel/checkpoints"{}}}
+\DoxyCodeLine{00468\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00469\ }
+\DoxyCodeLine{00474\ \textcolor{preprocessor}{\#if\ defined(QSC\_SYSTEM\_OS\_WINDOWS)}}
+\DoxyCodeLine{00475\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_STORE\_LOC\_HEAD\ "{}mcel\(\backslash\)\(\backslash\)head"{}}}
+\DoxyCodeLine{00476\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00477\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_STORE\_LOC\_HEAD\ "{}mcel/head"{}}}
+\DoxyCodeLine{00478\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00479\ }
+\DoxyCodeLine{00484\ \textcolor{preprocessor}{\#if\ defined(QSC\_SYSTEM\_OS\_WINDOWS)}}
+\DoxyCodeLine{00485\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_STORE\_LOC\_RECORDS\ "{}mcel\(\backslash\)\(\backslash\)records"{}}}
+\DoxyCodeLine{00486\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00487\ \textcolor{preprocessor}{\#\ \ \ define\ MCEL\_STORE\_LOC\_RECORDS\ "{}mcel/records"{}}}
+\DoxyCodeLine{00488\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00489\ }
+\DoxyCodeLine{00494\ MCEL\_EXPORT\_API\ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7b}{mcel\_record\_types}}}
+\DoxyCodeLine{00495\ \{}
+\DoxyCodeLine{00496\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7babd02839e3ffefb54cee8222791fe0ff6}{mcel\_record\_type\_none}}\ =\ 0U,\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00497\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7ba327f07404d393f3c780ab41c295b9e62}{mcel\_record\_type\_checkpoint}}\ =\ 1U,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00498\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7bacddd9ceb05b8a6fd32c32d67b6fa95a5}{mcel\_record\_type\_event}}\ =\ 2U,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00499\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7bad15ef2ccfc403a49e2abe0908fd8488d}{mcel\_record\_type\_key\_rotate}}\ =\ 3U,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00500\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7ba7d0621c70e27a57d478e42b8d62ae046}{mcel\_record\_type\_policy}}\ =\ 4U\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00501\ \}\ \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7b}{mcel\_record\_types}};}
+\DoxyCodeLine{00502\ }
+\DoxyCodeLine{00507\ MCEL\_EXPORT\_API\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610}{mcel\_policy\_ops}}}
+\DoxyCodeLine{00508\ \{}
+\DoxyCodeLine{00509\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610a295ee491f58614150dde5d3d761d1614}{mcel\_policyop\_append\_record}}\ =\ 1U,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00510\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610ae8db0eef926e8d18492642ee6088c7e4}{mcel\_policyop\_seal\_checkpoint}}\ =\ 2U\ \ \ \ \ }
+\DoxyCodeLine{00511\ \}\ \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610}{mcel\_policy\_ops}};}
+\DoxyCodeLine{00512\ }
+\DoxyCodeLine{00517\ MCEL\_EXPORT\_API\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e}{mcel\_policy\_errors}}}
+\DoxyCodeLine{00518\ \{}
+\DoxyCodeLine{00519\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9eab0c90b32221fddb8617ce4ca7a837a20}{mcel\_policyerr\_none}}\ =\ 0U,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00520\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea031de56d05e3da5056c4f2c5591c3562}{mcel\_policyerr\_invalid\_parameter}}\ =\ 1U,\ \ }
+\DoxyCodeLine{00521\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea06f5a170b4fda1edfbd93b023c40404a}{mcel\_policyerr\_record\_type\_denied}}\ =\ 2U,\ \ \ \ }
+\DoxyCodeLine{00522\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9eac3e58b933b2cfba1771ed2d7b68723cc}{mcel\_policyerr\_payload\_too\_large}}\ =\ 3U,\ \ }
+\DoxyCodeLine{00523\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea8d36e1b3b3f6c0f852c578dda930cb6a}{mcel\_policyerr\_plaintext\_denied}}\ =\ 4U,\ \ \ \ }
+\DoxyCodeLine{00524\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea3da191f1e45e87eeb8deacbc8c7c2543}{mcel\_policyerr\_sequence\_invalid}}\ =\ 5U,\ \ \ \ }
+\DoxyCodeLine{00525\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea80ac01087b97d9116b3ace9a95908905}{mcel\_policyerr\_timestamp\_invalid}}\ =\ 6U,\ \ }
+\DoxyCodeLine{00526\ \ \ \ \ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea2d6d1df7b4bf8124171b745fddc86281}{mcel\_policyerr\_keyid\_mismatch}}\ =\ 7U\ \ \ \ \ }
+\DoxyCodeLine{00527\ \}\ \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e}{mcel\_policy\_errors}};}
+\DoxyCodeLine{00528\ }
+\DoxyCodeLine{00537\ MCEL\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structmcel__store__callbacks}{mcel\_store\_callbacks}}}
+\DoxyCodeLine{00538\ \{}
+\DoxyCodeLine{00539\ \ \ \ \ \textcolor{keywordtype}{void}*\ \mbox{\hyperlink{structmcel__store__callbacks_ae376f130b17d169ee51be68077a89ed0}{context}};\ }
+\DoxyCodeLine{00540\ }
+\DoxyCodeLine{00552\ \ \ \ \ bool\ (*\mbox{\hyperlink{structmcel__store__callbacks_aad44110312ca95de480cffb557c3f35d}{write}})(\textcolor{keywordtype}{void}*\ \mbox{\hyperlink{structmcel__store__callbacks_ae376f130b17d169ee51be68077a89ed0}{context}},\ \textcolor{keyword}{const}\ uint8\_t*\ loc,\ \textcolor{keywordtype}{size\_t}\ loclen,\ \textcolor{keyword}{const}\ uint8\_t*\ data,\ \textcolor{keywordtype}{size\_t}\ datalen);}
+\DoxyCodeLine{00553\ }
+\DoxyCodeLine{00566\ \ \ \ \ bool\ (*\mbox{\hyperlink{structmcel__store__callbacks_a6ce946be7b51622206a9bbf873272f97}{read}})(\textcolor{keywordtype}{void}*\ \mbox{\hyperlink{structmcel__store__callbacks_ae376f130b17d169ee51be68077a89ed0}{context}},\ \textcolor{keyword}{const}\ uint8\_t*\ loc,\ \textcolor{keywordtype}{size\_t}\ loclen,\ uint8\_t*\ data,\ \textcolor{keywordtype}{size\_t}\ datalen,\ \textcolor{keywordtype}{size\_t}*\ outread);}
+\DoxyCodeLine{00567\ }
+\DoxyCodeLine{00580\ \ \ \ \ bool\ (*\mbox{\hyperlink{structmcel__store__callbacks_a884f920370aa73b20227d329c0170727}{append}})(\textcolor{keywordtype}{void}*\ \mbox{\hyperlink{structmcel__store__callbacks_ae376f130b17d169ee51be68077a89ed0}{context}},\ \textcolor{keyword}{const}\ uint8\_t*\ loc,\ \textcolor{keywordtype}{size\_t}\ loclen,\ \textcolor{keyword}{const}\ uint8\_t*\ data,\ \textcolor{keywordtype}{size\_t}\ datalen,\ uint64\_t*\ outpos);}
+\DoxyCodeLine{00581\ }
+\DoxyCodeLine{00592\ \ \ \ \ bool\ (*\mbox{\hyperlink{structmcel__store__callbacks_a77ba535569d696e46817924d65ce527c}{size}})(\textcolor{keywordtype}{void}*\ \mbox{\hyperlink{structmcel__store__callbacks_ae376f130b17d169ee51be68077a89ed0}{context}},\ \textcolor{keyword}{const}\ uint8\_t*\ loc,\ \textcolor{keywordtype}{size\_t}\ loclen,\ uint64\_t*\ outlen);}
+\DoxyCodeLine{00593\ }
+\DoxyCodeLine{00603\ \ \ \ \ bool\ (*\mbox{\hyperlink{structmcel__store__callbacks_a3c820928313472c8ab6f929274c35e9f}{flush}})(\textcolor{keywordtype}{void}*\ \mbox{\hyperlink{structmcel__store__callbacks_ae376f130b17d169ee51be68077a89ed0}{context}},\ \textcolor{keyword}{const}\ uint8\_t*\ loc,\ \textcolor{keywordtype}{size\_t}\ loclen);}
+\DoxyCodeLine{00604\ \}\ \mbox{\hyperlink{structmcel__store__callbacks}{mcel\_store\_callbacks}};}
+\DoxyCodeLine{00605\ }
+\DoxyCodeLine{00614\ MCEL\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structmcel__block__header}{mcel\_block\_header}}}
+\DoxyCodeLine{00615\ \{}
+\DoxyCodeLine{00616\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__block__header_a9b3626095ef23e64ae6babf207a29a2d}{keyid}}[\mbox{\hyperlink{mcel_8h_a65b436982d3e18a6af88863d210c0470}{MCEL\_BLOCK\_KEYID\_SIZE}}];\ }
+\DoxyCodeLine{00617\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__block__header_a7b78fae74594d1f69039c6bb0496eb2e}{block\_sequence}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00618\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__block__header_a69cff7ccc04b00dc0f8db8580d1b6a41}{first\_record\_seq}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00619\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__block__header_a465bef81f6478756e5443025b1f2ddfa}{timestamp}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00620\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structmcel__block__header_a4884a7ccd4130787e66aa141d47478a3}{record\_count}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00621\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__block__header_aa2585d779da0ab21273a8d92de9a0ebe}{flags}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00622\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__block__header_ab22abc2906422da61885ac6c8e6a1a59}{version}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00623\ \}\ \mbox{\hyperlink{structmcel__block__header}{mcel\_block\_header}};}
+\DoxyCodeLine{00624\ }
+\DoxyCodeLine{00629\ MCEL\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structmcel__checkpoint__audit__item}{mcel\_checkpoint\_audit\_item}}}
+\DoxyCodeLine{00630\ \{}
+\DoxyCodeLine{00631\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ \mbox{\hyperlink{structmcel__checkpoint__audit__item_ad2d5d990091a18e87e3676e4e0a8c0e5}{bundle}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00632\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structmcel__checkpoint__audit__item_a8beb80835e40b0eba429eef65d420a40}{bundlelen}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00633\ \}\ \mbox{\hyperlink{structmcel__checkpoint__audit__item}{mcel\_checkpoint\_audit\_item}};}
+\DoxyCodeLine{00634\ }
+\DoxyCodeLine{00643\ MCEL\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}}
+\DoxyCodeLine{00644\ \{}
+\DoxyCodeLine{00645\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__checkpoint__header_ae8105f4f13dc698494f36d4d1472deab}{keyid}}[\mbox{\hyperlink{mcel_8h_a024045fdc2232c37fa03240f299dd9fc}{MCEL\_CHECKPOINT\_KEYID\_SIZE}}];\ }
+\DoxyCodeLine{00646\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__checkpoint__header_af69c26225454bb6689842faa37e1fd68}{chk\_sequence}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00647\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__checkpoint__header_a69cff7ccc04b00dc0f8db8580d1b6a41}{first\_record\_seq}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00648\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__checkpoint__header_a465bef81f6478756e5443025b1f2ddfa}{timestamp}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00649\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structmcel__checkpoint__header_a4884a7ccd4130787e66aa141d47478a3}{record\_count}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00650\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__checkpoint__header_aa2585d779da0ab21273a8d92de9a0ebe}{flags}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00651\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__checkpoint__header_ab22abc2906422da61885ac6c8e6a1a59}{version}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00652\ \}\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}};}
+\DoxyCodeLine{00653\ }
+\DoxyCodeLine{00658\ MCEL\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structmcel__ledger__state}{mcel\_ledger\_state}}}
+\DoxyCodeLine{00659\ \{}
+\DoxyCodeLine{00660\ \ \ \ \ \mbox{\hyperlink{structmcel__store__callbacks}{mcel\_store\_callbacks}}\ \mbox{\hyperlink{structmcel__ledger__state_abf78fa386dba7a08725048e8e1cb6c03}{store}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00661\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__ledger__state_aeeeb467710cc2ae99bbb94ca1eaf9588}{nsid}}[\mbox{\hyperlink{mcel_8h_a2726f8172097d7b4a82c90ff2d96722c}{MCEL\_LEDGER\_NAMESPACE\_ID\_MAX}}];\ }
+\DoxyCodeLine{00662\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structmcel__ledger__state_a757708a0acf67ec2fae3a131c4ede48e}{nsidlen}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00663\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ \mbox{\hyperlink{structmcel__ledger__state_ab8f13770787b7be1aea8d638d6755e55}{publickey}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00664\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__ledger__state_ad0e9f0430189900b084406924c02cf92}{head\_commit}}[\mbox{\hyperlink{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6}{MCEL\_BLOCK\_HASH\_SIZE}}];\ }
+\DoxyCodeLine{00665\ \ \ \ \ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}\ \mbox{\hyperlink{structmcel__ledger__state_ac42465955a577a21e8e772c3a7af402e}{head\_header}};\ \ \ \ \ }
+\DoxyCodeLine{00666\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__ledger__state_a28fcef5af31e2b90a89bbfa09d73b78d}{have\_head}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00667\ \}\ \mbox{\hyperlink{structmcel__ledger__state}{mcel\_ledger\_state}};}
+\DoxyCodeLine{00668\ }
+\DoxyCodeLine{00673\ MCEL\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structmcel__policy}{mcel\_policy}}}
+\DoxyCodeLine{00674\ \{}
+\DoxyCodeLine{00675\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{structmcel__policy_aeee5aab7f9bdc5b84a27ac38b4f47604}{max\_payload\_size}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00676\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structmcel__policy_a011cd492ed20d62fa9a5e900ef2624a0}{allowed\_record\_mask}};\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00677\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__policy_aa970cf0c6445e17dc7125293ff84232b}{require\_encryption}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00678\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__policy_aa9e16490311368b4110d7969ede4e3d2}{enforce\_monotonic\_time}};\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00679\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__policy_adf62875f2775170e4c596d02d292961a}{enforce\_monotonic\_seq}};\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00680\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__policy_afa826a10f4c009126deba1378ed044b9}{enforce\_keyid\_link}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00681\ \}\ \mbox{\hyperlink{structmcel__policy}{mcel\_policy}};}
+\DoxyCodeLine{00682\ }
+\DoxyCodeLine{00691\ MCEL\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structmcel__policy__context}{mcel\_policy\_context}}}
+\DoxyCodeLine{00692\ \{}
+\DoxyCodeLine{00693\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__policy__context_a621a573f6fa67e342ebc626661e4fc80}{have\_checkpoint}};\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00694\ \ \ \ \ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}\ \mbox{\hyperlink{structmcel__policy__context_addc2c9aeba85a598ad91276cc5f4c9ce}{checkpoint}};\ \ \ \ \ \ }
+\DoxyCodeLine{00695\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__policy__context_a659178907037b2d213a4bed16b520ad1}{last\_record\_sequence}};\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00696\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__policy__context_a414583f9617d4d7bb4d145b3bb7d9ed9}{last\_record\_timestamp}};\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00697\ \}\ \mbox{\hyperlink{structmcel__policy__context}{mcel\_policy\_context}};}
+\DoxyCodeLine{00698\ }
+\DoxyCodeLine{00707\ MCEL\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structmcel__record__header}{mcel\_record\_header}}}
+\DoxyCodeLine{00708\ \{}
+\DoxyCodeLine{00709\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__record__header_a00bff486718bb49c6acb1b19f37b234d}{keyid}}[\mbox{\hyperlink{mcel_8h_aa5adfd810003d5d1081ab036da4bbed7}{MCEL\_RECORD\_KEYID\_SIZE}}];\ \ \ }
+\DoxyCodeLine{00710\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__record__header_acb520b7f5d67b3209787f3edb26d34fe}{sequence}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00711\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structmcel__record__header_a465bef81f6478756e5443025b1f2ddfa}{timestamp}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00712\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structmcel__record__header_afbbc2e77af6298f5550aec6087ba7d32}{payload\_len}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00713\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structmcel__record__header_ad44b615021ed3ccb734fcaf583ef4a03}{type}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00714\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__record__header_aa2585d779da0ab21273a8d92de9a0ebe}{flags}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00715\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structmcel__record__header_ab22abc2906422da61885ac6c8e6a1a59}{version}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00716\ \}\ \mbox{\hyperlink{structmcel__record__header}{mcel\_record\_header}};}
+\DoxyCodeLine{00717\ }
+\DoxyCodeLine{00727\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_ace338659c40f9b042f98aeddf4a90474}{mcel\_block\_commit}}(uint8\_t*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__block__header}{mcel\_block\_header}}*\ header,\ \textcolor{keyword}{const}\ uint8\_t*\ blkroot);}
+\DoxyCodeLine{00728\ }
+\DoxyCodeLine{00742\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a03e9a8e8f626275aec548aff1425f3b7}{mcel\_block\_encode}}(uint8\_t*\ output,\ \textcolor{keywordtype}{size\_t}\ outlen,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__block__header}{mcel\_block\_header}}*\ header,\ \textcolor{keyword}{const}\ uint8\_t*\ blkroot,\ }
+\DoxyCodeLine{00743\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ blkcommit,\ \textcolor{keyword}{const}\ uint8\_t*\ reccommits,\ \textcolor{keywordtype}{size\_t}\ reccount);}
+\DoxyCodeLine{00744\ }
+\DoxyCodeLine{00752\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{mcel_8h_a35cc5f26d03641721544884838717237}{mcel\_block\_encoded\_size}}(\textcolor{keywordtype}{size\_t}\ reccount);}
+\DoxyCodeLine{00753\ }
+\DoxyCodeLine{00762\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a9323ac8a6cebf82271b39a77665d73d7}{mcel\_block\_encode\_header}}(uint8\_t*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__block__header}{mcel\_block\_header}}*\ header);}
+\DoxyCodeLine{00763\ }
+\DoxyCodeLine{00775\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a136337c9de9461ce88899ada613d6722}{mcel\_block\_seal}}(uint8\_t*\ blkroot,\ uint8\_t*\ blkcommit,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__block__header}{mcel\_block\_header}}*\ header,\ \textcolor{keyword}{const}\ uint8\_t*\ reccommits,\ \textcolor{keywordtype}{size\_t}\ reccount);}
+\DoxyCodeLine{00776\ }
+\DoxyCodeLine{00787\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_aad00bb76443be40b3e8a4acbef59cbaf}{mcel\_checkpoint\_audit\_path\_verify}}(uint8\_t*\ outheadcommit,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__audit__item}{mcel\_checkpoint\_audit\_item}}*\ items,\ }
+\DoxyCodeLine{00788\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ itemcount,\ \textcolor{keyword}{const}\ uint8\_t*\ publickey);}
+\DoxyCodeLine{00789\ }
+\DoxyCodeLine{00803\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a9040a1f2a044d09766698a2239bc8376}{mcel\_checkpoint\_bundle\_encode}}(uint8\_t*\ output,\ \textcolor{keywordtype}{size\_t}\ outlen,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ header,\ \textcolor{keyword}{const}\ uint8\_t*\ blkroot,\ }
+\DoxyCodeLine{00804\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ prevcommit,\ \textcolor{keyword}{const}\ uint8\_t*\ sigcommit,\ \textcolor{keywordtype}{size\_t}\ siglen);}
+\DoxyCodeLine{00805\ }
+\DoxyCodeLine{00813\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{mcel_8h_aba58ad107e387ae3a3c1b00e4db56839}{mcel\_checkpoint\_bundle\_encoded\_size}}(\textcolor{keywordtype}{size\_t}\ siglen);}
+\DoxyCodeLine{00814\ }
+\DoxyCodeLine{00828\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_ae20d139a9c9af05601b737d6fb56ae12}{mcel\_checkpoint\_bundle\_verify}}(uint8\_t*\ chkcommit,\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ header,\ uint8\_t*\ blkroot,\ uint8\_t*\ prevcommit,\ }
+\DoxyCodeLine{00829\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ bundle,\ \textcolor{keywordtype}{size\_t}\ bundlelen,\ \textcolor{keyword}{const}\ uint8\_t*\ publickey);}
+\DoxyCodeLine{00830\ }
+\DoxyCodeLine{00841\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a76672ab9e13d4e95d9d4af2e57ce15b6}{mcel\_checkpoint\_chain\_link\_verify}}(\textcolor{keyword}{const}\ uint8\_t*\ prevcommit,\ \textcolor{keyword}{const}\ uint8\_t*\ curprevcommit,\ }
+\DoxyCodeLine{00842\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ prevhdr,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ curhdr);}
+\DoxyCodeLine{00843\ }
+\DoxyCodeLine{00854\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_acb1812e25a1ee1ae0d7ed5e4b7e2042b}{mcel\_checkpoint\_commit}}(uint8\_t*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ header,\ \textcolor{keyword}{const}\ uint8\_t*\ blkroot,\ \textcolor{keyword}{const}\ uint8\_t*\ pldcommit);}
+\DoxyCodeLine{00855\ }
+\DoxyCodeLine{00868\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_aeb24695d99b8078bd7255cf0ac4fdd34}{mcel\_checkpoint\_consistency\_verify}}(\textcolor{keyword}{const}\ uint8\_t*\ firstroot,\ \textcolor{keyword}{const}\ uint8\_t*\ secondroot,\ \textcolor{keywordtype}{size\_t}\ first,\ }
+\DoxyCodeLine{00869\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ second,\ \textcolor{keyword}{const}\ uint8\_t*\ proof,\ \textcolor{keywordtype}{size\_t}\ prooflen);}
+\DoxyCodeLine{00870\ }
+\DoxyCodeLine{00879\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_af85d262111f2a7b438ebdf466c5df220}{mcel\_checkpoint\_decode\_header}}(\mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ header,\ \textcolor{keyword}{const}\ uint8\_t*\ input);}
+\DoxyCodeLine{00880\ }
+\DoxyCodeLine{00889\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_ad0b2b570bfd9e566595ee56cf9c36a74}{mcel\_checkpoint\_encode\_header}}(uint8\_t*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ header);}
+\DoxyCodeLine{00890\ }
+\DoxyCodeLine{00902\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a15eede056326682057bd29e57608337a}{mcel\_checkpoint\_prove\_consistency}}(uint8\_t*\ proof,\ \textcolor{keywordtype}{size\_t}\ prooflen,\ \textcolor{keyword}{const}\ uint8\_t*\ leaves,\ \textcolor{keywordtype}{size\_t}\ oldcount,\ \textcolor{keywordtype}{size\_t}\ newcount);}
+\DoxyCodeLine{00903\ }
+\DoxyCodeLine{00918\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_afcbbe5a7de2035b4da4b0a7c47e8efb6}{mcel\_checkpoint\_seal}}(uint8\_t*\ chkcommit,\ uint8\_t*\ sigcommit,\ \textcolor{keywordtype}{size\_t}*\ siglen,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ header,}
+\DoxyCodeLine{00919\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ blkroot,\ \textcolor{keyword}{const}\ uint8\_t*\ prevcommit,\ \textcolor{keyword}{const}\ uint8\_t*\ privatekey,\ \textcolor{keywordtype}{bool}\ (*rng\_generate)(uint8\_t*,\ \textcolor{keywordtype}{size\_t}));}
+\DoxyCodeLine{00920\ }
+\DoxyCodeLine{00932\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a93476dabbe064d6397dca517e7397c55}{mcel\_checkpoint\_sign}}(uint8\_t*\ sigcommit,\ \textcolor{keywordtype}{size\_t}*\ siglen,\ \textcolor{keyword}{const}\ uint8\_t*\ chkcommit,\ }
+\DoxyCodeLine{00933\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ privatekey,\ \textcolor{keywordtype}{bool}\ (*rng\_generate)(uint8\_t*,\ \textcolor{keywordtype}{size\_t}));}
+\DoxyCodeLine{00934\ }
+\DoxyCodeLine{00946\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a700716c02ab98d9e14399a7464b0a16c}{mcel\_checkpoint\_verify}}(uint8\_t*\ chkcommit,\ \textcolor{keywordtype}{size\_t}*\ commitlen,\ \textcolor{keyword}{const}\ uint8\_t*\ sigcommit,}
+\DoxyCodeLine{00947\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ siglen,\ \textcolor{keyword}{const}\ uint8\_t*\ publickey);}
+\DoxyCodeLine{00948\ }
+\DoxyCodeLine{00956\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{mcel_8h_a6c318ce0a5c544da8f734cea6badc55a}{mcel\_keyrotate\_payload\_size}}(\textcolor{keywordtype}{size\_t}\ pubkeylen);}
+\DoxyCodeLine{00957\ }
+\DoxyCodeLine{00972\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{mcel_8h_a5fada3f40e3fa241ce775ab09eb21fb4}{mcel\_keyrotate\_record\_create}}(\mbox{\hyperlink{structmcel__record__header}{mcel\_record\_header}}*\ header,\ uint8\_t*\ payload,\ \textcolor{keywordtype}{size\_t}\ payload\_len,\ }
+\DoxyCodeLine{00973\ \ \ \ \ uint64\_t\ sequence,\ uint8\_t\ flags,\ \textcolor{keyword}{const}\ uint8\_t*\ newkeyid,\ \textcolor{keyword}{const}\ uint8\_t*\ newpubkey,\ \textcolor{keywordtype}{size\_t}\ pubkeylen);}
+\DoxyCodeLine{00974\ }
+\DoxyCodeLine{00987\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_ac080cd7b227e4046cd1a156fe1607e7e}{mcel\_ledger\_append\_record}}(\mbox{\hyperlink{structmcel__ledger__state}{mcel\_ledger\_state}}*\ state,\ uint8\_t*\ reccommit,\ uint64\_t*\ outpos,\ }
+\DoxyCodeLine{00988\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__record__header}{mcel\_record\_header}}*\ header,\ \textcolor{keyword}{const}\ uint8\_t*\ payload,\ \textcolor{keywordtype}{size\_t}\ paylen);}
+\DoxyCodeLine{00989\ }
+\DoxyCodeLine{00999\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a2bb9069b664f9234093c2c4da85bfba8}{mcel\_ledger\_get\_checkpoint\_head}}(\mbox{\hyperlink{structmcel__ledger__state}{mcel\_ledger\_state}}*\ state,\ uint8\_t*\ head\_commit,\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ head\_header);}
+\DoxyCodeLine{01000\ }
+\DoxyCodeLine{01014\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a5a4535c957a80a9d492ace24e1418e4a}{mcel\_ledger\_initialize}}(\mbox{\hyperlink{structmcel__ledger__state}{mcel\_ledger\_state}}*\ state,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__store__callbacks}{mcel\_store\_callbacks}}*\ store,\ \textcolor{keyword}{const}\ uint8\_t*\ nsid,\ \textcolor{keywordtype}{size\_t}\ nsidlen,}
+\DoxyCodeLine{01015\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ publickey,\ uint8\_t*\ headbuf,\ \textcolor{keywordtype}{size\_t}\ headbuflen);}
+\DoxyCodeLine{01016\ }
+\DoxyCodeLine{01032\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a4d55927755cf20bd6e81e3a96665e32b}{mcel\_ledger\_seal\_block}}(\mbox{\hyperlink{structmcel__ledger__state}{mcel\_ledger\_state}}*\ state,\ uint8\_t*\ blkroot,\ uint8\_t*\ blkcommit,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__block__header}{mcel\_block\_header}}*\ header,}
+\DoxyCodeLine{01033\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ reccommits,\ \textcolor{keywordtype}{size\_t}\ reccount,\ uint8\_t*\ blockbuf,\ \textcolor{keywordtype}{size\_t}\ blockbuflen,\ uint64\_t*\ outpos);}
+\DoxyCodeLine{01034\ }
+\DoxyCodeLine{01049\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_adf8be4e9fb8cf7e60779a1014d3a95f8}{mcel\_ledger\_seal\_checkpoint}}(\mbox{\hyperlink{structmcel__ledger__state}{mcel\_ledger\_state}}*\ state,\ uint8\_t*\ chkcommit,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ header,\ }
+\DoxyCodeLine{01050\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ blkroot,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ sigkey,\ uint8\_t*\ bundlebuf,\ \textcolor{keywordtype}{size\_t}\ bundlebuflen,\ uint64\_t*\ outpos);}
+\DoxyCodeLine{01051\ }
+\DoxyCodeLine{01069\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_af4929012727eee9fcfbdbd1a4f09b458}{mcel\_ledger\_verify\_integrity}}(\mbox{\hyperlink{structmcel__ledger__state}{mcel\_ledger\_state}}*\ state,\ uint8\_t*\ headbuf,\ \textcolor{keywordtype}{size\_t}\ headbuflen,\ }
+\DoxyCodeLine{01070\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__audit__item}{mcel\_checkpoint\_audit\_item}}*\ audit,\ \textcolor{keywordtype}{size\_t}\ auditcount);}
+\DoxyCodeLine{01071\ }
+\DoxyCodeLine{01082\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a4d74bfeb2d01974b4e5719c18424065d}{mcel\_payload\_commit}}(uint8\_t*\ output,\ \textcolor{keywordtype}{bool}\ encrypted,\ \textcolor{keyword}{const}\ uint8\_t*\ payload,\ \textcolor{keywordtype}{size\_t}\ paylen);}
+\DoxyCodeLine{01083\ }
+\DoxyCodeLine{01096\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a75e195435d38340e060033ed27e67e86}{mcel\_policy\_apply}}(\mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e}{mcel\_policy\_errors}}*\ perr,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__policy}{mcel\_policy}}*\ policy,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__policy__context}{mcel\_policy\_context}}*\ state,\ \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610}{mcel\_policy\_ops}}\ op,}
+\DoxyCodeLine{01097\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__record__header}{mcel\_record\_header}}*\ recordhdr,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\_checkpoint\_header}}*\ checkpointhdr);}
+\DoxyCodeLine{01098\ }
+\DoxyCodeLine{01113\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a1a418167b44af97cdc49e363fbe2af4e}{mcel\_record\_decrypt\_payload}}(uint8\_t*\ output,\ \textcolor{keywordtype}{size\_t}\ outlen,\ \textcolor{keyword}{const}\ uint8\_t*\ ciphertext,\ \textcolor{keywordtype}{size\_t}\ ctlen,\ }
+\DoxyCodeLine{01114\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ ad,\ \textcolor{keywordtype}{size\_t}\ adlen,\ \textcolor{keyword}{const}\ uint8\_t*\ key,\ uint8\_t*\ nonce);}
+\DoxyCodeLine{01115\ }
+\DoxyCodeLine{01128\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{mcel_8h_a889867bf280df212732ecf0b7c335de8}{mcel\_record\_encrypt\_payload}}(uint8\_t*\ output,\ \textcolor{keywordtype}{size\_t}\ outlen,\ \textcolor{keyword}{const}\ uint8\_t*\ plaintext,\ \textcolor{keywordtype}{size\_t}\ ptlen,}
+\DoxyCodeLine{01129\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t*\ ad,\ \textcolor{keywordtype}{size\_t}\ adlen,\ \textcolor{keyword}{const}\ uint8\_t*\ key,\ uint8\_t*\ nonce);}
+\DoxyCodeLine{01130\ }
+\DoxyCodeLine{01139\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_ab67de33df14d90ba121a78167562bd8d}{mcel\_record\_encode\_header}}(uint8\_t*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__record__header}{mcel\_record\_header}}*\ header);}
+\DoxyCodeLine{01140\ }
+\DoxyCodeLine{01150\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a4cf8ea9f0786cc52e5be6d0e0c04f1fa}{mcel\_record\_commit}}(uint8\_t*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__record__header}{mcel\_record\_header}}*\ header,\ \textcolor{keyword}{const}\ uint8\_t*\ pldcommit);}
+\DoxyCodeLine{01151\ }
+\DoxyCodeLine{01161\ MCEL\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{mcel_8h_a4f290c14e37280cca3d428167b2bb1b5}{mcel\_store\_callbacks\_initialize}}(\mbox{\hyperlink{structmcel__store__callbacks}{mcel\_store\_callbacks}}*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structmcel__store__callbacks}{mcel\_store\_callbacks}}*\ input,\ \textcolor{keywordtype}{void}*\ context);}
+\DoxyCodeLine{01162\ }
+\DoxyCodeLine{01163\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

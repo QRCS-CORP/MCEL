@@ -1,0 +1,218 @@
+\doxysection{C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+MCEL/\+MCEL/merkle.h File Reference}
+\hypertarget{merkle_8h}{}\label{merkle_8h}\index{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/MCEL/MCEL/merkle.h@{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/MCEL/MCEL/merkle.h}}
+
+
+MCEL merkle support header.  
+
+
+{\ttfamily \#include "{}mcelcommon.\+h"{}}\newline
+{\ttfamily \#include "{}domain.\+h"{}}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{merkle_8h_a276865fa058b7d6fdb6c9b1643774349}\label{merkle_8h_a276865fa058b7d6fdb6c9b1643774349} 
+\#define {\bfseries MCEL\+\_\+\+MERKLE\+\_\+\+HASH\+\_\+\+SIZE}~32U
+\begin{DoxyCompactList}\small\item\em The Merkle hash element size in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{merkle_8h_a0669776ceb695549e6ccbd9f5ddeb7fe}\label{merkle_8h_a0669776ceb695549e6ccbd9f5ddeb7fe} 
+\#define {\bfseries MCEL\+\_\+\+MERKLE\+\_\+\+NODE\+\_\+\+SIZE}~(\mbox{\hyperlink{merkle_8h_a276865fa058b7d6fdb6c9b1643774349}{MCEL\+\_\+\+MERKLE\+\_\+\+HASH\+\_\+\+SIZE}} \texorpdfstring{$\ast$}{*} 2U)
+\begin{DoxyCompactList}\small\item\em The Merkle internal node input size in bytes (left hash plus right hash). \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{merkle_8h_a74465731b149e0548e6b1383496d0144}{MCEL\+\_\+\+MERKLE\+\_\+\+PROOF\+\_\+\+HASHES\+\_\+\+MAX}}~32U
+\begin{DoxyCompactList}\small\item\em The maximum number of sibling hashes in a MCEL Merkle membership proof. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t \mbox{\hyperlink{merkle_8h_a338aa49951c968f56668ae798a71c421}{mcel\+\_\+merkle\+\_\+consistency\+\_\+proof\+\_\+size}} (size\+\_\+t oldcount, size\+\_\+t newcount)
+\begin{DoxyCompactList}\small\item\em Get the required buffer size for a MCEL Merkle consistency proof. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t \mbox{\hyperlink{merkle_8h_a14b096c14738a3f8c3544cfdb3e815fc}{mcel\+\_\+merkle\+\_\+proof\+\_\+size}} (size\+\_\+t count)
+\begin{DoxyCompactList}\small\item\em Get the required buffer size for a MCEL Merkle membership proof. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{merkle_8h_a2a9dd570ca583a2260289ef714b65b2a}{mcel\+\_\+merkle\+\_\+prove\+\_\+member}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}proof, size\+\_\+t prooflen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}leaves, size\+\_\+t count, size\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em Generate a MCEL Merkle membership proof for a leaf index. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{merkle_8h_a2ed8cc3daae2918b0ae607d35092da56}{mcel\+\_\+merkle\+\_\+member\+\_\+verify}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}root, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}leaf, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}proof, size\+\_\+t prooflen, size\+\_\+t count, size\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em Verify a MCEL Merkle membership proof for a leaf hash. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{merkle_8h_a3bbd619654aa1250d7336409b0f5b6ad}{mcel\+\_\+merkle\+\_\+root}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}root, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}leaves, size\+\_\+t count)
+\begin{DoxyCompactList}\small\item\em Compute the MCEL Merkle root from an ordered list of leaf hashes. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{merkle_8h_a988476e3451b6e924d881a60aa36ff41}{mcel\+\_\+merkle\+\_\+root\+\_\+hash}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, \mbox{\hyperlink{domain_8h_af52200124324a502daaa674fbce3772c}{mcel\+\_\+domain\+\_\+types}} domain)
+\begin{DoxyCompactList}\small\item\em Compute the MCEL Merkle root hash. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{merkle_8h_aec3760e0c5d7bef11159e8e20e35a75e}{mcel\+\_\+merkle\+\_\+node\+\_\+hash}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}left, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}right)
+\begin{DoxyCompactList}\small\item\em Compute the MCEL Merkle node hash. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+MCEL merkle support header. 
+
+
+
+\label{doc-define-members}
+\Hypertarget{merkle_8h_doc-define-members}
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{merkle_8h_a74465731b149e0548e6b1383496d0144}\index{merkle.h@{merkle.h}!MCEL\_MERKLE\_PROOF\_HASHES\_MAX@{MCEL\_MERKLE\_PROOF\_HASHES\_MAX}}
+\index{MCEL\_MERKLE\_PROOF\_HASHES\_MAX@{MCEL\_MERKLE\_PROOF\_HASHES\_MAX}!merkle.h@{merkle.h}}
+\doxysubsubsection{\texorpdfstring{MCEL\_MERKLE\_PROOF\_HASHES\_MAX}{MCEL\_MERKLE\_PROOF\_HASHES\_MAX}}
+{\footnotesize\ttfamily \label{merkle_8h_a74465731b149e0548e6b1383496d0144} 
+\#define MCEL\+\_\+\+MERKLE\+\_\+\+PROOF\+\_\+\+HASHES\+\_\+\+MAX~32U}
+
+
+
+The maximum number of sibling hashes in a MCEL Merkle membership proof. 
+
+This bound supports up to 2\texorpdfstring{$^\wedge$}{\string^}\+MCEL\+\_\+\+MERKLE\+\_\+\+PROOF\+\_\+\+HASHES\+\_\+\+MAX leaves. 
+
+\label{doc-func-members}
+\Hypertarget{merkle_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{merkle_8h_a338aa49951c968f56668ae798a71c421}\index{merkle.h@{merkle.h}!mcel\_merkle\_consistency\_proof\_size@{mcel\_merkle\_consistency\_proof\_size}}
+\index{mcel\_merkle\_consistency\_proof\_size@{mcel\_merkle\_consistency\_proof\_size}!merkle.h@{merkle.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_merkle\_consistency\_proof\_size()}{mcel\_merkle\_consistency\_proof\_size()}}
+{\footnotesize\ttfamily \label{merkle_8h_a338aa49951c968f56668ae798a71c421} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t mcel\+\_\+merkle\+\_\+consistency\+\_\+proof\+\_\+size (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{oldcount}{, }\item[{size\+\_\+t}]{newcount}{}\end{DoxyParamCaption})}
+
+
+
+Get the required buffer size for a MCEL Merkle consistency proof. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em oldcount} & The leaf count of the older tree. \\
+\hline
+{\em newcount} & The leaf count of the newer tree.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The required proof size in bytes or 0 on error. 
+\end{DoxyReturn}
+\Hypertarget{merkle_8h_a2ed8cc3daae2918b0ae607d35092da56}\index{merkle.h@{merkle.h}!mcel\_merkle\_member\_verify@{mcel\_merkle\_member\_verify}}
+\index{mcel\_merkle\_member\_verify@{mcel\_merkle\_member\_verify}!merkle.h@{merkle.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_merkle\_member\_verify()}{mcel\_merkle\_member\_verify()}}
+{\footnotesize\ttfamily \label{merkle_8h_a2ed8cc3daae2918b0ae607d35092da56} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+merkle\+\_\+member\+\_\+verify (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{root}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{leaf}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{proof}{, }\item[{size\+\_\+t}]{prooflen}{, }\item[{size\+\_\+t}]{count}{, }\item[{size\+\_\+t}]{index}{}\end{DoxyParamCaption})}
+
+
+
+Verify a MCEL Merkle membership proof for a leaf hash. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em root} & A pointer to the Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em leaf} & \mbox{[}const\mbox{]} A pointer to the leaf hash array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em proof} & \mbox{[}const\mbox{]} A pointer to the proof buffer containing sibling hashes. \\
+\hline
+{\em prooflen} & The length of the proof buffer in bytes. \\
+\hline
+{\em count} & The number of leaves in the tree. \\
+\hline
+{\em index} & The leaf index being proven (0..count-\/1).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the proof is valid. 
+\end{DoxyReturn}
+\Hypertarget{merkle_8h_aec3760e0c5d7bef11159e8e20e35a75e}\index{merkle.h@{merkle.h}!mcel\_merkle\_node\_hash@{mcel\_merkle\_node\_hash}}
+\index{mcel\_merkle\_node\_hash@{mcel\_merkle\_node\_hash}!merkle.h@{merkle.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_merkle\_node\_hash()}{mcel\_merkle\_node\_hash()}}
+{\footnotesize\ttfamily \label{merkle_8h_aec3760e0c5d7bef11159e8e20e35a75e} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+merkle\+\_\+node\+\_\+hash (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{left}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{right}{}\end{DoxyParamCaption})}
+
+
+
+Compute the MCEL Merkle node hash. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output node hash array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em left} & A pointer to left node hash {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em right} & A pointer to right node hash {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the Merkle root was computed successfully. 
+\end{DoxyReturn}
+\Hypertarget{merkle_8h_a14b096c14738a3f8c3544cfdb3e815fc}\index{merkle.h@{merkle.h}!mcel\_merkle\_proof\_size@{mcel\_merkle\_proof\_size}}
+\index{mcel\_merkle\_proof\_size@{mcel\_merkle\_proof\_size}!merkle.h@{merkle.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_merkle\_proof\_size()}{mcel\_merkle\_proof\_size()}}
+{\footnotesize\ttfamily \label{merkle_8h_a14b096c14738a3f8c3544cfdb3e815fc} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t mcel\+\_\+merkle\+\_\+proof\+\_\+size (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{count}{}\end{DoxyParamCaption})}
+
+
+
+Get the required buffer size for a MCEL Merkle membership proof. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em count} & The number of leaves in the tree.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The required proof size in bytes, or 0 on error. 
+\end{DoxyReturn}
+\Hypertarget{merkle_8h_a2a9dd570ca583a2260289ef714b65b2a}\index{merkle.h@{merkle.h}!mcel\_merkle\_prove\_member@{mcel\_merkle\_prove\_member}}
+\index{mcel\_merkle\_prove\_member@{mcel\_merkle\_prove\_member}!merkle.h@{merkle.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_merkle\_prove\_member()}{mcel\_merkle\_prove\_member()}}
+{\footnotesize\ttfamily \label{merkle_8h_a2a9dd570ca583a2260289ef714b65b2a} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+merkle\+\_\+prove\+\_\+member (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{proof}{, }\item[{size\+\_\+t}]{prooflen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{leaves}{, }\item[{size\+\_\+t}]{count}{, }\item[{size\+\_\+t}]{index}{}\end{DoxyParamCaption})}
+
+
+
+Generate a MCEL Merkle membership proof for a leaf index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em proof} & A pointer to the output proof buffer. \\
+\hline
+{\em prooflen} & The length of the output proof buffer in bytes. \\
+\hline
+{\em leaves} & \mbox{[}const\mbox{]} A pointer to the leaf hash array (count \texorpdfstring{$\ast$}{*} MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE). \\
+\hline
+{\em count} & The number of leaves in the array. \\
+\hline
+{\em index} & The leaf index to prove (0..count-\/1).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the proof was generated successfully. 
+\end{DoxyReturn}
+\Hypertarget{merkle_8h_a3bbd619654aa1250d7336409b0f5b6ad}\index{merkle.h@{merkle.h}!mcel\_merkle\_root@{mcel\_merkle\_root}}
+\index{mcel\_merkle\_root@{mcel\_merkle\_root}!merkle.h@{merkle.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_merkle\_root()}{mcel\_merkle\_root()}}
+{\footnotesize\ttfamily \label{merkle_8h_a3bbd619654aa1250d7336409b0f5b6ad} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+merkle\+\_\+root (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{root}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{leaves}{, }\item[{size\+\_\+t}]{count}{}\end{DoxyParamCaption})}
+
+
+
+Compute the MCEL Merkle root from an ordered list of leaf hashes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em root} & A pointer to the output root hash array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em leaves} & \mbox{[}const\mbox{]} A pointer to an array of leaf hashes, each of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em count} & The number of leaves in the array.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the Merkle root was computed successfully. 
+\end{DoxyReturn}
+\Hypertarget{merkle_8h_a988476e3451b6e924d881a60aa36ff41}\index{merkle.h@{merkle.h}!mcel\_merkle\_root\_hash@{mcel\_merkle\_root\_hash}}
+\index{mcel\_merkle\_root\_hash@{mcel\_merkle\_root\_hash}!merkle.h@{merkle.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_merkle\_root\_hash()}{mcel\_merkle\_root\_hash()}}
+{\footnotesize\ttfamily \label{merkle_8h_a988476e3451b6e924d881a60aa36ff41} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+merkle\+\_\+root\+\_\+hash (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{\mbox{\hyperlink{domain_8h_af52200124324a502daaa674fbce3772c}{mcel\+\_\+domain\+\_\+types}}}]{domain}{}\end{DoxyParamCaption})}
+
+
+
+Compute the MCEL Merkle root hash. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output root hash array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em domain} & The MCEL domain identifier.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the Merkle root was computed successfully. 
+\end{DoxyReturn}

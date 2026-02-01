@@ -1,0 +1,93 @@
+\doxysection{mcel\+\_\+anchor\+\_\+reference Struct Reference}
+\hypertarget{structmcel__anchor__reference}{}\label{structmcel__anchor__reference}\index{mcel\_anchor\_reference@{mcel\_anchor\_reference}}
+
+
+The MCEL anchor reference container.  
+
+
+
+
+{\ttfamily \#include $<$anchor.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__anchor__reference_ab22abc2906422da61885ac6c8e6a1a59}{version}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__anchor__reference_aa2585d779da0ab21273a8d92de9a0ebe}{flags}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__anchor__reference_a1d127017fb298b889f4ba24752d08b8e}{type}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__anchor__reference_acb7bc06bed6f6408d719334fc41698c7}{reserved}}
+\item 
+uint16\+\_\+t \mbox{\hyperlink{structmcel__anchor__reference_a02ef2d96c472e905fdc6dbf50df94772}{chain\+\_\+id\+\_\+len}}
+\item 
+uint16\+\_\+t \mbox{\hyperlink{structmcel__anchor__reference_a56c09233837e442733bb463d079ae709}{reference\+\_\+len}}
+\item 
+const uint8\+\_\+t \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structmcel__anchor__reference_a14754d3ac8258808a83eff38b6dcc44a}{chain\+\_\+id}}
+\item 
+const uint8\+\_\+t \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structmcel__anchor__reference_accfe5fc650a9d41d31a931a4d91d4254}{reference}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The MCEL anchor reference container. 
+
+This structure describes an external witness reference (e.\+g. chain id and transaction id). The {\ttfamily chain\+\_\+id} and {\ttfamily reference} fields point to caller-\/owned memory. 
+
+\label{doc-variable-members}
+\Hypertarget{structmcel__anchor__reference_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{structmcel__anchor__reference_a14754d3ac8258808a83eff38b6dcc44a}\index{mcel\_anchor\_reference@{mcel\_anchor\_reference}!chain\_id@{chain\_id}}
+\index{chain\_id@{chain\_id}!mcel\_anchor\_reference@{mcel\_anchor\_reference}}
+\doxysubsubsection{\texorpdfstring{chain\_id}{chain\_id}}
+{\footnotesize\ttfamily \label{structmcel__anchor__reference_a14754d3ac8258808a83eff38b6dcc44a} 
+const uint8\+\_\+t\texorpdfstring{$\ast$}{*} chain\+\_\+id}
+
+A pointer to the chain identifier bytes \Hypertarget{structmcel__anchor__reference_a02ef2d96c472e905fdc6dbf50df94772}\index{mcel\_anchor\_reference@{mcel\_anchor\_reference}!chain\_id\_len@{chain\_id\_len}}
+\index{chain\_id\_len@{chain\_id\_len}!mcel\_anchor\_reference@{mcel\_anchor\_reference}}
+\doxysubsubsection{\texorpdfstring{chain\_id\_len}{chain\_id\_len}}
+{\footnotesize\ttfamily \label{structmcel__anchor__reference_a02ef2d96c472e905fdc6dbf50df94772} 
+uint16\+\_\+t chain\+\_\+id\+\_\+len}
+
+The chain identifier length in bytes \Hypertarget{structmcel__anchor__reference_aa2585d779da0ab21273a8d92de9a0ebe}\index{mcel\_anchor\_reference@{mcel\_anchor\_reference}!flags@{flags}}
+\index{flags@{flags}!mcel\_anchor\_reference@{mcel\_anchor\_reference}}
+\doxysubsubsection{\texorpdfstring{flags}{flags}}
+{\footnotesize\ttfamily \label{structmcel__anchor__reference_aa2585d779da0ab21273a8d92de9a0ebe} 
+uint8\+\_\+t flags}
+
+Anchor reference flags (reserved for future use) \Hypertarget{structmcel__anchor__reference_accfe5fc650a9d41d31a931a4d91d4254}\index{mcel\_anchor\_reference@{mcel\_anchor\_reference}!reference@{reference}}
+\index{reference@{reference}!mcel\_anchor\_reference@{mcel\_anchor\_reference}}
+\doxysubsubsection{\texorpdfstring{reference}{reference}}
+{\footnotesize\ttfamily \label{structmcel__anchor__reference_accfe5fc650a9d41d31a931a4d91d4254} 
+const uint8\+\_\+t\texorpdfstring{$\ast$}{*} reference}
+
+A pointer to the reference bytes (txid, witness id, etc.) \Hypertarget{structmcel__anchor__reference_a56c09233837e442733bb463d079ae709}\index{mcel\_anchor\_reference@{mcel\_anchor\_reference}!reference\_len@{reference\_len}}
+\index{reference\_len@{reference\_len}!mcel\_anchor\_reference@{mcel\_anchor\_reference}}
+\doxysubsubsection{\texorpdfstring{reference\_len}{reference\_len}}
+{\footnotesize\ttfamily \label{structmcel__anchor__reference_a56c09233837e442733bb463d079ae709} 
+uint16\+\_\+t reference\+\_\+len}
+
+The reference length in bytes \Hypertarget{structmcel__anchor__reference_acb7bc06bed6f6408d719334fc41698c7}\index{mcel\_anchor\_reference@{mcel\_anchor\_reference}!reserved@{reserved}}
+\index{reserved@{reserved}!mcel\_anchor\_reference@{mcel\_anchor\_reference}}
+\doxysubsubsection{\texorpdfstring{reserved}{reserved}}
+{\footnotesize\ttfamily \label{structmcel__anchor__reference_acb7bc06bed6f6408d719334fc41698c7} 
+uint8\+\_\+t reserved}
+
+Reserved, must be 0 \Hypertarget{structmcel__anchor__reference_a1d127017fb298b889f4ba24752d08b8e}\index{mcel\_anchor\_reference@{mcel\_anchor\_reference}!type@{type}}
+\index{type@{type}!mcel\_anchor\_reference@{mcel\_anchor\_reference}}
+\doxysubsubsection{\texorpdfstring{type}{type}}
+{\footnotesize\ttfamily \label{structmcel__anchor__reference_a1d127017fb298b889f4ba24752d08b8e} 
+uint8\+\_\+t type}
+
+Anchor type identifier (application-\/defined) \Hypertarget{structmcel__anchor__reference_ab22abc2906422da61885ac6c8e6a1a59}\index{mcel\_anchor\_reference@{mcel\_anchor\_reference}!version@{version}}
+\index{version@{version}!mcel\_anchor\_reference@{mcel\_anchor\_reference}}
+\doxysubsubsection{\texorpdfstring{version}{version}}
+{\footnotesize\ttfamily \label{structmcel__anchor__reference_ab22abc2906422da61885ac6c8e6a1a59} 
+uint8\+\_\+t version}
+
+The anchor reference format version 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+MCEL/\+MCEL/\mbox{\hyperlink{anchor_8h}{anchor.\+h}}\end{DoxyCompactItemize}

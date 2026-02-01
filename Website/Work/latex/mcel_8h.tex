@@ -1,0 +1,1267 @@
+\doxysection{C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+MCEL/\+MCEL/mcel.h File Reference}
+\hypertarget{mcel_8h}{}\label{mcel_8h}\index{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/MCEL/MCEL/mcel.h@{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/MCEL/MCEL/mcel.h}}
+
+
+Merkle-\/\+Chained Evidence Ledger (MCEL)  
+
+
+{\ttfamily \#include "{}mcelcommon.\+h"{}}\newline
+{\ttfamily \#include "{}dilithium.\+h"{}}\newline
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structmcel__store__callbacks}{mcel\+\_\+store\+\_\+callbacks}}
+\begin{DoxyCompactList}\small\item\em The MCEL storage callback table. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}}
+\begin{DoxyCompactList}\small\item\em The MCEL block header structure. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmcel__checkpoint__audit__item}{mcel\+\_\+checkpoint\+\_\+audit\+\_\+item}}
+\begin{DoxyCompactList}\small\item\em The MCEL audit path item container. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}}
+\begin{DoxyCompactList}\small\item\em The MCEL checkpoint header structure. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}}
+\begin{DoxyCompactList}\small\item\em The MCEL ledger instance state. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmcel__policy}{mcel\+\_\+policy}}
+\begin{DoxyCompactList}\small\item\em The MCEL namespace policy container. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmcel__policy__context}{mcel\+\_\+policy\+\_\+context}}
+\begin{DoxyCompactList}\small\item\em The MCEL policy context (caller-\/maintained). \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}}
+\begin{DoxyCompactList}\small\item\em The MCEL record header structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{mcel_8h_a40860b7c91cae9ec169de6924f5ea3ef}\label{mcel_8h_a40860b7c91cae9ec169de6924f5ea3ef} 
+\#define {\bfseries MCEL\+\_\+\+CONFIG\+\_\+\+DILITHIUM}
+\begin{DoxyCompactList}\small\item\em The Dilithium MCEL parameter set. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_af19f7b63815abffdb80df114d7f3f0ef}\label{mcel_8h_af19f7b63815abffdb80df114d7f3f0ef} 
+\#define {\bfseries MCEL\+\_\+\+USE\+\_\+\+RCS\+\_\+\+ENCRYPTION}
+\begin{DoxyCompactList}\small\item\em If the RCS encryption option is chosen SKDP uses the more modern RCS stream cipher with KMAC/\+QMAC authentication. The default symmetric cipher/authenticator is AES-\/256/\+GCM (GMAC Counter Mode) NIST standardized per SP800-\/38a. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_ac4a012899a8caa550b5c65ab7cd853e6}\label{mcel_8h_ac4a012899a8caa550b5c65ab7cd853e6} 
+\#define {\bfseries MCEL\+\_\+\+ASYMMETRIC\+\_\+\+SIGNING\+\_\+\+KEY\+\_\+\+SIZE}~(QSC\+\_\+\+DILITHIUM\+\_\+\+PRIVATEKEY\+\_\+\+SIZE)
+\begin{DoxyCompactList}\small\item\em The byte size of the secret private-\/key array. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a691564765ce15ba77ba979af0224bf78}\label{mcel_8h_a691564765ce15ba77ba979af0224bf78} 
+\#define {\bfseries MCEL\+\_\+\+ASYMMETRIC\+\_\+\+VERIFY\+\_\+\+KEY\+\_\+\+SIZE}~(QSC\+\_\+\+DILITHIUM\+\_\+\+PUBLICKEY\+\_\+\+SIZE)
+\begin{DoxyCompactList}\small\item\em The byte size of the public-\/key array. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a08d286a4d45dd1d34e416b651a21364e}\label{mcel_8h_a08d286a4d45dd1d34e416b651a21364e} 
+\#define {\bfseries MCEL\+\_\+\+ASYMMETRIC\+\_\+\+SIGNATURE\+\_\+\+SIZE}~(QSC\+\_\+\+DILITHIUM\+\_\+\+SIGNATURE\+\_\+\+SIZE)
+\begin{DoxyCompactList}\small\item\em The byte size of the signature array. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a93ca65d432036dcf3d3180761e7854ae}\label{mcel_8h_a93ca65d432036dcf3d3180761e7854ae} 
+\#define {\bfseries mcel\+\_\+signature\+\_\+generate\+\_\+keypair}~qsc\+\_\+dilithium\+\_\+generate\+\_\+keypair
+\begin{DoxyCompactList}\small\item\em Generate an asymmetric signature key-\/pair. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a016e4f653c796853e54bc4c85fd2b0d5}\label{mcel_8h_a016e4f653c796853e54bc4c85fd2b0d5} 
+\#define {\bfseries mcel\+\_\+signature\+\_\+sign}~qsc\+\_\+dilithium\+\_\+sign
+\begin{DoxyCompactList}\small\item\em Sign a message with the asymmetric signature scheme. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a80ac9ceb19dcd3e3753345f4f559ce0f}\label{mcel_8h_a80ac9ceb19dcd3e3753345f4f559ce0f} 
+\#define {\bfseries mcel\+\_\+signature\+\_\+verify}~qsc\+\_\+dilithium\+\_\+verify
+\begin{DoxyCompactList}\small\item\em Verify a message with the asymmetric signature scheme. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6}\label{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6} 
+\#define {\bfseries MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}~32U
+\begin{DoxyCompactList}\small\item\em The MCEL 256-\/bit digest size in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a5436d9ceca817fb2a1662fc4dac1f36a}\label{mcel_8h_a5436d9ceca817fb2a1662fc4dac1f36a} 
+\#define {\bfseries MCEL\+\_\+\+BLOCK\+\_\+\+HEADER\+\_\+\+ENCODED\+\_\+\+SIZE}~62U
+\begin{DoxyCompactList}\small\item\em The canonical encoded block header size in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a8064649ef9a687f459ea8912e66e92e8}\label{mcel_8h_a8064649ef9a687f459ea8912e66e92e8} 
+\#define {\bfseries MCEL\+\_\+\+BLOCK\+\_\+\+ENCODED\+\_\+\+FIXED\+\_\+\+SIZE}~((size\+\_\+t)\mbox{\hyperlink{mcel_8h_a5436d9ceca817fb2a1662fc4dac1f36a}{MCEL\+\_\+\+BLOCK\+\_\+\+HEADER\+\_\+\+ENCODED\+\_\+\+SIZE}} + ((size\+\_\+t)\mbox{\hyperlink{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6}{MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}} \texorpdfstring{$\ast$}{*} 2U))
+\begin{DoxyCompactList}\small\item\em The fixed-\/size portion of an encoded MCEL block in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a65b436982d3e18a6af88863d210c0470}\label{mcel_8h_a65b436982d3e18a6af88863d210c0470} 
+\#define {\bfseries MCEL\+\_\+\+BLOCK\+\_\+\+KEYID\+\_\+\+SIZE}~32U
+\begin{DoxyCompactList}\small\item\em The MCEL block key identifier size in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_aa21ce2fc5746cdd6784b2961c94efece}\label{mcel_8h_aa21ce2fc5746cdd6784b2961c94efece} 
+\#define {\bfseries MCEL\+\_\+\+BLOCK\+\_\+\+VERSION}~1U
+\begin{DoxyCompactList}\small\item\em The MCEL version number. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a1a65409d9aed1537c910246b3e5d3c51}\label{mcel_8h_a1a65409d9aed1537c910246b3e5d3c51} 
+\#define {\bfseries MCEL\+\_\+\+CHECKPOINT\+\_\+\+HEADER\+\_\+\+ENCODED\+\_\+\+SIZE}~62U
+\begin{DoxyCompactList}\small\item\em The canonical encoded checkpoint header size in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_addd2a1e914012210599e3fe3988b8174}\label{mcel_8h_addd2a1e914012210599e3fe3988b8174} 
+\#define {\bfseries MCEL\+\_\+\+CHECKPOINT\+\_\+\+BUNDLE\+\_\+\+FIXED\+\_\+\+SIZE}~(\mbox{\hyperlink{mcel_8h_a1a65409d9aed1537c910246b3e5d3c51}{MCEL\+\_\+\+CHECKPOINT\+\_\+\+HEADER\+\_\+\+ENCODED\+\_\+\+SIZE}} + (\mbox{\hyperlink{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6}{MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}} \texorpdfstring{$\ast$}{*} 2U))
+\begin{DoxyCompactList}\small\item\em The fixed-\/size portion of an encoded MCEL checkpoint bundle in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a4acb304037d08e3c74e75f07579ecc46}\label{mcel_8h_a4acb304037d08e3c74e75f07579ecc46} 
+\#define {\bfseries MCEL\+\_\+\+CHECKPOINT\+\_\+\+BUNDLE\+\_\+\+ENCODED\+\_\+\+SIZE}~(\mbox{\hyperlink{mcel_8h_a08d286a4d45dd1d34e416b651a21364e}{MCEL\+\_\+\+ASYMMETRIC\+\_\+\+SIGNATURE\+\_\+\+SIZE}} + \mbox{\hyperlink{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6}{MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}} + \mbox{\hyperlink{mcel_8h_addd2a1e914012210599e3fe3988b8174}{MCEL\+\_\+\+CHECKPOINT\+\_\+\+BUNDLE\+\_\+\+FIXED\+\_\+\+SIZE}})
+\begin{DoxyCompactList}\small\item\em The encoded-\/size portion of an encoded MCEL checkpoint bundle in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a024045fdc2232c37fa03240f299dd9fc}\label{mcel_8h_a024045fdc2232c37fa03240f299dd9fc} 
+\#define {\bfseries MCEL\+\_\+\+CHECKPOINT\+\_\+\+KEYID\+\_\+\+SIZE}~32U
+\begin{DoxyCompactList}\small\item\em The checkpoint key identifier size in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a269a1286bd74dec5c7ee3a4842ad1abc}\label{mcel_8h_a269a1286bd74dec5c7ee3a4842ad1abc} 
+\#define {\bfseries MCEL\+\_\+\+CHECKPOINT\+\_\+\+SIGNED\+\_\+\+COMMIT\+\_\+\+SIZE}~(\mbox{\hyperlink{mcel_8h_a08d286a4d45dd1d34e416b651a21364e}{MCEL\+\_\+\+ASYMMETRIC\+\_\+\+SIGNATURE\+\_\+\+SIZE}} + \mbox{\hyperlink{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6}{MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}})
+\begin{DoxyCompactList}\small\item\em The size in bytes of a Dilithium signed checkpoint commitment message. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a39283395634cde53df6ff00f33e439bd}\label{mcel_8h_a39283395634cde53df6ff00f33e439bd} 
+\#define {\bfseries MCEL\+\_\+\+CHECKPOINT\+\_\+\+VERSION}~1U
+\begin{DoxyCompactList}\small\item\em The MCEL checkpoint format version. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_accbe2c3c63f21f6bd03a6febb3c8cb22}\label{mcel_8h_accbe2c3c63f21f6bd03a6febb3c8cb22} 
+\#define {\bfseries MCEL\+\_\+\+KEYROTATE\+\_\+\+PAYLOAD\+\_\+\+VERSION}~0x01U
+\begin{DoxyCompactList}\small\item\em The key rotation payload format version. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a64e6562cfd0e48c4f9e8b03dae7f7874}\label{mcel_8h_a64e6562cfd0e48c4f9e8b03dae7f7874} 
+\#define {\bfseries MCEL\+\_\+\+KEYROTATE\+\_\+\+PAYLOAD\+\_\+\+FIXED\+\_\+\+SIZE}~(1U + 1U + (uint32\+\_\+t)\mbox{\hyperlink{mcel_8h_a024045fdc2232c37fa03240f299dd9fc}{MCEL\+\_\+\+CHECKPOINT\+\_\+\+KEYID\+\_\+\+SIZE}} + 2U)
+\begin{DoxyCompactList}\small\item\em The fixed-\/size portion of the key rotation payload in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a32f76c39d046df5247af12afe74f3386}\label{mcel_8h_a32f76c39d046df5247af12afe74f3386} 
+\#define {\bfseries MCEL\+\_\+\+KEYROTATE\+\_\+\+PAYLOAD\+\_\+\+KEY\+\_\+\+SIZE}~(\mbox{\hyperlink{mcel_8h_a64e6562cfd0e48c4f9e8b03dae7f7874}{MCEL\+\_\+\+KEYROTATE\+\_\+\+PAYLOAD\+\_\+\+FIXED\+\_\+\+SIZE}} + \mbox{\hyperlink{mcel_8h_a691564765ce15ba77ba979af0224bf78}{MCEL\+\_\+\+ASYMMETRIC\+\_\+\+VERIFY\+\_\+\+KEY\+\_\+\+SIZE}})
+\begin{DoxyCompactList}\small\item\em The rotation payload and signature verification key size. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a2726f8172097d7b4a82c90ff2d96722c}\label{mcel_8h_a2726f8172097d7b4a82c90ff2d96722c} 
+\#define {\bfseries MCEL\+\_\+\+LEDGER\+\_\+\+NAMESPACE\+\_\+\+ID\+\_\+\+MAX}~64U
+\begin{DoxyCompactList}\small\item\em The maximum namespace identifier size in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a3c43c4dc0014c0c12bc88c0ceb5aad25}\label{mcel_8h_a3c43c4dc0014c0c12bc88c0ceb5aad25} 
+\#define {\bfseries MCEL\+\_\+\+PAYLOAD\+\_\+\+MAX\+\_\+\+SIZE}~0x\+FFFFFFFFUL
+\begin{DoxyCompactList}\small\item\em The maximum supported payload length in bytes (0 for unlimited). \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a0228703e72a461d2f3d33fc23344f9ad}\label{mcel_8h_a0228703e72a461d2f3d33fc23344f9ad} 
+\#define {\bfseries MCEL\+\_\+\+RCS256\+\_\+\+KEY\+\_\+\+SIZE}~32U
+\begin{DoxyCompactList}\small\item\em The size in bytes of the RCS-\/256 cipher key. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a06e43e969cd3c9f5df0ed7032ec77829}\label{mcel_8h_a06e43e969cd3c9f5df0ed7032ec77829} 
+\#define {\bfseries MCEL\+\_\+\+RCS256\+\_\+\+MAC\+\_\+\+SIZE}~32U
+\begin{DoxyCompactList}\small\item\em The size in bytes of the RCS-\/256 authentication tag. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a919e0fd832492685d5a229827ee40699}\label{mcel_8h_a919e0fd832492685d5a229827ee40699} 
+\#define {\bfseries MCEL\+\_\+\+RCS\+\_\+\+NONCE\+\_\+\+SIZE}~32U
+\begin{DoxyCompactList}\small\item\em The size in bytes of the RCS nonce. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a81f94c87c5150760d3f29d338fc19a17}\label{mcel_8h_a81f94c87c5150760d3f29d338fc19a17} 
+\#define {\bfseries MCEL\+\_\+\+RCS\+\_\+\+INFO\+\_\+\+SIZE}~48U
+\begin{DoxyCompactList}\small\item\em The maximum size in bytes of the RCS info string. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_af87fd8999edfea97a2144fe170ab3cb6}\label{mcel_8h_af87fd8999edfea97a2144fe170ab3cb6} 
+\#define {\bfseries MCEL\+\_\+\+RECORD\+\_\+\+FLAG\+\_\+\+ENCRYPTED}~0x01U
+\begin{DoxyCompactList}\small\item\em The record payload is encrypted (ciphertext) rather than plaintext. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a70fae8007dde2d96eff388a0c03f88d9}\label{mcel_8h_a70fae8007dde2d96eff388a0c03f88d9} 
+\#define {\bfseries MCEL\+\_\+\+RECORD\+\_\+\+VERSION}~1U
+\begin{DoxyCompactList}\small\item\em The MCEL record format version. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_aa5adfd810003d5d1081ab036da4bbed7}\label{mcel_8h_aa5adfd810003d5d1081ab036da4bbed7} 
+\#define {\bfseries MCEL\+\_\+\+RECORD\+\_\+\+KEYID\+\_\+\+SIZE}~32U
+\begin{DoxyCompactList}\small\item\em The record signer or policy key identifier size in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a8bd73337b6c24235b43e2dc4203b8715}\label{mcel_8h_a8bd73337b6c24235b43e2dc4203b8715} 
+\#define {\bfseries MCEL\+\_\+\+RECORD\+\_\+\+HEADER\+\_\+\+ENCODED\+\_\+\+SIZE}~58U
+\begin{DoxyCompactList}\small\item\em The canonical encoded record header size in bytes. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_abf3936efad635cad3b4d0912a5679ee3}\label{mcel_8h_abf3936efad635cad3b4d0912a5679ee3} 
+\#define {\bfseries MCEL\+\_\+\+RECORD\+\_\+\+TYPE\+\_\+\+KEYROTATE}~0x3U
+\begin{DoxyCompactList}\small\item\em The record type code for a key rotation control record. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a59e219284e98209f1d43868d637c49f3}\label{mcel_8h_a59e219284e98209f1d43868d637c49f3} 
+\#define {\bfseries MCEL\+\_\+\+SIGNED\+\_\+\+HASH\+\_\+\+SIZE}~(\mbox{\hyperlink{mcel_8h_a08d286a4d45dd1d34e416b651a21364e}{MCEL\+\_\+\+ASYMMETRIC\+\_\+\+SIGNATURE\+\_\+\+SIZE}} + \mbox{\hyperlink{mcel_8h_ac9405fb84f7d7bec78fbbf96ca9b42f6}{MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}})
+\begin{DoxyCompactList}\small\item\em The byte size of the signed message. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a96384e38193c0b38a06f5cd302c8e707}\label{mcel_8h_a96384e38193c0b38a06f5cd302c8e707} 
+\#define {\bfseries MCEL\+\_\+\+STORE\+\_\+\+LOC\+\_\+\+BLOCKS}~"{}mcel/blocks"{}
+\begin{DoxyCompactList}\small\item\em The logical storage location used to write serialized sealed blocks. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_ac450d1dff10dd88c509d0cb6c5f87a2c}\label{mcel_8h_ac450d1dff10dd88c509d0cb6c5f87a2c} 
+\#define {\bfseries MCEL\+\_\+\+STORE\+\_\+\+LOC\+\_\+\+CHECKPOINTS}~"{}mcel/checkpoints"{}
+\begin{DoxyCompactList}\small\item\em The logical storage location used to append serialized checkpoint bundles. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a64adfaa2ad11ded3c245b751ca980581}\label{mcel_8h_a64adfaa2ad11ded3c245b751ca980581} 
+\#define {\bfseries MCEL\+\_\+\+STORE\+\_\+\+LOC\+\_\+\+HEAD}~"{}mcel/head"{}
+\begin{DoxyCompactList}\small\item\em The logical storage location used to store the current checkpoint head bundle. \end{DoxyCompactList}\item 
+\Hypertarget{mcel_8h_a75cf5fa88414cc5d4f11b9502ccfe3d7}\label{mcel_8h_a75cf5fa88414cc5d4f11b9502ccfe3d7} 
+\#define {\bfseries MCEL\+\_\+\+STORE\+\_\+\+LOC\+\_\+\+RECORDS}~"{}mcel/records"{}
+\begin{DoxyCompactList}\small\item\em The logical storage location used to append serialized records. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{mcel_8h_a871305ebb36d1ba3d3e38fa4227e009b}\label{mcel_8h_a871305ebb36d1ba3d3e38fa4227e009b} 
+typedef MCEL\+\_\+\+EXPORT\+\_\+\+API struct mcel\+\_\+store\+\_\+callbacks {\bfseries mcel\+\_\+store\+\_\+callbacks}
+\item 
+\Hypertarget{mcel_8h_a4d9fb723ad1606abd1655f6fa30deec4}\label{mcel_8h_a4d9fb723ad1606abd1655f6fa30deec4} 
+typedef MCEL\+\_\+\+EXPORT\+\_\+\+API struct mcel\+\_\+block\+\_\+header {\bfseries mcel\+\_\+block\+\_\+header}
+\item 
+\Hypertarget{mcel_8h_a52958b55c04efc31292de3f4fd3c9301}\label{mcel_8h_a52958b55c04efc31292de3f4fd3c9301} 
+typedef MCEL\+\_\+\+EXPORT\+\_\+\+API struct mcel\+\_\+checkpoint\+\_\+audit\+\_\+item {\bfseries mcel\+\_\+checkpoint\+\_\+audit\+\_\+item}
+\item 
+\Hypertarget{mcel_8h_a2dfdd300768378604f379b60bc64327a}\label{mcel_8h_a2dfdd300768378604f379b60bc64327a} 
+typedef MCEL\+\_\+\+EXPORT\+\_\+\+API struct mcel\+\_\+checkpoint\+\_\+header {\bfseries mcel\+\_\+checkpoint\+\_\+header}
+\item 
+\Hypertarget{mcel_8h_ad66fb7d5e4328a0989dfe495e6254b3d}\label{mcel_8h_ad66fb7d5e4328a0989dfe495e6254b3d} 
+typedef MCEL\+\_\+\+EXPORT\+\_\+\+API struct mcel\+\_\+ledger\+\_\+state {\bfseries mcel\+\_\+ledger\+\_\+state}
+\item 
+\Hypertarget{mcel_8h_ae85560f268abef182abeec1113da8c10}\label{mcel_8h_ae85560f268abef182abeec1113da8c10} 
+typedef MCEL\+\_\+\+EXPORT\+\_\+\+API struct mcel\+\_\+policy {\bfseries mcel\+\_\+policy}
+\item 
+\Hypertarget{mcel_8h_a93d6736d9dc8672037283a9d5e183823}\label{mcel_8h_a93d6736d9dc8672037283a9d5e183823} 
+typedef MCEL\+\_\+\+EXPORT\+\_\+\+API struct mcel\+\_\+policy\+\_\+context {\bfseries mcel\+\_\+policy\+\_\+context}
+\item 
+\Hypertarget{mcel_8h_acc1e4f1b0bb94821a63588d7cdad9529}\label{mcel_8h_acc1e4f1b0bb94821a63588d7cdad9529} 
+typedef MCEL\+\_\+\+EXPORT\+\_\+\+API struct mcel\+\_\+record\+\_\+header {\bfseries mcel\+\_\+record\+\_\+header}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7b}{mcel\+\_\+record\+\_\+types}} \{ \newline
+\mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7babd02839e3ffefb54cee8222791fe0ff6}{mcel\+\_\+record\+\_\+type\+\_\+none}} = 0U
+, \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7ba327f07404d393f3c780ab41c295b9e62}{mcel\+\_\+record\+\_\+type\+\_\+checkpoint}} = 1U
+, \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7bacddd9ceb05b8a6fd32c32d67b6fa95a5}{mcel\+\_\+record\+\_\+type\+\_\+event}} = 2U
+, \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7bad15ef2ccfc403a49e2abe0908fd8488d}{mcel\+\_\+record\+\_\+type\+\_\+key\+\_\+rotate}} = 3U
+, \newline
+\mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7ba7d0621c70e27a57d478e42b8d62ae046}{mcel\+\_\+record\+\_\+type\+\_\+policy}} = 4U
+ \}
+\begin{DoxyCompactList}\small\item\em The MCEL record type identifiers. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610}{mcel\+\_\+policy\+\_\+ops}} \{ \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610a295ee491f58614150dde5d3d761d1614}{mcel\+\_\+policyop\+\_\+append\+\_\+record}} = 1U
+, \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610ae8db0eef926e8d18492642ee6088c7e4}{mcel\+\_\+policyop\+\_\+seal\+\_\+checkpoint}} = 2U
+ \}
+\begin{DoxyCompactList}\small\item\em The MCEL policy operation identifiers. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e}{mcel\+\_\+policy\+\_\+errors}} \{ \newline
+\mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9eab0c90b32221fddb8617ce4ca7a837a20}{mcel\+\_\+policyerr\+\_\+none}} = 0U
+, \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea031de56d05e3da5056c4f2c5591c3562}{mcel\+\_\+policyerr\+\_\+invalid\+\_\+parameter}} = 1U
+, \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea06f5a170b4fda1edfbd93b023c40404a}{mcel\+\_\+policyerr\+\_\+record\+\_\+type\+\_\+denied}} = 2U
+, \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9eac3e58b933b2cfba1771ed2d7b68723cc}{mcel\+\_\+policyerr\+\_\+payload\+\_\+too\+\_\+large}} = 3U
+, \newline
+\mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea8d36e1b3b3f6c0f852c578dda930cb6a}{mcel\+\_\+policyerr\+\_\+plaintext\+\_\+denied}} = 4U
+, \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea3da191f1e45e87eeb8deacbc8c7c2543}{mcel\+\_\+policyerr\+\_\+sequence\+\_\+invalid}} = 5U
+, \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea80ac01087b97d9116b3ace9a95908905}{mcel\+\_\+policyerr\+\_\+timestamp\+\_\+invalid}} = 6U
+, \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea2d6d1df7b4bf8124171b745fddc86281}{mcel\+\_\+policyerr\+\_\+keyid\+\_\+mismatch}} = 7U
+ \}
+\begin{DoxyCompactList}\small\item\em The MCEL policy error values. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_ace338659c40f9b042f98aeddf4a90474}{mcel\+\_\+block\+\_\+commit}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkroot)
+\begin{DoxyCompactList}\small\item\em Compute a MCEL block commitment from a block header and Merkle root. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a03e9a8e8f626275aec548aff1425f3b7}{mcel\+\_\+block\+\_\+encode}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, size\+\_\+t outlen, const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkroot, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkcommit, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}reccommits, size\+\_\+t reccount)
+\begin{DoxyCompactList}\small\item\em Serialize a sealed MCEL block into a canonical byte string. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t \mbox{\hyperlink{mcel_8h_a35cc5f26d03641721544884838717237}{mcel\+\_\+block\+\_\+encoded\+\_\+size}} (size\+\_\+t reccount)
+\begin{DoxyCompactList}\small\item\em Get the required buffer size for an encoded MCEL block. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a9323ac8a6cebf82271b39a77665d73d7}{mcel\+\_\+block\+\_\+encode\+\_\+header}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}header)
+\begin{DoxyCompactList}\small\item\em Encode a MCEL block header using canonical fixed-\/size encoding. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a136337c9de9461ce88899ada613d6722}{mcel\+\_\+block\+\_\+seal}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkroot, uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkcommit, const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}reccommits, size\+\_\+t reccount)
+\begin{DoxyCompactList}\small\item\em Seal a MCEL block by computing the Merkle root and block commitment. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_aad00bb76443be40b3e8a4acbef59cbaf}{mcel\+\_\+checkpoint\+\_\+audit\+\_\+path\+\_\+verify}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}outheadcommit, const \mbox{\hyperlink{structmcel__checkpoint__audit__item}{mcel\+\_\+checkpoint\+\_\+audit\+\_\+item}} \texorpdfstring{$\ast$}{*}items, size\+\_\+t itemcount, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}publickey)
+\begin{DoxyCompactList}\small\item\em Verify an ordered audit path of MCEL checkpoint bundles. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a9040a1f2a044d09766698a2239bc8376}{mcel\+\_\+checkpoint\+\_\+bundle\+\_\+encode}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, size\+\_\+t outlen, const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkroot, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}prevcommit, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}sigcommit, size\+\_\+t siglen)
+\begin{DoxyCompactList}\small\item\em Serialize a MCEL checkpoint bundle into a canonical byte string. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t \mbox{\hyperlink{mcel_8h_aba58ad107e387ae3a3c1b00e4db56839}{mcel\+\_\+checkpoint\+\_\+bundle\+\_\+encoded\+\_\+size}} (size\+\_\+t siglen)
+\begin{DoxyCompactList}\small\item\em Get the required buffer size for an encoded MCEL checkpoint bundle. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_ae20d139a9c9af05601b737d6fb56ae12}{mcel\+\_\+checkpoint\+\_\+bundle\+\_\+verify}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}chkcommit, \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}header, uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkroot, uint8\+\_\+t \texorpdfstring{$\ast$}{*}prevcommit, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}bundle, size\+\_\+t bundlelen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}publickey)
+\begin{DoxyCompactList}\small\item\em Verify a serialized MCEL checkpoint bundle. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a76672ab9e13d4e95d9d4af2e57ce15b6}{mcel\+\_\+checkpoint\+\_\+chain\+\_\+link\+\_\+verify}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}prevcommit, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}curprevcommit, const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}prevhdr, const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}curhdr)
+\begin{DoxyCompactList}\small\item\em Verify the chain linkage between two verified checkpoints. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_acb1812e25a1ee1ae0d7ed5e4b7e2042b}{mcel\+\_\+checkpoint\+\_\+commit}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkroot, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}pldcommit)
+\begin{DoxyCompactList}\small\item\em Compute a MCEL checkpoint commitment from a checkpoint header, block root, and previous checkpoint commitment. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_aeb24695d99b8078bd7255cf0ac4fdd34}{mcel\+\_\+checkpoint\+\_\+consistency\+\_\+verify}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}firstroot, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}secondroot, size\+\_\+t first, size\+\_\+t second, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}proof, size\+\_\+t prooflen)
+\begin{DoxyCompactList}\small\item\em Verify a MCEL Merkle consistency proof between two tree roots. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_af85d262111f2a7b438ebdf466c5df220}{mcel\+\_\+checkpoint\+\_\+decode\+\_\+header}} (\mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}input)
+\begin{DoxyCompactList}\small\item\em Decode a MCEL checkpoint header from its canonical encoding. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_ad0b2b570bfd9e566595ee56cf9c36a74}{mcel\+\_\+checkpoint\+\_\+encode\+\_\+header}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}header)
+\begin{DoxyCompactList}\small\item\em Encode a MCEL checkpoint header using canonical fixed-\/size encoding. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a15eede056326682057bd29e57608337a}{mcel\+\_\+checkpoint\+\_\+prove\+\_\+consistency}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}proof, size\+\_\+t prooflen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}leaves, size\+\_\+t oldcount, size\+\_\+t newcount)
+\begin{DoxyCompactList}\small\item\em Generate a MCEL Merkle consistency proof between two tree sizes. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_afcbbe5a7de2035b4da4b0a7c47e8efb6}{mcel\+\_\+checkpoint\+\_\+seal}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}chkcommit, uint8\+\_\+t \texorpdfstring{$\ast$}{*}sigcommit, size\+\_\+t \texorpdfstring{$\ast$}{*}siglen, const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkroot, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}prevcommit, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}privatekey, bool(\texorpdfstring{$\ast$}{*}rng\+\_\+generate)(uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t))
+\begin{DoxyCompactList}\small\item\em Seal a MCEL checkpoint from a sealed block by generating the checkpoint commitment and signing it. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a93476dabbe064d6397dca517e7397c55}{mcel\+\_\+checkpoint\+\_\+sign}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}sigcommit, size\+\_\+t \texorpdfstring{$\ast$}{*}siglen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}chkcommit, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}privatekey, bool(\texorpdfstring{$\ast$}{*}rng\+\_\+generate)(uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t))
+\begin{DoxyCompactList}\small\item\em Sign a MCEL checkpoint commitment using Dilithium. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a700716c02ab98d9e14399a7464b0a16c}{mcel\+\_\+checkpoint\+\_\+verify}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}chkcommit, size\+\_\+t \texorpdfstring{$\ast$}{*}commitlen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}sigcommit, size\+\_\+t siglen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}publickey)
+\begin{DoxyCompactList}\small\item\em Verify a MCEL signed checkpoint commitment using Dilithium. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t \mbox{\hyperlink{mcel_8h_a6c318ce0a5c544da8f734cea6badc55a}{mcel\+\_\+keyrotate\+\_\+payload\+\_\+size}} (size\+\_\+t pubkeylen)
+\begin{DoxyCompactList}\small\item\em Get the required buffer size for a key rotation record payload. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t \mbox{\hyperlink{mcel_8h_a5fada3f40e3fa241ce775ab09eb21fb4}{mcel\+\_\+keyrotate\+\_\+record\+\_\+create}} (\mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}header, uint8\+\_\+t \texorpdfstring{$\ast$}{*}payload, size\+\_\+t payload\+\_\+len, uint64\+\_\+t sequence, uint8\+\_\+t flags, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}newkeyid, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}newpubkey, size\+\_\+t pubkeylen)
+\begin{DoxyCompactList}\small\item\em Create a key rotation record header and payload. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_ac080cd7b227e4046cd1a156fe1607e7e}{mcel\+\_\+ledger\+\_\+append\+\_\+record}} (\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}state, uint8\+\_\+t \texorpdfstring{$\ast$}{*}reccommit, uint64\+\_\+t \texorpdfstring{$\ast$}{*}outpos, const \mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}payload, size\+\_\+t paylen)
+\begin{DoxyCompactList}\small\item\em Append a record to the ledger record log and return its commitment. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a2bb9069b664f9234093c2c4da85bfba8}{mcel\+\_\+ledger\+\_\+get\+\_\+checkpoint\+\_\+head}} (\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}state, uint8\+\_\+t \texorpdfstring{$\ast$}{*}head\+\_\+commit, \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}head\+\_\+header)
+\begin{DoxyCompactList}\small\item\em Get the current checkpoint head from the ledger state. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a5a4535c957a80a9d492ace24e1418e4a}{mcel\+\_\+ledger\+\_\+initialize}} (\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}state, const \mbox{\hyperlink{structmcel__store__callbacks}{mcel\+\_\+store\+\_\+callbacks}} \texorpdfstring{$\ast$}{*}store, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}nsid, size\+\_\+t nsidlen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}publickey, uint8\+\_\+t \texorpdfstring{$\ast$}{*}headbuf, size\+\_\+t headbuflen)
+\begin{DoxyCompactList}\small\item\em Initialize (open) a MCEL ledger namespace and load the checkpoint head if present. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a4d55927755cf20bd6e81e3a96665e32b}{mcel\+\_\+ledger\+\_\+seal\+\_\+block}} (\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}state, uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkroot, uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkcommit, const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}reccommits, size\+\_\+t reccount, uint8\+\_\+t \texorpdfstring{$\ast$}{*}blockbuf, size\+\_\+t blockbuflen, uint64\+\_\+t \texorpdfstring{$\ast$}{*}outpos)
+\begin{DoxyCompactList}\small\item\em Seal a block from record commitments and write the sealed block through the storage callbacks. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_adf8be4e9fb8cf7e60779a1014d3a95f8}{mcel\+\_\+ledger\+\_\+seal\+\_\+checkpoint}} (\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}state, uint8\+\_\+t \texorpdfstring{$\ast$}{*}chkcommit, const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}blkroot, const void \texorpdfstring{$\ast$}{*}sigkey, uint8\+\_\+t \texorpdfstring{$\ast$}{*}bundlebuf, size\+\_\+t bundlebuflen, uint64\+\_\+t \texorpdfstring{$\ast$}{*}outpos)
+\begin{DoxyCompactList}\small\item\em Seal a checkpoint from a sealed block root and update the ledger head. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_af4929012727eee9fcfbdbd1a4f09b458}{mcel\+\_\+ledger\+\_\+verify\+\_\+integrity}} (\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}state, uint8\+\_\+t \texorpdfstring{$\ast$}{*}headbuf, size\+\_\+t headbuflen, const \mbox{\hyperlink{structmcel__checkpoint__audit__item}{mcel\+\_\+checkpoint\+\_\+audit\+\_\+item}} \texorpdfstring{$\ast$}{*}audit, size\+\_\+t auditcount)
+\begin{DoxyCompactList}\small\item\em Verify the cryptographic integrity of the ledger state. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a4d74bfeb2d01974b4e5719c18424065d}{mcel\+\_\+payload\+\_\+commit}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, bool encrypted, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}payload, size\+\_\+t paylen)
+\begin{DoxyCompactList}\small\item\em Compute a MCEL payload commitment. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a75e195435d38340e060033ed27e67e86}{mcel\+\_\+policy\+\_\+apply}} (\mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e}{mcel\+\_\+policy\+\_\+errors}} \texorpdfstring{$\ast$}{*}perr, const \mbox{\hyperlink{structmcel__policy}{mcel\+\_\+policy}} \texorpdfstring{$\ast$}{*}policy, const \mbox{\hyperlink{structmcel__policy__context}{mcel\+\_\+policy\+\_\+context}} \texorpdfstring{$\ast$}{*}state, \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610}{mcel\+\_\+policy\+\_\+ops}} op, const \mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}recordhdr, const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}checkpointhdr)
+\begin{DoxyCompactList}\small\item\em Apply namespace policy rules to a MCEL operation. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a1a418167b44af97cdc49e363fbe2af4e}{mcel\+\_\+record\+\_\+decrypt\+\_\+payload}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, size\+\_\+t outlen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}ciphertext, size\+\_\+t ctlen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}ad, size\+\_\+t adlen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}key, uint8\+\_\+t \texorpdfstring{$\ast$}{*}nonce)
+\begin{DoxyCompactList}\small\item\em Decrypt a record payload using the AEAD cipher. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API void \mbox{\hyperlink{mcel_8h_a889867bf280df212732ecf0b7c335de8}{mcel\+\_\+record\+\_\+encrypt\+\_\+payload}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, size\+\_\+t outlen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext, size\+\_\+t ptlen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}ad, size\+\_\+t adlen, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}key, uint8\+\_\+t \texorpdfstring{$\ast$}{*}nonce)
+\begin{DoxyCompactList}\small\item\em Encrypt a record payload using the AEAD cipher. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_ab67de33df14d90ba121a78167562bd8d}{mcel\+\_\+record\+\_\+encode\+\_\+header}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, const \mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}header)
+\begin{DoxyCompactList}\small\item\em Encode a MCEL record header using canonical fixed-\/size encoding. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a4cf8ea9f0786cc52e5be6d0e0c04f1fa}{mcel\+\_\+record\+\_\+commit}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, const \mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}header, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}pldcommit)
+\begin{DoxyCompactList}\small\item\em Compute a MCEL record commitment from a record header and payload commitment. \end{DoxyCompactList}\item 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{mcel_8h_a4f290c14e37280cca3d428167b2bb1b5}{mcel\+\_\+store\+\_\+callbacks\+\_\+initialize}} (\mbox{\hyperlink{structmcel__store__callbacks}{mcel\+\_\+store\+\_\+callbacks}} \texorpdfstring{$\ast$}{*}output, const \mbox{\hyperlink{structmcel__store__callbacks}{mcel\+\_\+store\+\_\+callbacks}} \texorpdfstring{$\ast$}{*}input, void \texorpdfstring{$\ast$}{*}context)
+\begin{DoxyCompactList}\small\item\em Initialize and validate the MCEL storage callback table. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{mcel_8h_a7197966ca9bdaf9282a011c648915d01}\label{mcel_8h_a7197966ca9bdaf9282a011c648915d01} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API enum \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7b}{mcel\+\_\+record\+\_\+types}} {\bfseries mcel\+\_\+record\+\_\+types}
+\item 
+\Hypertarget{mcel_8h_a74dd709fb6d6fcb66a899b1a78e999c0}\label{mcel_8h_a74dd709fb6d6fcb66a899b1a78e999c0} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API enum \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610}{mcel\+\_\+policy\+\_\+ops}} {\bfseries mcel\+\_\+policy\+\_\+ops}
+\item 
+\Hypertarget{mcel_8h_a6e39ab5aacbe9d6e86c58cb40e160655}\label{mcel_8h_a6e39ab5aacbe9d6e86c58cb40e160655} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API enum \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e}{mcel\+\_\+policy\+\_\+errors}} {\bfseries mcel\+\_\+policy\+\_\+errors}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Merkle-\/\+Chained Evidence Ledger (MCEL) 
+
+DOXYGEN\+\_\+\+IGNORE
+
+This header defines the public API for the MCEL evidence ledger subsystem. The ledger implements a local, append only, cryptographically verifiable logging structure intended for audit, non-\/repudiation, and regulatory evidence purposes.
+
+The MCEL ledger is designed as a foundational substrate for higher-\/level systems, including secure financial messaging, asset transfer workflows, and globally anchored provenance systems. It is not a consensus blockchain and does not perform settlement, balance tracking, or global ordering.
+
+Core properties provided by this API include\+:
+\begin{DoxyItemize}
+\item Append only record storage with hash chaining
+\item Deterministic record commitments using Keccak-\/based hashing
+\item Cryptographic signatures over records and checkpoints using UDIF keys
+\item Merkle tree batching and checkpointing for scalable audit
+\item Inclusion proofs for selective disclosure and sampled verification
+\item External anchoring references for third-\/party attestation
+\item Explicit epoch management for key rotation and administrative resets
+\end{DoxyItemize}
+
+Records stored in the ledger are opaque to the ledger itself. The ledger does not interpret message semantics, payload formats, or application-\/level meaning. Its sole responsibility is to provide verifiable evidence of existence, ordering, and authorization.
+
+Typical usage flow\+:
+\begin{DoxyEnumerate}
+\item Initialize a ledger instance with a stable ledger identifier, epoch, signing key, and append-\/only storage backend.
+\item Append records representing messages, acknowledgments, or administrative actions, each producing a signed record commitment.
+\item Periodically batch records into checkpoints, producing signed Merkle roots that summarize ledger state over a sequence range.
+\item Optionally anchor checkpoint commitments to an external witness system.
+\item Provide inclusion proofs and checkpoint artifacts to auditors, counterparties, or regulators as required.
+\end{DoxyEnumerate}
+
+All cryptographic operations are domain separated and deterministic. Verification of records and checkpoints can be performed independently by third parties without access to private keys or plaintext payloads.
+
+This API is intended to be stable and forward compatible. Extensions such as global provenance pillars, cross-\/ledger anchoring, or asset-\/level semantics can be layered above this interface without breaking existing evidence guarantees. 
+
+\label{doc-enum-members}
+\Hypertarget{mcel_8h_doc-enum-members}
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e}\index{mcel.h@{mcel.h}!mcel\_policy\_errors@{mcel\_policy\_errors}}
+\index{mcel\_policy\_errors@{mcel\_policy\_errors}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_policy\_errors}{mcel\_policy\_errors}}
+{\footnotesize\ttfamily \label{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e} 
+enum \mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e}{mcel\+\_\+policy\+\_\+errors}}}
+
+
+
+The MCEL policy error values. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyerr\_none@{mcel\_policyerr\_none}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyerr\_none@{mcel\_policyerr\_none}}}\Hypertarget{mcel_8h_a9317942e283f1795dc44dc86ba97ee9eab0c90b32221fddb8617ce4ca7a837a20}\label{mcel_8h_a9317942e283f1795dc44dc86ba97ee9eab0c90b32221fddb8617ce4ca7a837a20} 
+mcel\+\_\+policyerr\+\_\+none&No policy error is set \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyerr\_invalid\_parameter@{mcel\_policyerr\_invalid\_parameter}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyerr\_invalid\_parameter@{mcel\_policyerr\_invalid\_parameter}}}\Hypertarget{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea031de56d05e3da5056c4f2c5591c3562}\label{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea031de56d05e3da5056c4f2c5591c3562} 
+mcel\+\_\+policyerr\+\_\+invalid\+\_\+parameter&Policy error invalid parameter \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyerr\_record\_type\_denied@{mcel\_policyerr\_record\_type\_denied}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyerr\_record\_type\_denied@{mcel\_policyerr\_record\_type\_denied}}}\Hypertarget{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea06f5a170b4fda1edfbd93b023c40404a}\label{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea06f5a170b4fda1edfbd93b023c40404a} 
+mcel\+\_\+policyerr\+\_\+record\+\_\+type\+\_\+denied&Policy error record type denied \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyerr\_payload\_too\_large@{mcel\_policyerr\_payload\_too\_large}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyerr\_payload\_too\_large@{mcel\_policyerr\_payload\_too\_large}}}\Hypertarget{mcel_8h_a9317942e283f1795dc44dc86ba97ee9eac3e58b933b2cfba1771ed2d7b68723cc}\label{mcel_8h_a9317942e283f1795dc44dc86ba97ee9eac3e58b933b2cfba1771ed2d7b68723cc} 
+mcel\+\_\+policyerr\+\_\+payload\+\_\+too\+\_\+large&Policy error payload too large \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyerr\_plaintext\_denied@{mcel\_policyerr\_plaintext\_denied}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyerr\_plaintext\_denied@{mcel\_policyerr\_plaintext\_denied}}}\Hypertarget{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea8d36e1b3b3f6c0f852c578dda930cb6a}\label{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea8d36e1b3b3f6c0f852c578dda930cb6a} 
+mcel\+\_\+policyerr\+\_\+plaintext\+\_\+denied&Policy error plaintext denied \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyerr\_sequence\_invalid@{mcel\_policyerr\_sequence\_invalid}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyerr\_sequence\_invalid@{mcel\_policyerr\_sequence\_invalid}}}\Hypertarget{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea3da191f1e45e87eeb8deacbc8c7c2543}\label{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea3da191f1e45e87eeb8deacbc8c7c2543} 
+mcel\+\_\+policyerr\+\_\+sequence\+\_\+invalid&Policy error sequence invalid \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyerr\_timestamp\_invalid@{mcel\_policyerr\_timestamp\_invalid}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyerr\_timestamp\_invalid@{mcel\_policyerr\_timestamp\_invalid}}}\Hypertarget{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea80ac01087b97d9116b3ace9a95908905}\label{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea80ac01087b97d9116b3ace9a95908905} 
+mcel\+\_\+policyerr\+\_\+timestamp\+\_\+invalid&Policy error timestampinvalid \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyerr\_keyid\_mismatch@{mcel\_policyerr\_keyid\_mismatch}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyerr\_keyid\_mismatch@{mcel\_policyerr\_keyid\_mismatch}}}\Hypertarget{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea2d6d1df7b4bf8124171b745fddc86281}\label{mcel_8h_a9317942e283f1795dc44dc86ba97ee9ea2d6d1df7b4bf8124171b745fddc86281} 
+mcel\+\_\+policyerr\+\_\+keyid\+\_\+mismatch&Policy error keyid mismatch \\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610}\index{mcel.h@{mcel.h}!mcel\_policy\_ops@{mcel\_policy\_ops}}
+\index{mcel\_policy\_ops@{mcel\_policy\_ops}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_policy\_ops}{mcel\_policy\_ops}}
+{\footnotesize\ttfamily \label{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610} 
+enum \mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610}{mcel\+\_\+policy\+\_\+ops}}}
+
+
+
+The MCEL policy operation identifiers. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyop\_append\_record@{mcel\_policyop\_append\_record}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyop\_append\_record@{mcel\_policyop\_append\_record}}}\Hypertarget{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610a295ee491f58614150dde5d3d761d1614}\label{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610a295ee491f58614150dde5d3d761d1614} 
+mcel\+\_\+policyop\+\_\+append\+\_\+record&Authorize appending a record \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_policyop\_seal\_checkpoint@{mcel\_policyop\_seal\_checkpoint}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_policyop\_seal\_checkpoint@{mcel\_policyop\_seal\_checkpoint}}}\Hypertarget{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610ae8db0eef926e8d18492642ee6088c7e4}\label{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610ae8db0eef926e8d18492642ee6088c7e4} 
+mcel\+\_\+policyop\+\_\+seal\+\_\+checkpoint&Authorize sealing a checkpoint \\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7b}\index{mcel.h@{mcel.h}!mcel\_record\_types@{mcel\_record\_types}}
+\index{mcel\_record\_types@{mcel\_record\_types}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_record\_types}{mcel\_record\_types}}
+{\footnotesize\ttfamily \label{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7b} 
+enum \mbox{\hyperlink{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7b}{mcel\+\_\+record\+\_\+types}}}
+
+
+
+The MCEL record type identifiers. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_record\_type\_none@{mcel\_record\_type\_none}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_record\_type\_none@{mcel\_record\_type\_none}}}\Hypertarget{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7babd02839e3ffefb54cee8222791fe0ff6}\label{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7babd02839e3ffefb54cee8222791fe0ff6} 
+mcel\+\_\+record\+\_\+type\+\_\+none&Record type is none \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_record\_type\_checkpoint@{mcel\_record\_type\_checkpoint}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_record\_type\_checkpoint@{mcel\_record\_type\_checkpoint}}}\Hypertarget{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7ba327f07404d393f3c780ab41c295b9e62}\label{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7ba327f07404d393f3c780ab41c295b9e62} 
+mcel\+\_\+record\+\_\+type\+\_\+checkpoint&A checkpoint reference record (extension hook) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_record\_type\_event@{mcel\_record\_type\_event}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_record\_type\_event@{mcel\_record\_type\_event}}}\Hypertarget{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7bacddd9ceb05b8a6fd32c32d67b6fa95a5}\label{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7bacddd9ceb05b8a6fd32c32d67b6fa95a5} 
+mcel\+\_\+record\+\_\+type\+\_\+event&A general event record \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_record\_type\_key\_rotate@{mcel\_record\_type\_key\_rotate}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_record\_type\_key\_rotate@{mcel\_record\_type\_key\_rotate}}}\Hypertarget{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7bad15ef2ccfc403a49e2abe0908fd8488d}\label{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7bad15ef2ccfc403a49e2abe0908fd8488d} 
+mcel\+\_\+record\+\_\+type\+\_\+key\+\_\+rotate&A key rotation event record \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{mcel\_record\_type\_policy@{mcel\_record\_type\_policy}!mcel.h@{mcel.h}}\index{mcel.h@{mcel.h}!mcel\_record\_type\_policy@{mcel\_record\_type\_policy}}}\Hypertarget{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7ba7d0621c70e27a57d478e42b8d62ae046}\label{mcel_8h_a7e6ca6c157d9416c359166890dfdbb7ba7d0621c70e27a57d478e42b8d62ae046} 
+mcel\+\_\+record\+\_\+type\+\_\+policy&A policy or configuration record \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\label{doc-func-members}
+\Hypertarget{mcel_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{mcel_8h_ace338659c40f9b042f98aeddf4a90474}\index{mcel.h@{mcel.h}!mcel\_block\_commit@{mcel\_block\_commit}}
+\index{mcel\_block\_commit@{mcel\_block\_commit}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_block\_commit()}{mcel\_block\_commit()}}
+{\footnotesize\ttfamily \label{mcel_8h_ace338659c40f9b042f98aeddf4a90474} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+block\+\_\+commit (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkroot}{}\end{DoxyParamCaption})}
+
+
+
+Compute a MCEL block commitment from a block header and Merkle root. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the block header structure. \\
+\hline
+{\em blkroot} & \mbox{[}const\mbox{]} A pointer to the block Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the commitment was generated successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a03e9a8e8f626275aec548aff1425f3b7}\index{mcel.h@{mcel.h}!mcel\_block\_encode@{mcel\_block\_encode}}
+\index{mcel\_block\_encode@{mcel\_block\_encode}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_block\_encode()}{mcel\_block\_encode()}}
+{\footnotesize\ttfamily \label{mcel_8h_a03e9a8e8f626275aec548aff1425f3b7} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+block\+\_\+encode (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{size\+\_\+t}]{outlen}{, }\item[{const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkroot}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkcommit}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{reccommits}{, }\item[{size\+\_\+t}]{reccount}{}\end{DoxyParamCaption})}
+
+
+
+Serialize a sealed MCEL block into a canonical byte string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the encoded block buffer. \\
+\hline
+{\em outlen} & The length of the output buffer. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the block header structure. \\
+\hline
+{\em blkroot} & \mbox{[}const\mbox{]} A pointer to the block Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em blkcommit} & \mbox{[}const\mbox{]} A pointer to the block commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em reccommits} & \mbox{[}const\mbox{]} A pointer to an array of record commitments, each of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em reccount} & The number of record commitments in the array.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the block was serialized successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a9323ac8a6cebf82271b39a77665d73d7}\index{mcel.h@{mcel.h}!mcel\_block\_encode\_header@{mcel\_block\_encode\_header}}
+\index{mcel\_block\_encode\_header@{mcel\_block\_encode\_header}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_block\_encode\_header()}{mcel\_block\_encode\_header()}}
+{\footnotesize\ttfamily \label{mcel_8h_a9323ac8a6cebf82271b39a77665d73d7} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+block\+\_\+encode\+\_\+header (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{}\end{DoxyParamCaption})}
+
+
+
+Encode a MCEL block header using canonical fixed-\/size encoding. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output byte array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HEADER\+\_\+\+ENCODED\+\_\+\+SIZE}. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the block header structure.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the header was encoded successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a35cc5f26d03641721544884838717237}\index{mcel.h@{mcel.h}!mcel\_block\_encoded\_size@{mcel\_block\_encoded\_size}}
+\index{mcel\_block\_encoded\_size@{mcel\_block\_encoded\_size}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_block\_encoded\_size()}{mcel\_block\_encoded\_size()}}
+{\footnotesize\ttfamily \label{mcel_8h_a35cc5f26d03641721544884838717237} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t mcel\+\_\+block\+\_\+encoded\+\_\+size (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{reccount}{}\end{DoxyParamCaption})}
+
+
+
+Get the required buffer size for an encoded MCEL block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reccount} & The number of record commitments in the block.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The required buffer size in bytes for {\ttfamily mcel\+\_\+encode\+\_\+block} or 0 on error. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a136337c9de9461ce88899ada613d6722}\index{mcel.h@{mcel.h}!mcel\_block\_seal@{mcel\_block\_seal}}
+\index{mcel\_block\_seal@{mcel\_block\_seal}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_block\_seal()}{mcel\_block\_seal()}}
+{\footnotesize\ttfamily \label{mcel_8h_a136337c9de9461ce88899ada613d6722} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+block\+\_\+seal (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkroot}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkcommit}{, }\item[{const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{reccommits}{, }\item[{size\+\_\+t}]{reccount}{}\end{DoxyParamCaption})}
+
+
+
+Seal a MCEL block by computing the Merkle root and block commitment. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em blkroot} & A pointer to the output Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em blkcommit} & A pointer to the output block commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the block header structure. \\
+\hline
+{\em reccommits} & \mbox{[}const\mbox{]} A pointer to an array of record commitments, each of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em reccount} & The number of record commitments in the array.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the block was sealed successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_aad00bb76443be40b3e8a4acbef59cbaf}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_audit\_path\_verify@{mcel\_checkpoint\_audit\_path\_verify}}
+\index{mcel\_checkpoint\_audit\_path\_verify@{mcel\_checkpoint\_audit\_path\_verify}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_audit\_path\_verify()}{mcel\_checkpoint\_audit\_path\_verify()}}
+{\footnotesize\ttfamily \label{mcel_8h_aad00bb76443be40b3e8a4acbef59cbaf} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+audit\+\_\+path\+\_\+verify (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{outheadcommit}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__audit__item}{mcel\+\_\+checkpoint\+\_\+audit\+\_\+item}} \texorpdfstring{$\ast$}{*}}]{items}{, }\item[{size\+\_\+t}]{itemcount}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{publickey}{}\end{DoxyParamCaption})}
+
+
+
+Verify an ordered audit path of MCEL checkpoint bundles. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em outheadcommit} & A pointer to the output last (head) checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em items} & \mbox{[}const\mbox{]} A pointer to the ordered audit item array (oldest to newest). \\
+\hline
+{\em itemcount} & The number of audit items in the array. \\
+\hline
+{\em publickey} & \mbox{[}const\mbox{]} A pointer to the Dilithium public key array.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the audit path was verified successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a9040a1f2a044d09766698a2239bc8376}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_bundle\_encode@{mcel\_checkpoint\_bundle\_encode}}
+\index{mcel\_checkpoint\_bundle\_encode@{mcel\_checkpoint\_bundle\_encode}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_bundle\_encode()}{mcel\_checkpoint\_bundle\_encode()}}
+{\footnotesize\ttfamily \label{mcel_8h_a9040a1f2a044d09766698a2239bc8376} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+bundle\+\_\+encode (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{size\+\_\+t}]{outlen}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkroot}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{prevcommit}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{sigcommit}{, }\item[{size\+\_\+t}]{siglen}{}\end{DoxyParamCaption})}
+
+
+
+Serialize a MCEL checkpoint bundle into a canonical byte string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output buffer. \\
+\hline
+{\em outlen} & The length of the output buffer in bytes. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the checkpoint header structure. \\
+\hline
+{\em blkroot} & \mbox{[}const\mbox{]} A pointer to the sealed block Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em prevcommit} & \mbox{[}const\mbox{]} A pointer to the previous checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em sigcommit} & \mbox{[}const\mbox{]} A pointer to the signed commitment message. \\
+\hline
+{\em siglen} & The length of the signed commitment message in bytes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the bundle was serialized successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_aba58ad107e387ae3a3c1b00e4db56839}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_bundle\_encoded\_size@{mcel\_checkpoint\_bundle\_encoded\_size}}
+\index{mcel\_checkpoint\_bundle\_encoded\_size@{mcel\_checkpoint\_bundle\_encoded\_size}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_bundle\_encoded\_size()}{mcel\_checkpoint\_bundle\_encoded\_size()}}
+{\footnotesize\ttfamily \label{mcel_8h_aba58ad107e387ae3a3c1b00e4db56839} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t mcel\+\_\+checkpoint\+\_\+bundle\+\_\+encoded\+\_\+size (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{siglen}{}\end{DoxyParamCaption})}
+
+
+
+Get the required buffer size for an encoded MCEL checkpoint bundle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em siglen} & The length of the signed commitment message in bytes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The required buffer size in bytes for {\ttfamily mcel\+\_\+encode\+\_\+checkpoint\+\_\+bundle} or 0 on error. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_ae20d139a9c9af05601b737d6fb56ae12}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_bundle\_verify@{mcel\_checkpoint\_bundle\_verify}}
+\index{mcel\_checkpoint\_bundle\_verify@{mcel\_checkpoint\_bundle\_verify}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_bundle\_verify()}{mcel\_checkpoint\_bundle\_verify()}}
+{\footnotesize\ttfamily \label{mcel_8h_ae20d139a9c9af05601b737d6fb56ae12} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+bundle\+\_\+verify (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{chkcommit}{, }\item[{\mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkroot}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{prevcommit}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{bundle}{, }\item[{size\+\_\+t}]{bundlelen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{publickey}{}\end{DoxyParamCaption})}
+
+
+
+Verify a serialized MCEL checkpoint bundle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em chkcommit} & A pointer to the output checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em header} & A pointer to the output checkpoint header structure. \\
+\hline
+{\em blkroot} & A pointer to the output block Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em prevcommit} & A pointer to the output previous checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em bundle} & \mbox{[}const\mbox{]} A pointer to the serialized checkpoint bundle. \\
+\hline
+{\em bundlelen} & The length of the serialized bundle in bytes. \\
+\hline
+{\em publickey} & \mbox{[}const\mbox{]} A pointer to the Dilithium public key array.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the bundle was verified successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a76672ab9e13d4e95d9d4af2e57ce15b6}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_chain\_link\_verify@{mcel\_checkpoint\_chain\_link\_verify}}
+\index{mcel\_checkpoint\_chain\_link\_verify@{mcel\_checkpoint\_chain\_link\_verify}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_chain\_link\_verify()}{mcel\_checkpoint\_chain\_link\_verify()}}
+{\footnotesize\ttfamily \label{mcel_8h_a76672ab9e13d4e95d9d4af2e57ce15b6} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+chain\+\_\+link\+\_\+verify (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{prevcommit}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{curprevcommit}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{prevhdr}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{curhdr}{}\end{DoxyParamCaption})}
+
+
+
+Verify the chain linkage between two verified checkpoints. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em prevcommit} & \mbox{[}const\mbox{]} The previous checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em curprevcommit} & \mbox{[}const\mbox{]} The current checkpoints embedded previous-\/commit array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em prevhdr} & \mbox{[}const\mbox{]} A pointer to the previous checkpoint header structure. \\
+\hline
+{\em curhdr} & \mbox{[}const\mbox{]} A pointer to the current checkpoint header structure.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the chain link is valid. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_acb1812e25a1ee1ae0d7ed5e4b7e2042b}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_commit@{mcel\_checkpoint\_commit}}
+\index{mcel\_checkpoint\_commit@{mcel\_checkpoint\_commit}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_commit()}{mcel\_checkpoint\_commit()}}
+{\footnotesize\ttfamily \label{mcel_8h_acb1812e25a1ee1ae0d7ed5e4b7e2042b} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+commit (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkroot}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{pldcommit}{}\end{DoxyParamCaption})}
+
+
+
+Compute a MCEL checkpoint commitment from a checkpoint header, block root, and previous checkpoint commitment. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the checkpoint header structure. \\
+\hline
+{\em blkroot} & \mbox{[}const\mbox{]} A pointer to the block Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em pldcommit} & \mbox{[}const\mbox{]} A pointer to the previous checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the commitment was generated successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_aeb24695d99b8078bd7255cf0ac4fdd34}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_consistency\_verify@{mcel\_checkpoint\_consistency\_verify}}
+\index{mcel\_checkpoint\_consistency\_verify@{mcel\_checkpoint\_consistency\_verify}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_consistency\_verify()}{mcel\_checkpoint\_consistency\_verify()}}
+{\footnotesize\ttfamily \label{mcel_8h_aeb24695d99b8078bd7255cf0ac4fdd34} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+consistency\+\_\+verify (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{firstroot}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{secondroot}{, }\item[{size\+\_\+t}]{first}{, }\item[{size\+\_\+t}]{second}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{proof}{, }\item[{size\+\_\+t}]{prooflen}{}\end{DoxyParamCaption})}
+
+
+
+Verify a MCEL Merkle consistency proof between two tree roots. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em firstroot} & \mbox{[}const\mbox{]} The older tree root hash. \\
+\hline
+{\em secondroot} & \mbox{[}const\mbox{]} The newer tree root hash. \\
+\hline
+{\em first} & The older tree size (leaf count), must be \texorpdfstring{$>$}{>} 0 and \texorpdfstring{$<$}{<} second. \\
+\hline
+{\em second} & The newer tree size (leaf count), must be \texorpdfstring{$>$}{>} first. \\
+\hline
+{\em proof} & \mbox{[}const\mbox{]} The consistency proof buffer (concatenated hashes). \\
+\hline
+{\em prooflen} & The length of the proof buffer in bytes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the consistency proof is valid. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_af85d262111f2a7b438ebdf466c5df220}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_decode\_header@{mcel\_checkpoint\_decode\_header}}
+\index{mcel\_checkpoint\_decode\_header@{mcel\_checkpoint\_decode\_header}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_decode\_header()}{mcel\_checkpoint\_decode\_header()}}
+{\footnotesize\ttfamily \label{mcel_8h_af85d262111f2a7b438ebdf466c5df220} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+decode\+\_\+header (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{input}{}\end{DoxyParamCaption})}
+
+
+
+Decode a MCEL checkpoint header from its canonical encoding. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em header} & A pointer to the receiving checkpoint header structure. \\
+\hline
+{\em input} & \mbox{[}const\mbox{]} A pointer to the encoded header bytes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true on success. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_ad0b2b570bfd9e566595ee56cf9c36a74}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_encode\_header@{mcel\_checkpoint\_encode\_header}}
+\index{mcel\_checkpoint\_encode\_header@{mcel\_checkpoint\_encode\_header}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_encode\_header()}{mcel\_checkpoint\_encode\_header()}}
+{\footnotesize\ttfamily \label{mcel_8h_ad0b2b570bfd9e566595ee56cf9c36a74} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+encode\+\_\+header (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{}\end{DoxyParamCaption})}
+
+
+
+Encode a MCEL checkpoint header using canonical fixed-\/size encoding. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output byte array of size {\ttfamily MCEL\+\_\+\+CHECKPOINT\+\_\+\+HEADER\+\_\+\+ENCODED\+\_\+\+SIZE}. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the checkpoint header structure.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the header was encoded successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a15eede056326682057bd29e57608337a}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_prove\_consistency@{mcel\_checkpoint\_prove\_consistency}}
+\index{mcel\_checkpoint\_prove\_consistency@{mcel\_checkpoint\_prove\_consistency}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_prove\_consistency()}{mcel\_checkpoint\_prove\_consistency()}}
+{\footnotesize\ttfamily \label{mcel_8h_a15eede056326682057bd29e57608337a} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+prove\+\_\+consistency (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{proof}{, }\item[{size\+\_\+t}]{prooflen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{leaves}{, }\item[{size\+\_\+t}]{oldcount}{, }\item[{size\+\_\+t}]{newcount}{}\end{DoxyParamCaption})}
+
+
+
+Generate a MCEL Merkle consistency proof between two tree sizes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em proof} & A pointer to the output proof buffer. \\
+\hline
+{\em prooflen} & The length of the output proof buffer in bytes. \\
+\hline
+{\em leaves} & \mbox{[}const\mbox{]} A pointer to the leaf hash array (new\+\_\+count \texorpdfstring{$\ast$}{*} MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE). \\
+\hline
+{\em oldcount} & The leaf count of the older tree (must be \texorpdfstring{$<$}{<}= new\+\_\+count). \\
+\hline
+{\em newcount} & The leaf count of the newer tree.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the proof was generated successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_afcbbe5a7de2035b4da4b0a7c47e8efb6}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_seal@{mcel\_checkpoint\_seal}}
+\index{mcel\_checkpoint\_seal@{mcel\_checkpoint\_seal}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_seal()}{mcel\_checkpoint\_seal()}}
+{\footnotesize\ttfamily \label{mcel_8h_afcbbe5a7de2035b4da4b0a7c47e8efb6} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+seal (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{chkcommit}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{sigcommit}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{siglen}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkroot}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{prevcommit}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{privatekey}{, }\item[{bool(\texorpdfstring{$\ast$}{*}}]{rng\+\_\+generate~}{)(uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t)}\end{DoxyParamCaption})}
+
+
+
+Seal a MCEL checkpoint from a sealed block by generating the checkpoint commitment and signing it. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em chkcommit} & A pointer to the output checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em sigcommit} & A pointer to the signed commitment output buffer of size {\ttfamily MCEL\+\_\+\+CHECKPOINT\+\_\+\+SIGNED\+\_\+\+COMMIT\+\_\+\+SIZE}. \\
+\hline
+{\em siglen} & A pointer to the returned signed message length in bytes. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the checkpoint header structure. \\
+\hline
+{\em blkroot} & \mbox{[}const\mbox{]} A pointer to the sealed block Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em prevcommit} & \mbox{[}const\mbox{]} A pointer to the previous checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em privatekey} & \mbox{[}const\mbox{]} A pointer to the Dilithium private key array. \\
+\hline
+{\em rng\+\_\+generate} & A pointer to a secure RNG function.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the checkpoint was sealed successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a93476dabbe064d6397dca517e7397c55}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_sign@{mcel\_checkpoint\_sign}}
+\index{mcel\_checkpoint\_sign@{mcel\_checkpoint\_sign}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_sign()}{mcel\_checkpoint\_sign()}}
+{\footnotesize\ttfamily \label{mcel_8h_a93476dabbe064d6397dca517e7397c55} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+sign (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{sigcommit}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{siglen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{chkcommit}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{privatekey}{, }\item[{bool(\texorpdfstring{$\ast$}{*}}]{rng\+\_\+generate~}{)(uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t)}\end{DoxyParamCaption})}
+
+
+
+Sign a MCEL checkpoint commitment using Dilithium. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sigcommit} & A pointer to the signed commitment output buffer of size {\ttfamily MCEL\+\_\+\+CHECKPOINT\+\_\+\+SIGNED\+\_\+\+COMMIT\+\_\+\+SIZE}. \\
+\hline
+{\em siglen} & A pointer to the returned signed message length in bytes. \\
+\hline
+{\em chkcommit} & \mbox{[}const\mbox{]} A pointer to the checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em privatekey} & \mbox{[}const\mbox{]} A pointer to the Dilithium private key array. \\
+\hline
+{\em rng\+\_\+generate} & A pointer to a secure RNG function.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the commitment was signed successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a700716c02ab98d9e14399a7464b0a16c}\index{mcel.h@{mcel.h}!mcel\_checkpoint\_verify@{mcel\_checkpoint\_verify}}
+\index{mcel\_checkpoint\_verify@{mcel\_checkpoint\_verify}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_checkpoint\_verify()}{mcel\_checkpoint\_verify()}}
+{\footnotesize\ttfamily \label{mcel_8h_a700716c02ab98d9e14399a7464b0a16c} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+checkpoint\+\_\+verify (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{chkcommit}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{commitlen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{sigcommit}{, }\item[{size\+\_\+t}]{siglen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{publickey}{}\end{DoxyParamCaption})}
+
+
+
+Verify a MCEL signed checkpoint commitment using Dilithium. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em chkcommit} & A pointer to the output checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em commitlen} & A pointer to the returned commitment length in bytes. \\
+\hline
+{\em sigcommit} & \mbox{[}const\mbox{]} A pointer to the signed commitment message. \\
+\hline
+{\em siglen} & The signed message length in bytes. \\
+\hline
+{\em publickey} & \mbox{[}const\mbox{]} A pointer to the Dilithium public key array.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the signature was verified successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a6c318ce0a5c544da8f734cea6badc55a}\index{mcel.h@{mcel.h}!mcel\_keyrotate\_payload\_size@{mcel\_keyrotate\_payload\_size}}
+\index{mcel\_keyrotate\_payload\_size@{mcel\_keyrotate\_payload\_size}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_keyrotate\_payload\_size()}{mcel\_keyrotate\_payload\_size()}}
+{\footnotesize\ttfamily \label{mcel_8h_a6c318ce0a5c544da8f734cea6badc55a} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t mcel\+\_\+keyrotate\+\_\+payload\+\_\+size (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{pubkeylen}{}\end{DoxyParamCaption})}
+
+
+
+Get the required buffer size for a key rotation record payload. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pubkeylen} & The new public key length in bytes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The required payload size in bytes. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a5fada3f40e3fa241ce775ab09eb21fb4}\index{mcel.h@{mcel.h}!mcel\_keyrotate\_record\_create@{mcel\_keyrotate\_record\_create}}
+\index{mcel\_keyrotate\_record\_create@{mcel\_keyrotate\_record\_create}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_keyrotate\_record\_create()}{mcel\_keyrotate\_record\_create()}}
+{\footnotesize\ttfamily \label{mcel_8h_a5fada3f40e3fa241ce775ab09eb21fb4} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API size\+\_\+t mcel\+\_\+keyrotate\+\_\+record\+\_\+create (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{payload}{, }\item[{size\+\_\+t}]{payload\+\_\+len}{, }\item[{uint64\+\_\+t}]{sequence}{, }\item[{uint8\+\_\+t}]{flags}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{newkeyid}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{newpubkey}{, }\item[{size\+\_\+t}]{pubkeylen}{}\end{DoxyParamCaption})}
+
+
+
+Create a key rotation record header and payload. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em header} & A pointer to the receiving record header structure. \\
+\hline
+{\em payload} & A pointer to the output payload buffer. \\
+\hline
+{\em payload\+\_\+len} & The length of the output payload buffer in bytes. \\
+\hline
+{\em sequence} & The record sequence number. \\
+\hline
+{\em flags} & The record flags. \\
+\hline
+{\em newkeyid} & \mbox{[}const\mbox{]} The new signer or policy identifier. \\
+\hline
+{\em newpubkey} & \mbox{[}const\mbox{]} The new public key bytes. \\
+\hline
+{\em pubkeylen} & The new public key length in bytes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns the payload length in bytes. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_ac080cd7b227e4046cd1a156fe1607e7e}\index{mcel.h@{mcel.h}!mcel\_ledger\_append\_record@{mcel\_ledger\_append\_record}}
+\index{mcel\_ledger\_append\_record@{mcel\_ledger\_append\_record}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_ledger\_append\_record()}{mcel\_ledger\_append\_record()}}
+{\footnotesize\ttfamily \label{mcel_8h_ac080cd7b227e4046cd1a156fe1607e7e} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+ledger\+\_\+append\+\_\+record (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}}]{state}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{reccommit}{, }\item[{uint64\+\_\+t \texorpdfstring{$\ast$}{*}}]{outpos}{, }\item[{const \mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{payload}{, }\item[{size\+\_\+t}]{paylen}{}\end{DoxyParamCaption})}
+
+
+
+Append a record to the ledger record log and return its commitment. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & A pointer to the ledger state structure. \\
+\hline
+{\em reccommit} & A pointer to the output record commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em outpos} & A pointer to the returned append position offset, can be NULL. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the record header structure. \\
+\hline
+{\em payload} & \mbox{[}const\mbox{]} A pointer to the record payload bytes. \\
+\hline
+{\em paylen} & The payload length in bytes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the record was committed and appended successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a2bb9069b664f9234093c2c4da85bfba8}\index{mcel.h@{mcel.h}!mcel\_ledger\_get\_checkpoint\_head@{mcel\_ledger\_get\_checkpoint\_head}}
+\index{mcel\_ledger\_get\_checkpoint\_head@{mcel\_ledger\_get\_checkpoint\_head}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_ledger\_get\_checkpoint\_head()}{mcel\_ledger\_get\_checkpoint\_head()}}
+{\footnotesize\ttfamily \label{mcel_8h_a2bb9069b664f9234093c2c4da85bfba8} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+ledger\+\_\+get\+\_\+checkpoint\+\_\+head (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}}]{state}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{head\+\_\+commit}{, }\item[{\mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{head\+\_\+header}{}\end{DoxyParamCaption})}
+
+
+
+Get the current checkpoint head from the ledger state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & A pointer to the ledger state structure. \\
+\hline
+{\em head\+\_\+commit} & A pointer to the output head checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em head\+\_\+header} & A pointer to the output head checkpoint header structure.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the head is available, false if no head is loaded. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a5a4535c957a80a9d492ace24e1418e4a}\index{mcel.h@{mcel.h}!mcel\_ledger\_initialize@{mcel\_ledger\_initialize}}
+\index{mcel\_ledger\_initialize@{mcel\_ledger\_initialize}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_ledger\_initialize()}{mcel\_ledger\_initialize()}}
+{\footnotesize\ttfamily \label{mcel_8h_a5a4535c957a80a9d492ace24e1418e4a} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+ledger\+\_\+initialize (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}}]{state}{, }\item[{const \mbox{\hyperlink{structmcel__store__callbacks}{mcel\+\_\+store\+\_\+callbacks}} \texorpdfstring{$\ast$}{*}}]{store}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{nsid}{, }\item[{size\+\_\+t}]{nsidlen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{publickey}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{headbuf}{, }\item[{size\+\_\+t}]{headbuflen}{}\end{DoxyParamCaption})}
+
+
+
+Initialize (open) a MCEL ledger namespace and load the checkpoint head if present. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & A pointer to the ledger state structure. \\
+\hline
+{\em store} & \mbox{[}const\mbox{]} A pointer to an initialized storage callback table. \\
+\hline
+{\em nsid} & \mbox{[}const\mbox{]} A pointer to the namespace identifier bytes. \\
+\hline
+{\em nsidlen} & The namespace identifier length in bytes. \\
+\hline
+{\em publickey} & \mbox{[}const\mbox{]} A pointer to the Dilithium public key. \\
+\hline
+{\em headbuf} & A pointer to a caller-\/provided buffer used to read the head checkpoint bundle. \\
+\hline
+{\em headbuflen} & The length of the head buffer in bytes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the ledger was initialized successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a4d55927755cf20bd6e81e3a96665e32b}\index{mcel.h@{mcel.h}!mcel\_ledger\_seal\_block@{mcel\_ledger\_seal\_block}}
+\index{mcel\_ledger\_seal\_block@{mcel\_ledger\_seal\_block}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_ledger\_seal\_block()}{mcel\_ledger\_seal\_block()}}
+{\footnotesize\ttfamily \label{mcel_8h_a4d55927755cf20bd6e81e3a96665e32b} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+ledger\+\_\+seal\+\_\+block (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}}]{state}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkroot}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkcommit}{, }\item[{const \mbox{\hyperlink{structmcel__block__header}{mcel\+\_\+block\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{reccommits}{, }\item[{size\+\_\+t}]{reccount}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blockbuf}{, }\item[{size\+\_\+t}]{blockbuflen}{, }\item[{uint64\+\_\+t \texorpdfstring{$\ast$}{*}}]{outpos}{}\end{DoxyParamCaption})}
+
+
+
+Seal a block from record commitments and write the sealed block through the storage callbacks. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & A pointer to the ledger state structure. \\
+\hline
+{\em blkroot} & A pointer to the output block Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em blkcommit} & A pointer to the output block commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the block header structure. \\
+\hline
+{\em reccommits} & \mbox{[}const\mbox{]} A pointer to an array of record commitments (reccount \texorpdfstring{$\ast$}{*} MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE). \\
+\hline
+{\em reccount} & The number of record commitments. \\
+\hline
+{\em blockbuf} & A pointer to a caller-\/provided buffer used to encode the sealed block. \\
+\hline
+{\em blockbuflen} & The length of the block buffer in bytes. \\
+\hline
+{\em outpos} & A pointer to the returned append position offset, can be NULL.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the block was sealed and stored successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_adf8be4e9fb8cf7e60779a1014d3a95f8}\index{mcel.h@{mcel.h}!mcel\_ledger\_seal\_checkpoint@{mcel\_ledger\_seal\_checkpoint}}
+\index{mcel\_ledger\_seal\_checkpoint@{mcel\_ledger\_seal\_checkpoint}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_ledger\_seal\_checkpoint()}{mcel\_ledger\_seal\_checkpoint()}}
+{\footnotesize\ttfamily \label{mcel_8h_adf8be4e9fb8cf7e60779a1014d3a95f8} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+ledger\+\_\+seal\+\_\+checkpoint (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}}]{state}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{chkcommit}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{blkroot}{, }\item[{const void \texorpdfstring{$\ast$}{*}}]{sigkey}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{bundlebuf}{, }\item[{size\+\_\+t}]{bundlebuflen}{, }\item[{uint64\+\_\+t \texorpdfstring{$\ast$}{*}}]{outpos}{}\end{DoxyParamCaption})}
+
+
+
+Seal a checkpoint from a sealed block root and update the ledger head. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & A pointer to the ledger state structure. \\
+\hline
+{\em chkcommit} & A pointer to the output checkpoint commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the checkpoint header structure. \\
+\hline
+{\em blkroot} & \mbox{[}const\mbox{]} A pointer to the sealed block Merkle root array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em sigkey} & \mbox{[}const\mbox{]} A pointer to the Dilithium private signing key. \\
+\hline
+{\em bundlebuf} & A pointer to a caller-\/provided buffer used to encode the checkpoint bundle. \\
+\hline
+{\em bundlebuflen} & The length of the bundle buffer in bytes. \\
+\hline
+{\em outpos} & A pointer to the returned append position offset, can be NULL.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the checkpoint was sealed and stored successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_af4929012727eee9fcfbdbd1a4f09b458}\index{mcel.h@{mcel.h}!mcel\_ledger\_verify\_integrity@{mcel\_ledger\_verify\_integrity}}
+\index{mcel\_ledger\_verify\_integrity@{mcel\_ledger\_verify\_integrity}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_ledger\_verify\_integrity()}{mcel\_ledger\_verify\_integrity()}}
+{\footnotesize\ttfamily \label{mcel_8h_af4929012727eee9fcfbdbd1a4f09b458} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+ledger\+\_\+verify\+\_\+integrity (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmcel__ledger__state}{mcel\+\_\+ledger\+\_\+state}} \texorpdfstring{$\ast$}{*}}]{state}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{headbuf}{, }\item[{size\+\_\+t}]{headbuflen}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__audit__item}{mcel\+\_\+checkpoint\+\_\+audit\+\_\+item}} \texorpdfstring{$\ast$}{*}}]{audit}{, }\item[{size\+\_\+t}]{auditcount}{}\end{DoxyParamCaption})}
+
+
+
+Verify the cryptographic integrity of the ledger state. 
+
+This function verifies the stored head checkpoint bundle (if present) by reading it from the storage backend and validating its signature and commitment. Optionally, an audit path may be provided to verify a sequence of checkpoint bundles and their chain links.
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & A pointer to the ledger state structure. \\
+\hline
+{\em headbuf} & A pointer to a caller-\/provided buffer used to read the head bundle. \\
+\hline
+{\em headbuflen} & The length of the head buffer in bytes. \\
+\hline
+{\em audit} & \mbox{[}const\mbox{]} An optional pointer to an audit path item array, can be NULL. \\
+\hline
+{\em auditcount} & The number of audit items in the array, can be 0.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if integrity checks succeeded, false on failure. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a4d74bfeb2d01974b4e5719c18424065d}\index{mcel.h@{mcel.h}!mcel\_payload\_commit@{mcel\_payload\_commit}}
+\index{mcel\_payload\_commit@{mcel\_payload\_commit}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_payload\_commit()}{mcel\_payload\_commit()}}
+{\footnotesize\ttfamily \label{mcel_8h_a4d74bfeb2d01974b4e5719c18424065d} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+payload\+\_\+commit (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{bool}]{encrypted}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{payload}{, }\item[{size\+\_\+t}]{paylen}{}\end{DoxyParamCaption})}
+
+
+
+Compute a MCEL payload commitment. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output hash array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em encrypted} & Set to true if the payload is encrypted, false if plaintext. \\
+\hline
+{\em payload} & \mbox{[}const\mbox{]} A pointer to the payload bytes. \\
+\hline
+{\em paylen} & The length of the payload in bytes.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true on success. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a75e195435d38340e060033ed27e67e86}\index{mcel.h@{mcel.h}!mcel\_policy\_apply@{mcel\_policy\_apply}}
+\index{mcel\_policy\_apply@{mcel\_policy\_apply}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_policy\_apply()}{mcel\_policy\_apply()}}
+{\footnotesize\ttfamily \label{mcel_8h_a75e195435d38340e060033ed27e67e86} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+policy\+\_\+apply (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{mcel_8h_a9317942e283f1795dc44dc86ba97ee9e}{mcel\+\_\+policy\+\_\+errors}} \texorpdfstring{$\ast$}{*}}]{perr}{, }\item[{const \mbox{\hyperlink{structmcel__policy}{mcel\+\_\+policy}} \texorpdfstring{$\ast$}{*}}]{policy}{, }\item[{const \mbox{\hyperlink{structmcel__policy__context}{mcel\+\_\+policy\+\_\+context}} \texorpdfstring{$\ast$}{*}}]{state}{, }\item[{\mbox{\hyperlink{mcel_8h_a4e8d8f5434d9ac98d971aaae650f3610}{mcel\+\_\+policy\+\_\+ops}}}]{op}{, }\item[{const \mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{recordhdr}{, }\item[{const \mbox{\hyperlink{structmcel__checkpoint__header}{mcel\+\_\+checkpoint\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{checkpointhdr}{}\end{DoxyParamCaption})}
+
+
+
+Apply namespace policy rules to a MCEL operation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em perr} & A pointer to the returned policy error value. \\
+\hline
+{\em policy} & \mbox{[}const\mbox{]} A pointer to the policy container. \\
+\hline
+{\em state} & \mbox{[}const\mbox{]} A pointer to the policy context. \\
+\hline
+{\em op} & The operation being authorized. \\
+\hline
+{\em recordhdr} & \mbox{[}const\mbox{]} A pointer to the record header (append op), can be NULL otherwise. \\
+\hline
+{\em checkpointhdr} & \mbox{[}const\mbox{]} A pointer to the checkpoint header (seal op), can be NULL otherwise.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the operation is allowed. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a4cf8ea9f0786cc52e5be6d0e0c04f1fa}\index{mcel.h@{mcel.h}!mcel\_record\_commit@{mcel\_record\_commit}}
+\index{mcel\_record\_commit@{mcel\_record\_commit}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_record\_commit()}{mcel\_record\_commit()}}
+{\footnotesize\ttfamily \label{mcel_8h_a4cf8ea9f0786cc52e5be6d0e0c04f1fa} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+record\+\_\+commit (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{const \mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{pldcommit}{}\end{DoxyParamCaption})}
+
+
+
+Compute a MCEL record commitment from a record header and payload commitment. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output hash array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the record header structure. \\
+\hline
+{\em pldcommit} & \mbox{[}const\mbox{]} A pointer to the payload commitment array of size {\ttfamily MCEL\+\_\+\+BLOCK\+\_\+\+HASH\+\_\+\+SIZE}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the record commitment was generated successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a1a418167b44af97cdc49e363fbe2af4e}\index{mcel.h@{mcel.h}!mcel\_record\_decrypt\_payload@{mcel\_record\_decrypt\_payload}}
+\index{mcel\_record\_decrypt\_payload@{mcel\_record\_decrypt\_payload}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_record\_decrypt\_payload()}{mcel\_record\_decrypt\_payload()}}
+{\footnotesize\ttfamily \label{mcel_8h_a1a418167b44af97cdc49e363fbe2af4e} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+record\+\_\+decrypt\+\_\+payload (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{size\+\_\+t}]{outlen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{ciphertext}{, }\item[{size\+\_\+t}]{ctlen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{ad}{, }\item[{size\+\_\+t}]{adlen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{key}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{nonce}{}\end{DoxyParamCaption})}
+
+
+
+Decrypt a record payload using the AEAD cipher. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the plaintext output buffer. \\
+\hline
+{\em outlen} & The length of the output buffer in bytes. \\
+\hline
+{\em ciphertext} & \mbox{[}const\mbox{]} A pointer to the ciphertext input buffer (includes tag). \\
+\hline
+{\em ctlen} & The length of the ciphertext in bytes. \\
+\hline
+{\em ad} & \mbox{[}const\mbox{]} A pointer to associated data, can be NULL if {\ttfamily adlen} is 0. \\
+\hline
+{\em adlen} & The associated data length in bytes. \\
+\hline
+{\em key} & \mbox{[}const\mbox{]} A pointer to the cipher key. \\
+\hline
+{\em nonce} & A pointer to the nonce array of size {\ttfamily MCEL\+\_\+\+RCS\+\_\+\+NONCE\+\_\+\+SIZE}.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the transform completed, false on parameter or length failure. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_ab67de33df14d90ba121a78167562bd8d}\index{mcel.h@{mcel.h}!mcel\_record\_encode\_header@{mcel\_record\_encode\_header}}
+\index{mcel\_record\_encode\_header@{mcel\_record\_encode\_header}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_record\_encode\_header()}{mcel\_record\_encode\_header()}}
+{\footnotesize\ttfamily \label{mcel_8h_ab67de33df14d90ba121a78167562bd8d} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+record\+\_\+encode\+\_\+header (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{const \mbox{\hyperlink{structmcel__record__header}{mcel\+\_\+record\+\_\+header}} \texorpdfstring{$\ast$}{*}}]{header}{}\end{DoxyParamCaption})}
+
+
+
+Encode a MCEL record header using canonical fixed-\/size encoding. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the output byte array of size {\ttfamily MCEL\+\_\+\+RECORD\+\_\+\+HEADER\+\_\+\+ENCODED\+\_\+\+SIZE}. \\
+\hline
+{\em header} & \mbox{[}const\mbox{]} A pointer to the record header structure.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the header was encoded successfully. 
+\end{DoxyReturn}
+\Hypertarget{mcel_8h_a889867bf280df212732ecf0b7c335de8}\index{mcel.h@{mcel.h}!mcel\_record\_encrypt\_payload@{mcel\_record\_encrypt\_payload}}
+\index{mcel\_record\_encrypt\_payload@{mcel\_record\_encrypt\_payload}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_record\_encrypt\_payload()}{mcel\_record\_encrypt\_payload()}}
+{\footnotesize\ttfamily \label{mcel_8h_a889867bf280df212732ecf0b7c335de8} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API void mcel\+\_\+record\+\_\+encrypt\+\_\+payload (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{size\+\_\+t}]{outlen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext}{, }\item[{size\+\_\+t}]{ptlen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{ad}{, }\item[{size\+\_\+t}]{adlen}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{key}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{nonce}{}\end{DoxyParamCaption})}
+
+
+
+Encrypt a record payload using the AEAD cipher. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the ciphertext output buffer. \\
+\hline
+{\em outlen} & The length of the output buffer in bytes. \\
+\hline
+{\em plaintext} & \mbox{[}const\mbox{]} A pointer to the plaintext input buffer. \\
+\hline
+{\em ptlen} & The length of the plaintext in bytes. \\
+\hline
+{\em ad} & \mbox{[}const\mbox{]} A pointer to associated data, can be NULL if {\ttfamily adlen} is 0. \\
+\hline
+{\em adlen} & The associated data length in bytes. \\
+\hline
+{\em key} & \mbox{[}const\mbox{]} A pointer to the cipher key. \\
+\hline
+{\em nonce} & A pointer to the nonce array of size {\ttfamily MCEL\+\_\+\+RCS\+\_\+\+NONCE\+\_\+\+SIZE}. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mcel_8h_a4f290c14e37280cca3d428167b2bb1b5}\index{mcel.h@{mcel.h}!mcel\_store\_callbacks\_initialize@{mcel\_store\_callbacks\_initialize}}
+\index{mcel\_store\_callbacks\_initialize@{mcel\_store\_callbacks\_initialize}!mcel.h@{mcel.h}}
+\doxysubsubsection{\texorpdfstring{mcel\_store\_callbacks\_initialize()}{mcel\_store\_callbacks\_initialize()}}
+{\footnotesize\ttfamily \label{mcel_8h_a4f290c14e37280cca3d428167b2bb1b5} 
+MCEL\+\_\+\+EXPORT\+\_\+\+API bool mcel\+\_\+store\+\_\+callbacks\+\_\+initialize (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmcel__store__callbacks}{mcel\+\_\+store\+\_\+callbacks}} \texorpdfstring{$\ast$}{*}}]{output}{, }\item[{const \mbox{\hyperlink{structmcel__store__callbacks}{mcel\+\_\+store\+\_\+callbacks}} \texorpdfstring{$\ast$}{*}}]{input}{, }\item[{void \texorpdfstring{$\ast$}{*}}]{context}{}\end{DoxyParamCaption})}
+
+
+
+Initialize and validate the MCEL storage callback table. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & A pointer to the receiving callback table. \\
+\hline
+{\em input} & \mbox{[}const\mbox{]} A pointer to the caller-\/supplied callback table. \\
+\hline
+{\em context} & A pointer to the host-\/defined storage context.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the callback table is valid and initialized, false on failure. 
+\end{DoxyReturn}

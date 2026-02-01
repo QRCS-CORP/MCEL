@@ -1,0 +1,32 @@
+\chapter{MCEL\+: Merkle Chained Event Ledger }
+\hypertarget{index}{}\label{index}\index{MCEL: Merkle Chained Event Ledger@{MCEL: Merkle Chained Event Ledger}}
+\hypertarget{index_mcel_overview}{}\doxysection{\texorpdfstring{Overview}{Overview}}\label{index_mcel_overview}
+MCEL is a Merkle rooted, append-\/only event ledger designed for tamper-\/evident logging and audit. Records are hash-\/committed, blocks aggregate record commitments into a Merkle root, and checkpoints cryptographically bind block roots into a signed chain suitable for long-\/term verification.\hypertarget{index_mcel_design}{}\doxysection{\texorpdfstring{Design Summary}{Design Summary}}\label{index_mcel_design}
+The library exposes a storage abstraction through callbacks, allowing deployment over files, databases, object stores, or custom persistence layers. The ledger provides\+:
+\begin{DoxyItemize}
+\item Deterministic record commitment and append
+\item Merkle block sealing and root commitment
+\item Signed checkpoint bundling and checkpoint chain verification
+\item Inclusion proof generation and verification for audit exhibits
+\end{DoxyItemize}\hypertarget{index_mcel_storage}{}\doxysection{\texorpdfstring{Storage Contract}{Storage Contract}}\label{index_mcel_storage}
+MCEL uses a caller-\/supplied storage backend via callback functions. The backend must support querying size, reading, writing, and appending objects identified by location keys.\hypertarget{index_mcel_security}{}\doxysection{\texorpdfstring{Security Notes}{Security Notes}}\label{index_mcel_security}
+MCEL integrity depends on collision resistance of the hash function and unforgeability of the signature scheme used for checkpoints. Implementations should protect signing keys, enforce strict monotonic sequencing where required by policy, and ensure storage callbacks are atomic for append operations.\hypertarget{index_mcel_modules}{}\doxysection{\texorpdfstring{API Modules}{API Modules}}\label{index_mcel_modules}
+
+\begin{DoxyItemize}
+\item \doxylink{group__mcel__core}{Core API}
+\item \doxylink{group__mcel__record}{Record API}
+\item \doxylink{group__mcel__block}{Block API}
+\item \doxylink{group__mcel__checkpoint}{Checkpoint API}
+\item \doxylink{group__mcel__merkle}{Merkle and Proof API}
+\item \doxylink{group__mcel__store}{Storage Callback API}
+\end{DoxyItemize}\hypertarget{index_mcel_build}{}\doxysection{\texorpdfstring{Build Notes}{Build Notes}}\label{index_mcel_build}
+MCEL is intended to be built as a static library. Applications should link MCEL and provide a storage backend implementation through the callback interface.\hypertarget{index_library_dependencies}{}\doxysubsection{\texorpdfstring{Cryptographic Dependencies}{Cryptographic Dependencies}}\label{index_library_dependencies}
+MCEL uses the QSC cryptographic library\+: \href{https://github.com/QRCS-CORP/QSC}{\texttt{The QSC Library}} \hypertarget{index_conclusion_sec}{}\doxysection{\texorpdfstring{Conclusion}{Conclusion}}\label{index_conclusion_sec}
+QRCS-\/\+PL private License. See license file for details. All rights reserved by QRCS Corporation, copyrighted and patents pending.
+
+\begin{DoxyAuthor}{Author}
+John G. Underhill 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2026-\/01-\/31 
+\end{DoxyDate}

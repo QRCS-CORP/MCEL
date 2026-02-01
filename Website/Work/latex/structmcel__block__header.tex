@@ -1,0 +1,85 @@
+\doxysection{mcel\+\_\+block\+\_\+header Struct Reference}
+\hypertarget{structmcel__block__header}{}\label{structmcel__block__header}\index{mcel\_block\_header@{mcel\_block\_header}}
+
+
+The MCEL block header structure.  
+
+
+
+
+{\ttfamily \#include $<$mcel.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__block__header_a9b3626095ef23e64ae6babf207a29a2d}{keyid}} \mbox{[}\mbox{\hyperlink{mcel_8h_a65b436982d3e18a6af88863d210c0470}{MCEL\+\_\+\+BLOCK\+\_\+\+KEYID\+\_\+\+SIZE}}\mbox{]}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structmcel__block__header_a7b78fae74594d1f69039c6bb0496eb2e}{block\+\_\+sequence}}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structmcel__block__header_a69cff7ccc04b00dc0f8db8580d1b6a41}{first\+\_\+record\+\_\+seq}}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structmcel__block__header_a465bef81f6478756e5443025b1f2ddfa}{timestamp}}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{structmcel__block__header_a4884a7ccd4130787e66aa141d47478a3}{record\+\_\+count}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__block__header_aa2585d779da0ab21273a8d92de9a0ebe}{flags}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{structmcel__block__header_ab22abc2906422da61885ac6c8e6a1a59}{version}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The MCEL block header structure. 
+
+This structure is canonically encoded using {\ttfamily mcel\+\_\+encode\+\_\+block\+\_\+header}. The block commitment binds this header to the Merkle root of record commitments. 
+
+\label{doc-variable-members}
+\Hypertarget{structmcel__block__header_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{structmcel__block__header_a7b78fae74594d1f69039c6bb0496eb2e}\index{mcel\_block\_header@{mcel\_block\_header}!block\_sequence@{block\_sequence}}
+\index{block\_sequence@{block\_sequence}!mcel\_block\_header@{mcel\_block\_header}}
+\doxysubsubsection{\texorpdfstring{block\_sequence}{block\_sequence}}
+{\footnotesize\ttfamily \label{structmcel__block__header_a7b78fae74594d1f69039c6bb0496eb2e} 
+uint64\+\_\+t block\+\_\+sequence}
+
+The block sequence number within the ledger \Hypertarget{structmcel__block__header_a69cff7ccc04b00dc0f8db8580d1b6a41}\index{mcel\_block\_header@{mcel\_block\_header}!first\_record\_seq@{first\_record\_seq}}
+\index{first\_record\_seq@{first\_record\_seq}!mcel\_block\_header@{mcel\_block\_header}}
+\doxysubsubsection{\texorpdfstring{first\_record\_seq}{first\_record\_seq}}
+{\footnotesize\ttfamily \label{structmcel__block__header_a69cff7ccc04b00dc0f8db8580d1b6a41} 
+uint64\+\_\+t first\+\_\+record\+\_\+seq}
+
+The sequence number of the first record in this block \Hypertarget{structmcel__block__header_aa2585d779da0ab21273a8d92de9a0ebe}\index{mcel\_block\_header@{mcel\_block\_header}!flags@{flags}}
+\index{flags@{flags}!mcel\_block\_header@{mcel\_block\_header}}
+\doxysubsubsection{\texorpdfstring{flags}{flags}}
+{\footnotesize\ttfamily \label{structmcel__block__header_aa2585d779da0ab21273a8d92de9a0ebe} 
+uint8\+\_\+t flags}
+
+Block flags (reserved for future use) \Hypertarget{structmcel__block__header_a9b3626095ef23e64ae6babf207a29a2d}\index{mcel\_block\_header@{mcel\_block\_header}!keyid@{keyid}}
+\index{keyid@{keyid}!mcel\_block\_header@{mcel\_block\_header}}
+\doxysubsubsection{\texorpdfstring{keyid}{keyid}}
+{\footnotesize\ttfamily \label{structmcel__block__header_a9b3626095ef23e64ae6babf207a29a2d} 
+uint8\+\_\+t keyid\mbox{[}\mbox{\hyperlink{mcel_8h_a65b436982d3e18a6af88863d210c0470}{MCEL\+\_\+\+BLOCK\+\_\+\+KEYID\+\_\+\+SIZE}}\mbox{]}}
+
+The signer or policy identifier \Hypertarget{structmcel__block__header_a4884a7ccd4130787e66aa141d47478a3}\index{mcel\_block\_header@{mcel\_block\_header}!record\_count@{record\_count}}
+\index{record\_count@{record\_count}!mcel\_block\_header@{mcel\_block\_header}}
+\doxysubsubsection{\texorpdfstring{record\_count}{record\_count}}
+{\footnotesize\ttfamily \label{structmcel__block__header_a4884a7ccd4130787e66aa141d47478a3} 
+uint32\+\_\+t record\+\_\+count}
+
+The number of records committed by the Merkle root \Hypertarget{structmcel__block__header_a465bef81f6478756e5443025b1f2ddfa}\index{mcel\_block\_header@{mcel\_block\_header}!timestamp@{timestamp}}
+\index{timestamp@{timestamp}!mcel\_block\_header@{mcel\_block\_header}}
+\doxysubsubsection{\texorpdfstring{timestamp}{timestamp}}
+{\footnotesize\ttfamily \label{structmcel__block__header_a465bef81f6478756e5443025b1f2ddfa} 
+uint64\+\_\+t timestamp}
+
+Advisory UTC timestamp or monotonic time value \Hypertarget{structmcel__block__header_ab22abc2906422da61885ac6c8e6a1a59}\index{mcel\_block\_header@{mcel\_block\_header}!version@{version}}
+\index{version@{version}!mcel\_block\_header@{mcel\_block\_header}}
+\doxysubsubsection{\texorpdfstring{version}{version}}
+{\footnotesize\ttfamily \label{structmcel__block__header_ab22abc2906422da61885ac6c8e6a1a59} 
+uint8\+\_\+t version}
+
+The block format version (MCEL\+\_\+\+BLOCK\+\_\+\+VERSION) 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+MCEL/\+MCEL/\mbox{\hyperlink{mcel_8h}{mcel.\+h}}\end{DoxyCompactItemize}
