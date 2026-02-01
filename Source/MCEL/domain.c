@@ -27,10 +27,10 @@ bool mcel_domain_hash_message(uint8_t* output, mcel_domain_types domain, const u
 
     if (output != NULL && domain != mcel_domain_none)
     {
-        const uint8_t* dcust;
+        const char* dcust;
 
         dcust = mcel_domain_to_name(domain);
-        qsc_cshake256_compute(output, MCEL_DOMAIN_HASH_SIZE, msg, msglen, MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, dcust, MCEL_DOMAIN_STRING_WIDTH - 1U);
+        qsc_cshake256_compute(output, MCEL_DOMAIN_HASH_SIZE, msg, msglen, (const uint8_t*)MCEL_DOMAIN_NAME_STRING, sizeof(MCEL_DOMAIN_NAME_STRING) - 1U, (const uint8_t*)dcust, MCEL_DOMAIN_STRING_WIDTH - 1U);
         res = true;
     }
 
