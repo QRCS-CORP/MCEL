@@ -29,10 +29,10 @@ target_include_directories(mcel PUBLIC "Source/MCEL")
 target_link_libraries(mcel PUBLIC qsc)
 
 # MCEL Test
-file(GLOB_RECURSE MCEL_TEST_SOURCES "Source/MCEL Test/*.c")
+file(GLOB_RECURSE MCEL_TEST_SOURCES "Source/MCELTest/*.c")
 
 add_executable(mcel_test ${MCEL_TEST_SOURCES})
-target_include_directories(mcel_test PRIVATE "Source/MCEL Test")
+target_include_directories(mcel_test PRIVATE "Source/MCELTest")
 target_link_libraries(mcel_test PRIVATE mcel)
 
 # Warnings

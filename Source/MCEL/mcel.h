@@ -491,7 +491,7 @@
  * \enum mcel_record_types
  * \brief The MCEL record type identifiers.
  */
-MCEL_EXPORT_API  enum mcel_record_types
+MCEL_EXPORT_API typedef enum mcel_record_types
 {
     mcel_record_type_none = 0U,             /*!< Record type is none */
     mcel_record_type_checkpoint = 1U,       /*!< A checkpoint reference record (extension hook) */
@@ -504,7 +504,7 @@ MCEL_EXPORT_API  enum mcel_record_types
 * \enum mcel_policy_ops
 * \brief The MCEL policy operation identifiers.
 */
-MCEL_EXPORT_API enum mcel_policy_ops
+MCEL_EXPORT_API typedef enum mcel_policy_ops
 {
 	mcel_policyop_append_record = 1U,		/*!< Authorize appending a record */
 	mcel_policyop_seal_checkpoint = 2U		/*!< Authorize sealing a checkpoint */
@@ -514,7 +514,7 @@ MCEL_EXPORT_API enum mcel_policy_ops
 * \enum mcel_policy_errors
 * \brief The MCEL policy error values.
 */
-MCEL_EXPORT_API enum mcel_policy_errors
+MCEL_EXPORT_API typedef enum mcel_policy_errors
 {
 	mcel_policyerr_none = 0U,				/*!< No policy error is set */
 	mcel_policyerr_invalid_parameter = 1U,	/*!< Policy error invalid parameter */
