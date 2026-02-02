@@ -340,6 +340,7 @@ bool mceltest_block_seal(void)
     bool res;
 
     res = false;
+    encsz = 0U;
 
     /* fill deterministic commitments */
     for (size_t i = 0; i < 5U; ++i)
@@ -493,6 +494,8 @@ bool mceltest_checkpoint_seal_verify(void)
     bool res;
 
     res = false;
+    sig0len = 0U;
+    sig1len = 0U;
 
     for (size_t i = 0; i < (size_t)MCEL_BLOCK_HASH_SIZE; ++i)
     {
