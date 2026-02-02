@@ -109,7 +109,7 @@ MCEL is particularly effective in environments where storage or operators cannot
 
 ### Cryptographic Dependencies
 
-UDIF will use the [QSC cryptographic library](https://github.com/QRCS-CORP/QSC) for hashing, signatures, and KEM operations.  
+MCEL will use the [QSC cryptographic library](https://github.com/QRCS-CORP/QSC) for hashing, signatures, and KEM operations.  
 *QRCS-PL private License. See license file for details. All rights reserved by QRCS Corporation, copyrighted and patents pending.*
 
 ## License
