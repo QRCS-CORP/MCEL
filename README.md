@@ -1,4 +1,4 @@
-# UDIF: Universal Digital Identity Framework
+# Merkle-Chained Event Ledger (MCEL)
 
 ## Introduction 
 
@@ -15,7 +15,6 @@
 [![Custom: Standard](https://img.shields.io/static/v1?label=Security%20Standard&message=MISRA&color=blue)](https://misra.org.uk/)
 [![Custom: Target](https://img.shields.io/static/v1?label=Target%20Industry&message=Communications&color=brightgreen)](#)
 
-# Merkle-Chained Event Ledger (MCEL)
 
 MCEL is a cryptographically verifiable, append-only event ledger designed to provide strong, portable guarantees of integrity, ordering, and auditability for digital records. It is intended as a foundational integrity primitive for systems that must be able to prove, with mathematical certainty, what events occurred and in what order, without relying on consensus protocols, blockchains, or trusted third parties.
 
