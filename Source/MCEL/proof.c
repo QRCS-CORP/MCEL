@@ -229,7 +229,6 @@ bool mcel_proof_verify(const mcel_merkle_proof* proof, const uint8_t* exproot, u
     if (proof != NULL && exproot != NULL)
     {
         uint8_t comphash[MCEL_BLOCK_HASH_SIZE] = { 0U };
-        uint64_t position;
 
         /* verify proof metadata - reject if any check fails */
         if (proof->ledgerrecordcount == exprecordcount &&
@@ -238,7 +237,6 @@ bool mcel_proof_verify(const mcel_merkle_proof* proof, const uint8_t* exproot, u
         {
             /* start with record hash */
             qsc_memutils_copy(comphash, proof->recordhash, MCEL_BLOCK_HASH_SIZE);
-            position = proof->recordposition;
 
             /* compute root by ascending the tree */
             res = true;
@@ -270,7 +268,6 @@ bool mcel_proof_verify(const mcel_merkle_proof* proof, const uint8_t* exproot, u
                 }
 
                 qsc_memutils_copy(comphash, nodehash, MCEL_BLOCK_HASH_SIZE);
-                position >>= 1;
             }
         }
 
