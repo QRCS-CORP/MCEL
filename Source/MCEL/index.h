@@ -98,7 +98,7 @@
  * \enum mcel_index_types
  * \brief The MCEL index type identifiers.
  */
-MCEL_EXPORT_API typedef enum mcel_index_types
+typedef enum mcel_index_types
 {
     mcel_index_type_primary = 1U,      /*!< Primary index (unique keys) */
     mcel_index_type_secondary = 2U,    /*!< Secondary index (non-unique keys) */

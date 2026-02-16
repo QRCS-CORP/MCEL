@@ -88,7 +88,7 @@
  * \enum mcel_domain_types
  * \brief The MCEL hash domain identifiers used to separate commitment types.
  */
-MCEL_EXPORT_API typedef enum mcel_domain_types
+typedef enum mcel_domain_types
 {
 	mcel_domain_none = 0U,				    /*!< Domain type is none */
     mcel_domain_block = 1U,                 /*!< Block commitment domain */

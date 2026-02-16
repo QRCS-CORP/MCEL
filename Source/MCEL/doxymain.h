@@ -103,7 +103,7 @@
 
 /*!
  * \defgroup mcel_core Core API
- * \brief Core initialization, teardown, and configuration.
+ * \brief Core initialization, teardown, and configuration. 
  */
 
 /*!
