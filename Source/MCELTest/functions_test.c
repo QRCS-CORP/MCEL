@@ -56,6 +56,8 @@ static size_t test_key_extractor_sequence(const void* recheader, const uint8_t* 
     size_t* lens;
     size_t res;
 
+    (void)recpayload;
+    (void)payloadlen;
     res = 0U;
 
     if (recheader != NULL && keysout != NULL && keylensout != NULL)
@@ -102,6 +104,8 @@ static size_t test_key_extractor_type(const void* recheader, const uint8_t* recp
     size_t* lens;
     size_t res;
 
+    (void)recpayload;
+    (void)payloadlen;
     res = 0U;
 
     if (recheader != NULL && keysout != NULL && keylensout != NULL)
