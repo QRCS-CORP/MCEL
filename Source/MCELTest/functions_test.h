@@ -118,6 +118,89 @@ bool mceltest_block_seal(void);
  */
 bool mceltest_checkpoint_seal_verify(void);
 
+
+
+/**
+ * /file extensions_test.h
+ * MCEL extensions (index, query, proof) test implementation.
+ *
+ * Internal implementation details.
+ * This file is not part of the public API.
+ */
+
+ /*!
+  * \brief Run the MCEL index self-test.
+  *
+  * \details
+  * This test validates index creation, insertion, lookup, rebuild, and verification
+  * for both primary and secondary index types. Tests include collision handling,
+  * resize behavior, and integrity verification.
+  *
+  * \return Returns true if the test passed, false on failure.
+  */
+bool mceltest_index(void);
+
+/*!
+ * \brief Run the MCEL query self-test.
+ *
+ * \details
+ * This test validates query execution with various filter combinations, pagination
+ * (offset and limit), reverse ordering, and query strategy selection (index vs scan).
+ * Includes edge cases for empty results and boundary conditions.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_query(void);
+
+/*!
+ * \brief Run the MCEL Merkle proof self-test.
+ *
+ * \details
+ * This test validates Merkle inclusion proof generation and verification for various
+ * record positions (first, middle, last, odd/even counts). Tests proof serialization,
+ * deserialization, and rejection of invalid proofs.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_proof(void);
+
+/*!
+ * \brief Run an integrated index-query test.
+ *
+ * \details
+ * This test builds a test ledger with multiple records, creates indices,
+ * executes queries using both index lookup and ledger scan strategies,
+ * and validates that results match across strategies.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_index_query_integration(void);
+
+/*!
+ * \brief Run an end-to-end proof workflow test.
+ *
+ * \details
+ * This test creates a complete ledger, generates proofs for selected records,
+ * serializes and deserializes the proofs, and validates verification including
+ * rejection of proofs for wrong records or wrong roots.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_proof_end_to_end(void);
+
+/*!
+ * \brief Run the MCEL extensions test suite.
+ *
+ * \details
+ * This test runs all extension tests in sequence: index, query, proof,
+ * integration, and end-to-end workflows.
+ *
+ * \return Returns true if all tests passed, false on any failure.
+ */
+bool mceltest_extensions_run(void);
+
+
+
 /*!
  * \brief Run an end-to-end MCEL self-test over record, block, and checkpoint sealing and verification.
  *

@@ -53,23 +53,34 @@
 #define MCLR_EXAMPLE_H
 
 #include "mclr.h"
+#include "search.h"
 #include "mcel.h"
 
-/*
- * mclr_example.c
+/**
+ * \file mclr_example.h
+ * \brief MCLR usage examples and test harness.
  *
- * A foundation-style MCLR usage harness:
- * - File-backed mcel_store_callbacks (simple adapter)
- * - QSC SecRand + Dilithium keypair (no MCEL keygen)
- * - Append UDIF-like records as payloads (header + compact event body)
- * - Seal block, seal checkpoint, export bundle, verify bundle, inclusion proof
+ * Demonstrates MCLR functionality including record append, block sealing,
+ * checkpoint creation, and inclusion proof generation using a file-based
+ * storage backend.
  */
 
+/**
+ * \def MCLR_EXAMPLE_MAX_PATH
+ * \brief Maximum file path length for storage operations.
+ */
 #define MCLR_EXAMPLE_MAX_PATH (QSC_SYSTEM_MAX_PATH)
 
+/**
+ * \brief Application directory name for MCLR storage.
+ */
 static const char MCLR_EXAMPLE_APP_PATH[] = "MCLR";
 
 #pragma pack(push, 1)
+/**
+ * \struct mclr_example_aad_header
+ * \brief Additional authenticated data header for event payloads.
+ */
 typedef struct mclr_example_aad_header
 {
     uint64_t seq;       /* monotonic sequence */
@@ -80,29 +91,178 @@ typedef struct mclr_example_aad_header
 } mclr_example_aad_header;
 #pragma pack(pop)
 
+/**
+ * \struct mclr_example_signature_keypair
+ * \brief Dilithium signature keypair for checkpoint signing.
+ */
 typedef struct mclr_example_signature_keypair
 {
     uint8_t sigkey[MCEL_ASYMMETRIC_SIGNING_KEY_SIZE];   /* the signing key */
     uint8_t verkey[MCEL_ASYMMETRIC_VERIFY_KEY_SIZE];    /* the verification key */
 } mclr_example_signature_keypair;
 
+/**
+ * \struct mclr_example_storage
+ * \brief Storage context for file-based persistence.
+ */
 typedef struct mclr_example_storage
 {
     char basepath[MCLR_EXAMPLE_MAX_PATH];
 } mclr_example_storage;
 
+/**
+ * \brief Append three sample audit records to the ledger.
+ *
+ * Appends records representing evidence ingest, access, and transfer events.
+ * Stores receipts in global mclr_receipt_records array.
+ *
+ * \return mclr_error_none on success, error code on failure.
+ */
 mclr_errors mclr_example_append_record_test();
 
+/**
+ * \brief Initialize MCLR logging system with file-based storage.
+ *
+ * Creates storage directory, generates signature keypair, and initializes
+ * the MCLR ledger with namespace "EVLOG-TEST-01".
+ *
+ * \return mclr_error_none on success, error code on failure.
+ */
 mclr_errors mclr_example_initialization_test();
 
+/**
+ * \brief Seal appended records into a Merkle block.
+ *
+ * Constructs Merkle tree over record commitments and generates block root
+ * and commitment. Stores sealed block to ledger.
+ *
+ * \param blkroot [out] Buffer to receive block Merkle root (32 bytes).
+ * \param reccommits [out] Buffer to receive record commitments (96 bytes).
+ *
+ * \return mclr_error_none on success, error code on failure.
+ */
 mclr_errors mclr_example_block_seal_test(uint8_t blkroot[MCEL_BLOCK_HASH_SIZE], uint8_t reccommits[3U * MCEL_BLOCK_HASH_SIZE]);
 
+/**
+ * \brief Create signed checkpoint bundle for sealed block.
+ *
+ * Seals checkpoint with Dilithium signature binding block root to timestamped
+ * checkpoint header. Checkpoint is stored to ledger and returned in bundle.
+ *
+ * \param blkroot [in] Block Merkle root from block seal operation.
+ * \param bundle [out] Buffer to receive checkpoint bundle (~5KB).
+ *
+ * \return mclr_error_none on success, error code on failure.
+ */
 mclr_errors mclr_example_checkpoint_seal_test(uint8_t blkroot[MCEL_BLOCK_HASH_SIZE], uint8_t bundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE]);
 
+/**
+ * \brief Export checkpoint bundle to file.
+ *
+ * Writes checkpoint bundle to file in MCLR storage directory for distribution
+ * or archival.
+ *
+ * \param blkroot [in] Block root (for consistency with other tests).
+ * \param bundle [in] Checkpoint bundle from seal operation.
+ *
+ * \return mclr_error_none on success, error code on failure.
+ */
 mclr_errors mclr_example_export_checkpoint_test(uint8_t blkroot[MCEL_BLOCK_HASH_SIZE], uint8_t bundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE]);
 
+/**
+ * \brief Generate and verify Merkle inclusion proof for a record.
+ *
+ * Generates proof that record at position 1 is included in the sealed block.
+ * Verifies the proof against the block root.
+ *
+ * \param blkroot [in] Block Merkle root.
+ * \param bundle [in] Checkpoint bundle (for consistency).
+ * \param reccommits [in] All record commitments from block.
+ *
+ * \return mclr_error_none on success, error code on failure.
+ */
 mclr_errors mclr_example_inclusion_proof_test(uint8_t blkroot[MCEL_BLOCK_HASH_SIZE], uint8_t bundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE], uint8_t reccommits[3U * MCEL_BLOCK_HASH_SIZE]);
 
+/*!
+ * \brief Test creating and building search indices over existing records.
+ *
+ * \details
+ * Demonstrates:
+ * - Creating indices (primary, secondary, tertiary)
+ * - Building indices from loaded records
+ * - Verifying index integrity
+ *
+ * \return Returns mclr_error_none on success, or an error code on failure.
+ */
+mclr_errors mclr_example_search_index_create_test(void);
+
+/*!
+ * \brief Test executing basic search queries with various filters.
+ *
+ * \details
+ * Demonstrates:
+ * - Simple event type filtering
+ * - Timestamp range queries
+ * - Flag-based filtering
+ * - Result iteration
+ *
+ * \return Returns mclr_error_none on success, or an error code on failure.
+ */
+mclr_errors mclr_example_search_query_basic_test(void);
+
+/*!
+ * \brief Test advanced search queries with pagination and ordering.
+ *
+ * \details
+ * Demonstrates:
+ * - Complex multi-criteria filters
+ * - Pagination (offset/limit)
+ * - Reverse chronological ordering
+ * - Result counting before execution
+ *
+ * \return Returns mclr_error_none on success, or an error code on failure.
+ */
+mclr_errors mclr_example_search_query_advanced_test(void);
+
+/*!
+ * \brief Test incremental index updates after new records are appended.
+ *
+ * \details
+ * Demonstrates:
+ * - Updating indices with new records
+ * - Avoiding full rebuild
+ * - Querying updated indices
+ *
+ * \return Returns mclr_error_none on success, or an error code on failure.
+ */
+mclr_errors mclr_example_search_index_update_test(void);
+
+/*!
+ * \brief Comprehensive integration test combining all search features.
+ *
+ * \details
+ * Demonstrates complete workflow:
+ * - Append multiple records with different types
+ * - Build indices
+ * - Execute complex queries
+ * - Generate proofs for results
+ * - Serialize and verify proofs
+ *
+ * \return Returns mclr_error_none on success, or an error code on failure.
+ */
+mclr_errors mclr_example_search_integration_test(void);
+
+/**
+ * \brief Clean up MCLR resources and close ledger.
+ *
+ * Closes ledger, clears key material from memory, and releases resources.
+ * Should be called before program termination.
+ */
 void mclr_example_cleanup();
+
+/*!
+ * \brief Cleanup search resources (call in mclr_example_cleanup).
+ */
+void mclr_example_search_cleanup(void);
 
 #endif

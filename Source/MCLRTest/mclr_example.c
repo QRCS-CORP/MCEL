@@ -1,4 +1,5 @@
 #include "mclr_example.h"
+#include "consoleutils.h"
 #include "csp.h"
 #include "fileutils.h"
 #include "folderutils.h"
@@ -6,14 +7,153 @@
 #include "stringutils.h"
 #include "timestamp.h"
 
-mclr_logging_state m_mclr_logging_state;
-mclr_receipt mclr_receipt_records[3U];
-mcel_store_callbacks m_mcel_store_callbacks;
-mclr_example_signature_keypair m_mclr_example_signature_keypair;
-mclr_example_storage m_mclr_example_storage;
+static mclr_logging_state m_mclr_logging_state;
+static mclr_receipt mclr_receipt_records[3U];
+static mcel_store_callbacks m_mcel_store_callbacks;
+static mclr_example_signature_keypair m_mclr_example_signature_keypair;
+static mclr_example_storage m_mclr_example_storage;
+static mclr_search_index m_search_index;
+static void** m_loaded_headers = NULL;
+static uint8_t** m_loaded_payloads = NULL;
+static size_t* m_loaded_lens = NULL;
+static size_t m_loaded_count = 0U;
 
-static size_t mclr_example_build_sample_event(uint8_t* output, size_t outlen, uint8_t flags, uint64_t seq, uint64_t ctime, 
-    uint64_t epoch, uint8_t suiteid, const char* body)
+static void* mclr_example_create_mock_header(uint64_t sequence, uint32_t type, uint64_t timestamp, uint8_t flags)
+{
+    /* create mock record header for testing */
+    mcel_record_header* hdr;
+
+    hdr = (mcel_record_header*)qsc_memutils_malloc(sizeof(mcel_record_header));
+
+    if (hdr != NULL)
+    {
+        qsc_memutils_clear((uint8_t*)hdr, sizeof(mcel_record_header));
+        hdr->sequence = sequence;
+        hdr->type = type;
+        hdr->timestamp = timestamp;
+        hdr->flags = flags;
+        hdr->keyid[0U] = (uint8_t)(sequence & 0xFFU);
+        hdr->keyid[1U] = (uint8_t)((sequence >> 8U) & 0xFFU);
+    }
+
+    return hdr;
+}
+
+static uint8_t* mclr_example_create_mock_payload(uint64_t sequence, size_t* lenout)
+{
+    /* create mock payload for testing */
+    MCLR_ASSERT(lenout != NULL);
+
+    char body[128U] = { 0U };
+    char seqstr[32U] = { 0U };
+    uint8_t* payload;
+    size_t bodylen;
+
+    qsc_stringutils_uint64_to_string(sequence, seqstr, sizeof(seqstr));
+    qsc_stringutils_copy_string(body, sizeof(body), "Test Event ");
+    qsc_stringutils_concat_strings(body, sizeof(body), seqstr);
+    bodylen = qsc_stringutils_string_size(body);
+
+    payload = (uint8_t*)qsc_memutils_malloc(bodylen);
+
+    if (payload != NULL)
+    {
+        qsc_memutils_copy(payload, (uint8_t*)body, bodylen);
+        *lenout = bodylen;
+    }
+
+    return payload;
+}
+
+static bool mclr_example_load_mock_records(size_t count)
+{
+    /* load mock records (simulates reading from storage) */
+    bool res;
+    uint64_t basetime;
+    size_t i;
+
+    res = false;
+    basetime = qsc_timestamp_epochtime_seconds();
+
+    /* free any existing records */
+    if (m_loaded_headers != NULL)
+    {
+        mclr_search_free_records(m_loaded_headers, m_loaded_payloads, m_loaded_lens, m_loaded_count);
+        m_loaded_headers = NULL;
+        m_loaded_payloads = NULL;
+        m_loaded_lens = NULL;
+        m_loaded_count = 0U;
+    }
+
+    /* allocate arrays */
+    m_loaded_headers = (void**)qsc_memutils_malloc(count * sizeof(void*));
+
+    if (m_loaded_headers != NULL)
+    {
+        m_loaded_payloads = (uint8_t**)qsc_memutils_malloc(count * sizeof(uint8_t*));
+
+        if (m_loaded_payloads != NULL)
+        {
+            m_loaded_lens = (size_t*)qsc_memutils_malloc(count * sizeof(size_t));
+
+            if (m_loaded_lens != NULL)
+            {
+                res = true;
+
+                /* create diverse test records */
+                for (i = 0U; i < count && res == true; ++i)
+                {
+                    uint32_t type;
+                    uint8_t flags;
+                    uint64_t timestamp;
+
+                    /* vary event types (1, 2, 3 repeating) */
+                    type = (uint32_t)((i % 3U) + 1U);
+
+                    /* vary flags (0x00, 0x01, 0x02, 0x03 repeating) */
+                    flags = (uint8_t)(i % 4U);
+
+                    /* timestamps spread over time */
+                    timestamp = basetime + (i * 60U);
+
+                    m_loaded_headers[i] = mclr_example_create_mock_header(i + 1U, type, timestamp, flags);
+                    m_loaded_payloads[i] = mclr_example_create_mock_payload(i + 1U, &m_loaded_lens[i]);
+
+                    if (m_loaded_headers[i] == NULL || m_loaded_payloads[i] == NULL)
+                    {
+                        res = false;
+                    }
+                }
+            }
+            else
+            {
+                qsc_memutils_alloc_free(m_loaded_headers);
+                qsc_memutils_alloc_free(m_loaded_payloads);
+            }
+        }
+        else
+        {
+            qsc_memutils_alloc_free(m_loaded_headers);
+        }
+
+        if (res == true)
+        {
+            m_loaded_count = count;
+        }
+        else
+        {
+            mclr_search_free_records(m_loaded_headers, m_loaded_payloads, m_loaded_lens, count);
+            m_loaded_headers = NULL;
+            m_loaded_payloads = NULL;
+            m_loaded_lens = NULL;
+        }
+    }
+
+    return res;
+}
+
+static size_t mclr_example_build_sample_event(uint8_t* output, size_t outlen, uint8_t flags, uint64_t seq, uint64_t ctime, uint64_t epoch, 
+    uint8_t suiteid, const char* body)
 {
     MCLR_ASSERT(output != NULL);
     MCLR_ASSERT(outlen != 0U);
@@ -532,4 +672,341 @@ void mclr_example_cleanup()
     }
 
     qsc_memutils_clear(&m_mclr_example_storage, sizeof(mclr_example_storage));
+}
+
+mclr_errors mclr_example_search_index_create_test(void)
+{
+    mclr_errors err;
+
+    err = mclr_error_none;
+
+    /* create index with all three index types */
+    err = mclr_search_index_create(&m_search_index, true, true);
+
+    if (err == mclr_error_none)
+    {
+        /* load mock records */
+
+        if (mclr_example_load_mock_records(12U) == true)
+        {
+            /* build indices */
+            err = mclr_search_index_build(&m_search_index, (const void**)m_loaded_headers, (const uint8_t**)m_loaded_payloads, m_loaded_lens, m_loaded_count);
+
+            if (err == mclr_error_none)
+            {
+                /* verify index integrity */
+                err = mclr_search_index_verify(&m_search_index);
+            }
+            else
+            {
+                err = mclr_error_initialization;
+            }
+        }
+        else
+        {
+            err = mclr_error_initialization;
+        }
+    }
+    else
+    {
+        err = mclr_error_initialization;
+    }
+
+    return err;
+}
+
+mclr_errors mclr_example_search_query_basic_test(void)
+{
+    mclr_search_filter filter;
+    mclr_search_result result;
+    mclr_errors err;
+
+    err = mclr_error_none;
+
+    if (m_loaded_count != 0U)
+    {
+        /* search by event type */
+        mclr_search_filter_init(&filter);
+        mclr_search_filter_set_event_type(&filter, 2U);
+
+        err = mclr_search_execute(&m_search_index, &filter, &result);
+
+        if (err == mclr_error_none)
+        {
+            char msg[256U] = { 0U };
+            size_t i;
+
+            /* display first few results */
+            for (i = 0U; i < result.mcelresult.count && i < 3U; ++i)
+            {
+                const mcel_record_header* hdr;
+
+                err = mclr_search_result_get_header(&result, i, &hdr);
+
+                if (err == mclr_error_none)
+                {
+                    break;
+                }
+            }
+
+            mclr_search_result_dispose(&result);
+        }
+    }
+    else
+    {
+        err = mclr_error_initialization;
+    }
+
+    /* search by flags */
+    if (err == mclr_error_none)
+    {
+        char msg[256U] = { 0U };
+
+        /* search for records with flag 0x02 */
+        mclr_search_filter_init(&filter);
+        mclr_search_filter_set_flags(&filter, 0x02U, 0x00U);
+
+        err = mclr_search_execute(&m_search_index, &filter, &result);
+
+        if (err == mclr_error_none)
+        {
+            mclr_search_result_dispose(&result);
+        }
+    }
+
+    /* count query */
+    if (err == mclr_error_none)
+    {
+        size_t count;
+        char msg[256U] = { 0U };
+
+        /* count records of type 1 */
+        mclr_search_filter_init(&filter);
+        mclr_search_filter_set_event_type(&filter, 1U);
+
+        err = mclr_search_count(&m_search_index, &filter, &count);
+    }
+
+    return err;
+}
+
+mclr_errors mclr_example_search_query_advanced_test(void)
+{
+    mclr_search_filter filter;
+    mclr_search_result result;
+    uint64_t basetime;
+    mclr_errors err;
+
+    err = mclr_error_none;
+
+    if (m_loaded_count != 0U)
+    {
+        basetime = qsc_timestamp_epochtime_seconds();
+
+        /* complex multi-criteria query: type=2, timestamp range, flags */
+        mclr_search_filter_init(&filter);
+        mclr_search_filter_set_event_type(&filter, 2U);
+        mclr_search_filter_set_timerange(&filter, basetime, basetime + 600U);
+        mclr_search_filter_set_flags(&filter, 0x02U, 0x00U);
+
+        err = mclr_search_execute(&m_search_index, &filter, &result);
+        mclr_search_result_dispose(&result);
+    }
+    else
+    {
+        err = mclr_error_initialization;
+    }
+
+    /* pagination */
+    if (err == mclr_error_none)
+    {
+        char msg[256U] = { 0U };
+
+        /* paginated query (offset=2, limit=3) */
+        mclr_search_filter_init(&filter);
+        mclr_search_filter_set_event_type(&filter, 1U);
+        mclr_search_filter_set_pagination(&filter, 2U, 3U);
+
+        err = mclr_search_execute(&m_search_index, &filter, &result);
+
+        if (err == mclr_error_none)
+        {
+            mclr_search_result_dispose(&result);
+        }
+    }
+
+    /* reverse chronological ordering */
+    if (err == mclr_error_none)
+    {
+        size_t i;
+
+        /* reverse chronological query */
+        mclr_search_filter_init(&filter);
+        mclr_search_filter_set_ordering(&filter, true);
+        mclr_search_filter_set_pagination(&filter, 0U, 5U);
+
+        err = mclr_search_execute(&m_search_index, &filter, &result);
+
+        if (err == mclr_error_none)
+        {
+            for (i = 0U; i < result.mcelresult.count && i < 5U; ++i)
+            {
+                const mcel_record_header* hdr;
+
+                err = mclr_search_result_get_header(&result, i, &hdr);
+            }
+
+            mclr_search_result_dispose(&result);
+        }
+    }
+
+    return err;
+}
+
+mclr_errors mclr_example_search_index_update_test(void)
+{
+    void** tempheaders;
+    size_t* templens;
+    uint8_t** temppayloads;
+    uint64_t basetime;
+    size_t i;
+    size_t newcount;
+    size_t oldcount;
+    size_t totalcount;
+    bool allocok;
+    mclr_errors err;
+
+    err = mclr_error_initialization; 
+
+    if (m_loaded_count != 0U)
+    {
+        /* save old count */
+        oldcount = m_loaded_count;
+        newcount = 5U;
+        totalcount = oldcount + newcount;
+        basetime = qsc_timestamp_epochtime_seconds() + 1000U;
+
+        /* expand arrays using realloc */
+        tempheaders = (void**)qsc_memutils_realloc(m_loaded_headers, totalcount * sizeof(void*));
+
+        if (tempheaders != NULL)
+        {
+            m_loaded_headers = tempheaders;
+
+            temppayloads = (uint8_t**)qsc_memutils_realloc(m_loaded_payloads, totalcount * sizeof(uint8_t*));
+
+            if (temppayloads != NULL)
+            {
+                m_loaded_payloads = temppayloads;
+
+                templens = (size_t*)qsc_memutils_realloc(m_loaded_lens, totalcount * sizeof(size_t));
+
+                if (templens != NULL)
+                {
+                    m_loaded_lens = templens;
+
+                    /* create new records in expanded arrays */
+                    allocok = true;
+
+                    for (i = 0U; i < newcount && allocok == true; ++i)
+                    {
+                        uint64_t seq;
+                        size_t idx;
+
+                        seq = oldcount + i + 1U;
+                        idx = oldcount + i;
+
+                        m_loaded_headers[idx] = mclr_example_create_mock_header(seq, (uint32_t)((i % 3U) + 1U), basetime + (i * 60U), (uint8_t)(i % 4U));
+                        m_loaded_payloads[idx] = mclr_example_create_mock_payload(seq, &m_loaded_lens[idx]);
+
+                        if (m_loaded_headers[idx] == NULL || m_loaded_payloads[idx] == NULL)
+                        {
+                            allocok = false;
+                        }
+                    }
+
+                    if (allocok == true)
+                    {
+                        char buf[256U] = { 0U };
+
+                        /* update global count */
+                        m_loaded_count = totalcount;
+                        m_search_index.recheaders = (const void**)m_loaded_headers;
+                        m_search_index.recpayloads = (const uint8_t**)m_loaded_payloads;
+                        m_search_index.payloadlens = m_loaded_lens;
+
+                        /* update indices incrementally with new records only */
+                        err = mclr_search_index_update(&m_search_index, (const void**)&m_loaded_headers[oldcount], 
+                            (const uint8_t**)&m_loaded_payloads[oldcount], (const size_t*)&m_loaded_lens[oldcount], newcount);
+
+                        if (err == mclr_error_none)
+                        {
+                            mclr_search_filter filter;
+                            mclr_search_result result;
+
+                            /* test query on updated index */
+                            mclr_search_filter_init(&filter);
+                            mclr_search_filter_set_event_type(&filter, 2U);
+
+                            err = mclr_search_execute(&m_search_index, &filter, &result);
+
+                            if (err == mclr_error_none)
+                            {
+                                mclr_search_result_dispose(&result);
+                                err = mclr_error_none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return err;
+}
+
+mclr_errors mclr_example_search_integration_test(void)
+{
+    mclr_errors err;
+
+    err = mclr_error_none;
+
+    /* index creation */
+    err = mclr_example_search_index_create_test();
+
+    /* basic queries */
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_search_query_basic_test();
+    }
+
+    /* advanced queries */
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_search_query_advanced_test();
+    }
+
+    /* index updates */
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_search_index_update_test();
+    }
+
+    return err;
+}
+
+void mclr_example_search_cleanup(void)
+{
+    /* dispose search index */
+    mclr_search_index_dispose(&m_search_index);
+
+    /* free loaded records */
+    if (m_loaded_headers != NULL)
+    {
+        mclr_search_free_records(m_loaded_headers, m_loaded_payloads, m_loaded_lens, m_loaded_count);
+        m_loaded_headers = NULL;
+        m_loaded_payloads = NULL;
+        m_loaded_lens = NULL;
+        m_loaded_count = 0U;
+    }
 }

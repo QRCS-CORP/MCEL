@@ -21,9 +21,15 @@
     <ClInclude Include="mclrcommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="search.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mclr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="search.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

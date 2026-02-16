@@ -33,7 +33,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -80,6 +80,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\QSC\QSC</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -96,6 +97,9 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)..\QSC\QSC</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -112,6 +116,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\QSC\QSC</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +134,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\QSC\QSC</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,10 +145,13 @@
   <ItemGroup>
     <ClInclude Include="domain.h" />
     <ClInclude Include="doxymain.h" />
+    <ClInclude Include="index.h" />
+    <ClInclude Include="mcel.h" />
     <ClInclude Include="merkle.h" />
     <ClInclude Include="anchor.h" />
-    <ClInclude Include="mcel.h" />
     <ClInclude Include="mcelcommon.h" />
+    <ClInclude Include="proof.h" />
+    <ClInclude Include="query.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\QSC\QSC\QSC.vcxproj">
@@ -150,9 +160,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="domain.c" />
+    <ClCompile Include="index.c" />
     <ClCompile Include="merkle.c" />
     <ClCompile Include="anchor.c" />
     <ClCompile Include="mcel.c" />
+    <ClCompile Include="proof.c" />
+    <ClCompile Include="query.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

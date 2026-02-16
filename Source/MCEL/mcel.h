@@ -947,6 +947,14 @@ MCEL_EXPORT_API bool mcel_checkpoint_verify(uint8_t* chkcommit, size_t* commitle
 	size_t siglen, const uint8_t* publickey);
 
 /*!
+ * \brief Generate a signature keypair
+ *
+ * \param sigkey Signing key
+ * \param verkey Verification key
+ */
+MCEL_EXPORT_API void mcel_generate_keypair(uint8_t* sigkey, uint8_t* verkey);
+
+/*!
  * \brief Get the required buffer size for a key rotation record payload.
  *
  * \param pubkeylen The new public key length in bytes.

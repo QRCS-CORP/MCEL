@@ -1,12 +1,145 @@
 #include "functions_test.h"
 #include "domain.h"
+#include "index.h"
 #include "merkle.h"
 #include "mcel.h"
+#include "proof.h"
+#include "query.h"
 #include "acp.h"
 #include "consoleutils.h"
 #include "dilithium.h"
 #include "intutils.h"
 #include "memutils.h"
+
+static void create_test_records(mcel_record_header** headers, size_t count)
+{
+    for (size_t i = 0U; i < count; ++i)
+    {
+        headers[i] = (mcel_record_header*)qsc_memutils_malloc(sizeof(mcel_record_header));
+
+        if (headers[i] != NULL)
+        {
+            qsc_memutils_clear((uint8_t*)headers[i], sizeof(mcel_record_header));
+            headers[i]->sequence = i;
+            /* 2024-01-01 + i hours */
+            headers[i]->timestamp = 1704067200U + (i * 3600U);
+            /* types 1, 2, 3 */
+            headers[i]->type = (i % 3U) + 1U;
+            /* flags 0, 1, 2, 3 */
+            headers[i]->flags = (uint8_t)(i % 4U);
+            headers[i]->version = MCEL_RECORD_VERSION;
+
+            /* set keyid to deterministic value */
+            for (size_t j = 0U; j < MCEL_RECORD_KEYID_SIZE; ++j)
+            {
+                headers[i]->keyid[j] = (uint8_t)((i + j) & 0xFFU);
+            }
+        }
+    }
+}
+
+static void free_test_records(mcel_record_header** headers, size_t count)
+{
+    for (size_t i = 0U; i < count; ++i)
+    {
+        if (headers[i] != NULL)
+        {
+            qsc_memutils_alloc_free(headers[i]);
+        }
+    }
+}
+
+static size_t test_key_extractor_sequence(const void* recheader, const uint8_t* recpayload, size_t payloadlen, uint8_t*** keysout, size_t** keylensout)
+{
+    const mcel_record_header* header;
+    uint8_t** keys;
+    size_t* lens;
+    size_t res;
+
+    res = 0U;
+
+    if (recheader != NULL && keysout != NULL && keylensout != NULL)
+    {
+        header = (const mcel_record_header*)recheader;
+        keys = (uint8_t**)qsc_memutils_malloc(sizeof(uint8_t*));
+        lens = (size_t*)qsc_memutils_malloc(sizeof(size_t));
+
+        if (keys != NULL)
+        {
+            if (lens != NULL)
+            {
+                keys[0] = (uint8_t*)qsc_memutils_malloc(8U);
+
+                if (keys[0] != NULL)
+                {
+                    qsc_intutils_be64to8(keys[0], header->sequence);
+                    lens[0] = 8U;
+                    *keysout = keys;
+                    *keylensout = lens;
+                    res = 1U;
+                }
+
+                if (res == 0U)
+                {
+                    qsc_memutils_alloc_free(lens);
+                }
+            }
+
+            if (res == 0U)
+            {
+                qsc_memutils_alloc_free(keys);
+            }
+        }
+    }
+
+    return res;
+}
+
+static size_t test_key_extractor_type(const void* recheader, const uint8_t* recpayload, size_t payloadlen, uint8_t*** keysout, size_t** keylensout)
+{
+    const mcel_record_header* header;
+    uint8_t** keys;
+    size_t* lens;
+    size_t res;
+
+    res = 0U;
+
+    if (recheader != NULL && keysout != NULL && keylensout != NULL)
+    {
+        header = (const mcel_record_header*)recheader;
+        keys = (uint8_t**)qsc_memutils_malloc(sizeof(uint8_t*));
+        lens = (size_t*)qsc_memutils_malloc(sizeof(size_t));
+
+        if (keys != NULL)
+        {
+            if (lens != NULL)
+            {
+                keys[0U] = (uint8_t*)qsc_memutils_malloc(4U);
+
+                if (keys[0U] != NULL)
+                {
+                    qsc_intutils_be32to8(keys[0], header->type);
+                    lens[0U] = 4U;
+                    *keysout = keys;
+                    *keylensout = lens;
+                    res = 1U;
+                }
+
+                if (res == 0U)
+                {
+                    qsc_memutils_alloc_free(lens);
+                }
+            }
+
+            if (res == 0U)
+            {
+                qsc_memutils_alloc_free(keys);
+            }
+        }
+    }
+
+    return res;
+}
 
 bool mceltest_hash(void)
 {
@@ -634,6 +767,805 @@ bool mceltest_checkpoint_seal_verify(void)
     return res;
 }
 
+bool mceltest_index(void)
+{
+    mcel_index idx = { 0U };
+    mcel_record_header* headers[100U] = { 0U };
+    const void* header_ptrs[100U] = { 0U };
+    uint8_t key[8U] = { 0U };
+    uint64_t* positions;
+    size_t count;
+    bool res;
+
+    res = false;
+
+    /* create primary index */
+    if (mcel_index_create(&idx, 16U, mcel_index_type_primary) == true)
+    {
+        res = true;
+
+        /* insert keys */
+        for (size_t i = 0U; i < 10U && res == true; ++i)
+        {
+            qsc_intutils_be64to8(key, i);
+
+            if (mcel_index_insert(&idx, key, sizeof(key), i) == false)
+            {
+                res = false;
+            }
+        }
+
+        /* lookup existing key */
+        if (res == true)
+        {
+            qsc_intutils_be64to8(key, 5U);
+
+            if (mcel_index_lookup(&idx, key, sizeof(key), &positions, &count) == true)
+            {
+                res = (count == 1U && positions[0U] == 5U);
+
+                if (positions != NULL)
+                {
+                    qsc_memutils_alloc_free(positions);
+                }
+            }
+            else
+            {
+                res = false;
+            }
+        }
+
+        /* lookup non-existent key */
+        if (res == true)
+        {
+            qsc_intutils_be64to8(key, 99U);
+
+            if (mcel_index_lookup(&idx, key, sizeof(key), &positions, &count) == true)
+            {
+                res = (count == 0U);
+            }
+            else
+            {
+                res = false;
+            }
+        }
+
+        /* primary index rejects duplicate keys */
+        if (res == true)
+        {
+            qsc_intutils_be64to8(key, 5U);
+
+            /* Inserting duplicate should fail for primary index */
+            res = (mcel_index_insert(&idx, key, sizeof(key), 100U) == false);
+        }
+
+        mcel_index_dispose(&idx);
+    }
+
+    /* secondary index allows duplicates */
+    if (res == true)
+    {
+        if (mcel_index_create(&idx, 16U, mcel_index_type_secondary) == true)
+        {
+            qsc_intutils_be64to8(key, 42U);
+
+            /* insert same key multiple times */
+            res = mcel_index_insert(&idx, key, sizeof(key), 10U);
+
+            if (res == true)
+            {
+                res = mcel_index_insert(&idx, key, sizeof(key), 20U);
+            }
+
+            if (res == true)
+            {
+                res = mcel_index_insert(&idx, key, sizeof(key), 30U);
+            }
+
+            /* lookup should return all three positions */
+            if (res == true)
+            {
+                if (mcel_index_lookup(&idx, key, sizeof(key), &positions, &count) == true)
+                {
+                    res = (count == 3U);
+
+                    if (res == true)
+                    {
+                        /* verify all positions are present (order may vary) */
+                        bool found10;
+                        bool found20;
+                        bool found30;
+
+                        found10 = false;
+                        found20 = false;
+                        found30 = false;
+
+                        for (size_t i = 0; i < count; ++i)
+                        {
+                            if (positions[i] == 10U)
+                            {
+                                found10 = true;
+                            }
+                            else if (positions[i] == 20U)
+                            {
+                                found20 = true;
+                            }
+                            else if (positions[i] == 30U)
+                            {
+                                found30 = true;
+                            }
+                        }
+
+                        res = (found10 == true && found20 == true && found30 == true);
+                    }
+
+                    if (positions != NULL)
+                    {
+                        qsc_memutils_alloc_free(positions);
+                    }
+                }
+                else
+                {
+                    res = false;
+                }
+            }
+
+            mcel_index_dispose(&idx);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* rebuild and verify */
+    if (res == true)
+    {
+        create_test_records(headers, 50U);
+
+        for (size_t i = 0U; i < 50U; ++i)
+        {
+            header_ptrs[i] = headers[i];
+        }
+
+        if (mcel_index_create(&idx, 0U, mcel_index_type_primary) == true)
+        {
+            res = mcel_index_rebuild(&idx, header_ptrs, NULL, NULL, 50U, test_key_extractor_sequence);
+
+            if (res == true)
+            {
+                /* verify rebuild worked, lookup a key */
+                qsc_intutils_be64to8(key, 25U);
+
+                if (mcel_index_lookup(&idx, key, sizeof(key), &positions, &count) == true)
+                {
+                    res = (count == 1U && positions[0U] == 25U);
+
+                    if (positions != NULL)
+                    {
+                        qsc_memutils_alloc_free(positions);
+                    }
+                }
+                else
+                {
+                    res = false;
+                }
+            }
+
+            /* verify index integrity */
+            if (res == true)
+            {
+                res = mcel_index_verify(&idx, header_ptrs, NULL, NULL, 50U, test_key_extractor_sequence);
+            }
+
+            mcel_index_dispose(&idx);
+        }
+        else
+        {
+            res = false;
+        }
+
+        free_test_records(headers, 50U);
+    }
+
+    return res;
+}
+
+bool mceltest_query(void)
+{
+    mcel_record_header* headers[100U] = { 0U };
+    const void* header_ptrs[100U] = { 0U };
+    mcel_query_filter filter = { 0U };
+    mcel_query_result result = { 0U };
+    bool res;
+
+    res = false;
+
+    /* create test records */
+    create_test_records(headers, 100U);
+
+    for (size_t i = 0; i < 100U; ++i)
+    {
+        header_ptrs[i] = headers[i];
+    }
+
+    /* query all records (no filter) */
+    mcel_query_filter_init(&filter);
+
+    if (mcel_query_execute(&result, header_ptrs, NULL, NULL, 100U, &filter, NULL) == true)
+    {
+        res = (result.count == 100U);
+        mcel_query_result_dispose(&result);
+    }
+
+    /* filter by timestamp range */
+    if (res == true)
+    {
+        mcel_query_filter_init(&filter);
+        /* after record 10 */
+        filter.afterts = 1704067200U + (10U * 3600U);
+        /* before record 20 */
+        filter.beforets = 1704067200U + (20U * 3600U);
+
+        if (mcel_query_execute(&result, header_ptrs, NULL, NULL, 100U, &filter, NULL) == true)
+        {
+            /* should match records 11-19 (9 records) */
+            res = (result.count == 9U);
+            mcel_query_result_dispose(&result);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* filter by record type */
+    if (res == true)
+    {
+        mcel_query_filter_init(&filter);
+        /* type 2 */
+        filter.requiredtype = 2U;
+
+        if (mcel_query_execute(&result, header_ptrs, NULL, NULL, 100U, &filter, NULL) == true)
+        {
+            /* records with type 2: indices 1, 4, 7, ... (every 3rd starting at 1) */
+            /* count = floor(100 / 3) = 33 */
+            res = (result.count == 33U);
+
+            /* verify all returned records have correct type */
+            if (res == true)
+            {
+                for (size_t i = 0; i < result.count; ++i)
+                {
+                    const mcel_record_header* hdr;
+
+                    hdr = (const mcel_record_header*)header_ptrs[result.recpositions[i]];
+
+                    if (hdr->type != 2U)
+                    {
+                        res = false;
+                        break;
+                    }
+                }
+            }
+
+            mcel_query_result_dispose(&result);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* filter by flags */
+    if (res == true)
+    {
+        mcel_query_filter_init(&filter);
+        /* must have bit 0 set */
+        filter.requiredflags = 0x01U;
+
+        if (mcel_query_execute(&result, header_ptrs, NULL, NULL, 100U, &filter, NULL) == true)
+        {
+            /* records with flags & 0x01: indices 1, 3, 5, 7, ... */
+            res = (result.count == 50U);
+            mcel_query_result_dispose(&result);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* pagination with offset and limit */
+    if (res == true)
+    {
+        mcel_query_filter_init(&filter);
+        filter.offset = 10U;
+        filter.limit = 5U;
+
+        if (mcel_query_execute(&result, header_ptrs, NULL, NULL, 100U, &filter, NULL) == true)
+        {
+            res = (result.count == 5U && result.hasmore != 0U);
+
+            /* verify positions are 10, 11, 12, 13, 14 */
+            if (res == true)
+            {
+                for (size_t i = 0U; i < result.count; ++i)
+                {
+                    if (result.recpositions[i] != (10U + i))
+                    {
+                        res = false;
+                        break;
+                    }
+                }
+            }
+
+            mcel_query_result_dispose(&result);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* reverse order */
+    if (res == true)
+    {
+        mcel_query_filter_init(&filter);
+        filter.reverseorder = 1U;
+        filter.limit = 10U;
+
+        if (mcel_query_execute(&result, header_ptrs, NULL, NULL, 100U, &filter, NULL) == true)
+        {
+            res = (result.count == 10U);
+
+            /* verify positions are 99, 98, 97, ... 90 */
+            if (res == true)
+            {
+                for (size_t i = 0; i < result.count; ++i)
+                {
+                    if (result.recpositions[i] != (99U - i))
+                    {
+                        res = false;
+                        break;
+                    }
+                }
+            }
+
+            mcel_query_result_dispose(&result);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* count without retrieval */
+    if (res == true)
+    {
+        size_t match_count;
+
+        mcel_query_filter_init(&filter);
+        filter.requiredtype = 1U;
+
+        if (mcel_query_count(&match_count, header_ptrs, 100U, &filter) == true)
+        {
+            /* type 1 appears at indices 0, 3, 6, ... = 34 times */
+            res = (match_count == 34U);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* combined filters */
+    if (res == true)
+    {
+        mcel_query_filter_init(&filter);
+        filter.requiredtype = 2U;
+        /* type 2 AND flags with bit 1 set */
+        filter.requiredflags = 0x02U;
+
+        if (mcel_query_execute(&result, header_ptrs, NULL, NULL, 100U, &filter, NULL) == true)
+        {
+            /* type 2 at indices 1, 4, 7, 10, 13, ...
+             * flags 0x02 at indices 2, 6, 10, 14, ...
+             * intersection: 10, 22, 34, 46, 58, 70, 82, 94 = 8 records */
+            res = (result.count == 16U);
+            mcel_query_result_dispose(&result);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    free_test_records(headers, 100U);
+
+    return res;
+}
+
+bool mceltest_proof(void)
+{
+    mcel_merkle_proof proof = { 0U };
+    uint8_t record_commits[10U * MCEL_BLOCK_HASH_SIZE] = { 0U };
+    uint8_t merkle_root[MCEL_BLOCK_HASH_SIZE] = { 0U };
+    uint8_t serialized[MCEL_PROOF_MAX_SERIALIZED_SIZE] = { 0U };
+    size_t written;
+    bool res;
+
+    res = false;
+
+    /* Create test record commitments */
+    for (size_t i = 0U; i < 10U; ++i)
+    {
+        for (size_t j = 0; j < MCEL_BLOCK_HASH_SIZE; ++j)
+        {
+            record_commits[(i * MCEL_BLOCK_HASH_SIZE) + j] = (uint8_t)(0xA0U + (uint8_t)i);
+        }
+    }
+
+    /* compute Merkle root */
+    if (mcel_merkle_root(merkle_root, record_commits, 10U) == true)
+    {
+        res = true;
+
+        /* generate proof for middle record */
+        if (mcel_proof_generate(&proof, record_commits, 10U, 5U, merkle_root) == true)
+        {
+            /* verify proof */
+            if (mcel_proof_verify(&proof, merkle_root, 10U) == true)
+            {
+                res = true;
+            }
+            else
+            {
+                res = false;
+            }
+
+            /* serialize proof */
+            if (res == true)
+            {
+                if (mcel_proof_serialize(serialized, sizeof(serialized), &proof, &written) == true)
+                {
+                    res = (written > 0U && written < sizeof(serialized));
+                }
+                else
+                {
+                    res = false;
+                }
+            }
+
+            mcel_proof_dispose(&proof);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* deserialize and verify */
+    if (res == true)
+    {
+        if (mcel_proof_deserialize(&proof, serialized, written) == true)
+        {
+            res = mcel_proof_verify(&proof, merkle_root, 10U);
+            mcel_proof_dispose(&proof);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* proof for first record */
+    if (res == true)
+    {
+        if (mcel_proof_generate(&proof, record_commits, 10U, 0U, merkle_root) == true)
+        {
+            res = mcel_proof_verify(&proof, merkle_root, 10U);
+            mcel_proof_dispose(&proof);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* proof for last record (edge case) */
+    if (res == true)
+    {
+        if (mcel_proof_generate(&proof, record_commits, 10U, 9U, merkle_root) == true)
+        {
+            res = mcel_proof_verify(&proof, merkle_root, 10U);
+            mcel_proof_dispose(&proof);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* invalid proof (wrong root) */
+    if (res == true)
+    {
+        uint8_t wrong_root[MCEL_BLOCK_HASH_SIZE];
+
+        qsc_memutils_copy(wrong_root, merkle_root, MCEL_BLOCK_HASH_SIZE);
+        wrong_root[0] ^= 0x01U;  /* Corrupt root */
+
+        if (mcel_proof_generate(&proof, record_commits, 10U, 5U, merkle_root) == true)
+        {
+            /* verification against wrong root should fail */
+            res = (mcel_proof_verify(&proof, wrong_root, 10U) == false);
+            mcel_proof_dispose(&proof);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    /* invalid proof (wrong record count) */
+    if (res == true)
+    {
+        if (mcel_proof_generate(&proof, record_commits, 10U, 5U, merkle_root) == true)
+        {
+            /* verification with wrong count should fail */
+            res = (mcel_proof_verify(&proof, merkle_root, 11U) == false);
+            mcel_proof_dispose(&proof);
+        }
+        else
+        {
+            res = false;
+        }
+    }
+
+    return res;
+}
+
+bool mceltest_index_query_integration(void)
+{
+    mcel_query_filter filter = { 0U };
+    mcel_query_result result_indexed = { 0U };
+    mcel_query_result result_scan = { 0U };
+    mcel_index idx_seq = { 0U };
+    mcel_index idx_type = { 0U };
+    mcel_record_header* headers[50U] = { 0U };
+    const void* header_ptrs[50U] = { 0U };
+    uint8_t searchkey[8U] = { 0U };
+    bool res;
+
+    res = false;
+
+    /* create test records */
+    create_test_records(headers, 50U);
+
+    for (size_t i = 0U; i < 50U; ++i)
+    {
+        header_ptrs[i] = headers[i];
+    }
+
+    /* build sequence index */
+    if (mcel_index_create(&idx_seq, 0U, mcel_index_type_primary) == true)
+    {
+        if (mcel_index_rebuild(&idx_seq, header_ptrs, NULL, NULL, 50U, test_key_extractor_sequence) == true)
+        {
+            /* build type index */
+            if (mcel_index_create(&idx_type, 0U, mcel_index_type_secondary) == true)
+            {
+                if (mcel_index_rebuild(&idx_type, header_ptrs, NULL, NULL, 50U, test_key_extractor_type) == true)
+                {
+                    res = true;
+
+                    /* query by sequence using index vs scan */
+                    mcel_query_filter_init(&filter);
+                    qsc_intutils_be64to8(searchkey, 25U);
+                    filter.searchkey = searchkey;
+                    filter.searchkeylen = 8U;
+
+                    /* with index */
+                    if (mcel_query_execute(&result_indexed, header_ptrs, NULL, NULL, 50U, &filter, &idx_seq) == true)
+                    {
+                        /* without index (scan) */
+                        mcel_query_filter_init(&filter);
+                        filter.afterts = headers[24U]->timestamp;
+                        filter.beforets = headers[26U]->timestamp;
+
+                        if (mcel_query_execute(&result_scan, header_ptrs, NULL, NULL, 50U, &filter, NULL) == true)
+                        {
+                            /* both should return record 25 */
+                            res = (result_indexed.count == 1U && result_scan.count == 1U);
+
+                            if (res == true)
+                            {
+                                res = (result_indexed.recpositions[0U] == 25U && result_scan.recpositions[0] == 25U);
+                            }
+
+                            mcel_query_result_dispose(&result_scan);
+                        }
+                        else
+                        {
+                            res = false;
+                        }
+
+                        mcel_query_result_dispose(&result_indexed);
+                    }
+                    else
+                    {
+                        res = false;
+                    }
+                }
+
+                mcel_index_dispose(&idx_type);
+            }
+            else
+            {
+                res = false;
+            }
+        }
+
+        mcel_index_dispose(&idx_seq);
+    }
+
+    free_test_records(headers, 50U);
+
+    return res;
+}
+
+bool mceltest_proof_end_to_end(void)
+{
+    mcel_merkle_proof proofs[3U];
+    uint8_t record_commits[20U * MCEL_BLOCK_HASH_SIZE] = { 0U };
+    uint8_t merkle_root[MCEL_BLOCK_HASH_SIZE] = { 0U };
+    uint8_t serialized[3U][MCEL_PROOF_MAX_SERIALIZED_SIZE] = { 0U };
+    size_t written[3U] = { 0U };
+    bool res;
+
+    res = false;
+
+    /* create ledger with 20 records */
+    for (size_t i = 0U; i < 20U; ++i)
+    {
+        for (size_t j = 0U; j < MCEL_BLOCK_HASH_SIZE; ++j)
+        {
+            record_commits[(i * MCEL_BLOCK_HASH_SIZE) + j] = (uint8_t)(0xB0U + (uint8_t)i);
+        }
+    }
+
+    /* compute root */
+    if (mcel_merkle_root(merkle_root, record_commits, 20U) == true)
+    {
+        res = true;
+
+        /* generate proofs for records at positions 3, 10, 17 */
+        for (size_t i = 0U; i < 3U && res == true; ++i)
+        {
+            uint64_t pos;
+
+            pos = (i == 0U) ? 3U : ((i == 1U) ? 10U : 17U);
+
+            if (mcel_proof_generate(&proofs[i], record_commits, 20U, pos, merkle_root) == false)
+            {
+                res = false;
+            }
+        }
+
+        /* serialize all proofs */
+        for (size_t i = 0U; i < 3U && res == true; ++i)
+        {
+            if (mcel_proof_serialize(serialized[i], sizeof(serialized[i]), &proofs[i], &written[i]) == false)
+            {
+                res = false;
+            }
+        }
+
+        /* dispose original proofs */
+        for (size_t i = 0; i < 3U; ++i)
+        {
+            mcel_proof_dispose(&proofs[i]);
+        }
+
+        /* deserialize and verify all proofs */
+        for (size_t i = 0U; i < 3U && res == true; ++i)
+        {
+            if (mcel_proof_deserialize(&proofs[i], serialized[i], written[i]) == true)
+            {
+                if (mcel_proof_verify(&proofs[i], merkle_root, 20U) == false)
+                {
+                    res = false;
+                }
+            }
+            else
+            {
+                res = false;
+            }
+        }
+
+        /* verify proof for record 3 fails with wrong record hash */
+        if (res == true)
+        {
+            uint8_t wronghash[MCEL_BLOCK_HASH_SIZE] = { 0U };
+
+            qsc_memutils_copy(wronghash, proofs[0U].recordhash, MCEL_BLOCK_HASH_SIZE);
+            wronghash[0U] ^= 0x01U;
+            qsc_memutils_copy(proofs[0U].recordhash, wronghash, MCEL_BLOCK_HASH_SIZE);
+
+            res = (mcel_proof_verify(&proofs[0U], merkle_root, 20U) == false);
+        }
+
+        for (size_t i = 0U; i < 3U; ++i)
+        {
+            mcel_proof_dispose(&proofs[i]);
+        }
+    }
+
+    return res;
+}
+
+bool mceltest_extensions_run(void)
+{
+    bool res;
+
+    res = true;
+
+    qsc_consoleutils_print_line("");
+    qsc_consoleutils_print_line("***Starting MCEL Extensions Test Suite***");
+
+    if (mceltest_index() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the index search test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the index search test.");
+        res = false;
+    }
+
+    if (mceltest_query() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the query search test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the query search test.");
+        res = false;
+    }
+
+    if (mceltest_proof() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the proof test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the proof test.");
+        res = false;
+    }
+
+    if (mceltest_index_query_integration() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the index query integration test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the index query integration test.");
+        res = false;
+    }
+
+    if (mceltest_proof_end_to_end() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the proof end-to-end test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the proof end-to-end test.");
+        res = false;
+    }
+
+    return res;
+}
+
 bool mceltest_end_to_end(void)
 {
 
@@ -811,6 +1743,68 @@ bool mceltest_functions_run(void)
     bool res;
 
     res = true;
+
+    qsc_consoleutils_print_line("***Starting MCEL Extensions Test Suite***");
+
+    if (mceltest_index() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the index test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the index test.");
+        res = false;
+    }
+
+    if (mceltest_query() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the query test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the query test.");
+        res = false;
+    }
+
+    if (mceltest_proof() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the proof test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the proof test.");
+        res = false;
+    }
+
+    if (mceltest_index_query_integration() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the index query test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the index query integration test.");
+        res = false;
+    }
+
+    if (mceltest_proof_end_to_end() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the proof end-to-end test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the proof end-to-end test.");
+        res = false;
+    }
+
+    if (mceltest_extensions_run() == true)
+    {
+        qsc_consoleutils_print_line("Success! Passed the indexing functions self test.");
+    }
+    else
+    {
+        qsc_consoleutils_print_line("Failure! Failed the indexing functions self test.");
+        res = false;
+    }
 
     if (mceltest_hash() == true)
     {

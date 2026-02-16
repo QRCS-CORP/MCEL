@@ -86,7 +86,7 @@ static void mclr_test_print_title(void)
     mclr_test_print_message("");
 }
 
-static bool mclr_tests_run()
+static bool mclr_ledger_tests_run()
 {
     uint8_t blkroot[MCEL_BLOCK_HASH_SIZE] = { 0U };
     uint8_t bundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE] = { 0U };
@@ -98,31 +98,26 @@ static bool mclr_tests_run()
     if (err == mclr_error_none)
     {
         mclr_test_print_message("Success! Initialization test has passed.");
-
         err = mclr_example_append_record_test();
 
         if (err == mclr_error_none)
         {
             mclr_test_print_message("Success! Record append test has passed.");
-
             err = mclr_example_block_seal_test(blkroot, reccommits);
 
             if (err == mclr_error_none)
             {
                 mclr_test_print_message("Success! Block seal test has passed.");
-
                 err = mclr_example_checkpoint_seal_test(blkroot, bundle);
 
                 if (err == mclr_error_none)
                 {
                     mclr_test_print_message("Success! Checkpoint seal test has passed.");
-
                     err = mclr_example_export_checkpoint_test(blkroot, bundle);
 
                     if (err == mclr_error_none)
                     {
                         mclr_test_print_message("Success! Export budle test has passed.");
-
                         err = mclr_example_inclusion_proof_test(blkroot, bundle, reccommits);
 
                         if (err == mclr_error_none)
@@ -164,20 +159,122 @@ static bool mclr_tests_run()
     return (err == mclr_error_none);
 }
 
+static bool mclr_search_tests_run()
+{
+    uint8_t blkroot[MCEL_BLOCK_HASH_SIZE] = { 0U };
+    uint8_t bundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE] = { 0U };
+    uint8_t reccommits[3U * MCEL_BLOCK_HASH_SIZE] = { 0U };
+    mclr_errors err;
+
+    err = mclr_example_initialization_test();
+
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_append_record_test();
+
+        if (err == mclr_error_none)
+        {
+            err = mclr_example_block_seal_test(blkroot, reccommits);
+
+            if (err == mclr_error_none)
+            {
+                err = mclr_example_search_index_create_test();
+
+                if (err == mclr_error_none)
+                {
+                    mclr_test_print_message("Success! Index creation test has passed.");
+                    err = mclr_example_search_query_basic_test();
+
+                    if (err == mclr_error_none)
+                    {
+                        mclr_test_print_message("Success! Query basic test has passed.");
+                        err = mclr_example_search_query_advanced_test();
+
+                        if (err == mclr_error_none)
+                        {
+                            mclr_test_print_message("Success! Proof verify test has passed.");
+                            err = mclr_example_search_index_update_test();
+
+                            if (err == mclr_error_none)
+                            {
+                                mclr_test_print_message("Success! Search index test has passed.");
+                                err = mclr_example_search_integration_test();
+
+                                if (err == mclr_error_none)
+                                {
+                                    mclr_test_print_message("Success! Search index integration has passed.");
+                                }
+                                else
+                                {
+                                    mclr_test_print_error("Search integration failed: ", err);
+                                }
+                            }
+                            else
+                            {
+                                mclr_test_print_error("Search index failed: ", err);
+                            }
+                        }
+                        else
+                        {
+                            mclr_test_print_error("Proof verify failed: ", err);
+                        }
+                    }
+                    else
+                    {
+                        mclr_test_print_error("Proof serialize failed: ", err);
+                    }
+                }
+                else
+                {
+                    mclr_test_print_error("Proof generate failed: ", err);
+                }
+            }
+            else
+            {
+                mclr_test_print_error("Block seal failed: ", err);
+            }
+        }
+        else
+        {
+            mclr_test_print_error("Append records failed: ", err);
+        }
+    }
+    else
+    {
+        mclr_test_print_error("Initialization failed: ", err);
+    }
+
+    mclr_example_search_cleanup();
+
+    return (err == mclr_error_none);
+}
+
 int main(void)
 {
     mclr_test_print_title();
 
-    mclr_test_print_message("Running the MCLR example function set.");
+    mclr_test_print_message("Running the MCLR ledger function set.");
     mclr_test_print_message("");
 
-    if (mclr_tests_run() == true)
+    if (mclr_ledger_tests_run() == true)
     {
-        mclr_test_print_message("Success! The MCLR function tests have succeeded.");
+        mclr_test_print_message("Success! The MCLR ledger tests have succeeded.");
     }
     else
     {
-        mclr_test_print_message("Failure! The MCLR function tests have failed.");
+        mclr_test_print_message("Failure! The MCLR ledger tests have failed.");
+    }
+
+    mclr_test_print_message("");
+    mclr_test_print_message("Running the MCLR search test set.");
+
+    if (mclr_search_tests_run() == true)
+    {
+        mclr_test_print_message("Success! The MCLR search tests have succeeded.");
+    }
+    else
+    {
+        mclr_test_print_message("Failure! The MCLR search tests have failed.");
     }
 
     mclr_test_print_message("");

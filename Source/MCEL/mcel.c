@@ -943,6 +943,11 @@ bool mcel_checkpoint_verify(uint8_t* chkcommit, size_t* commitlen, const uint8_t
     return res;
 }
 
+void mcel_generate_keypair(uint8_t* sigkey, uint8_t* verkey)
+{
+    mcel_signature_generate_keypair(verkey, sigkey, qsc_acp_generate);
+}
+
 size_t mcel_keyrotate_payload_size(size_t pubkeylen)
 {
     size_t res;

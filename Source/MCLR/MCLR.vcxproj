@@ -146,9 +146,11 @@
   <ItemGroup>
     <ClInclude Include="mclr.h" />
     <ClInclude Include="mclrcommon.h" />
+    <ClInclude Include="search.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mclr.c" />
+    <ClCompile Include="search.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
