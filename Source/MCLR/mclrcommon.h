@@ -31,7 +31,7 @@
  *
  * EXPERIMENTAL CRYPTOGRAPHY NOTICE:
  * Portions of this software may include experimental, novel, or evolving
- * cryptographic designs. Use of this software is entirely at the user's risk.
+ * cryptographic designs. Use of this software is entirely at the user's risk. 
  *
  * DISCLAIMER:
  * THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
