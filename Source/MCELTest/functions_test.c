@@ -1199,6 +1199,7 @@ bool mceltest_proof(void)
     size_t written;
     bool res;
 
+    written = 0U;
     res = false;
 
     /* Create test record commitments */
