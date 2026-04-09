@@ -16,7 +16,7 @@
 [![Custom: Target](https://img.shields.io/static/v1?label=Target%20Industry&message=Communications&color=brightgreen)](#)
 
 
-MCEL is a cryptographically verifiable, append-only event ledger designed to provide strong, portable guarantees of integrity, ordering, and auditability for digital records. It is intended as a foundational integrity primitive for systems that must be able to prove, with mathematical certainty, what events occurred and in what order, without relying on consensus protocols, blockchains or trusted third parties.
+MCEL is a cryptographically verifiable, append-only event ledger designed to provide strong, portable guarantees of integrity, ordering, and auditability for digital records. It is intended as a foundational integrity primitive for systems that must be able to prove, with mathematical certainty, what events occurred and in what order, without relying on consensus protocols, blockchains, or trusted third parties.
 
 MCEL is storage-agnostic, transport-agnostic, and governance-neutral. It can be embedded into applications, services, or infrastructure components to provide durable, tamper-evident evidence trails that remain verifiable across system boundaries and over long time horizons.  
 
