@@ -221,9 +221,9 @@ static bool mclr_example_make_directory(const char* fpath)
 
 static bool mclr_example_build_path(void* context, char* output, size_t outlen, const char* location, size_t loclen)
 {
+    mclr_example_storage* sctx;
     size_t slen;
     bool res;
-    mclr_example_storage* sctx;
 
     res = false;
     sctx = (mclr_example_storage*)context;
@@ -720,8 +720,8 @@ mclr_errors mclr_example_search_index_create_test(void)
 
 mclr_errors mclr_example_search_query_basic_test(void)
 {
-    mclr_search_filter filter;
-    mclr_search_result result;
+    mclr_search_filter filter = { 0 };
+    mclr_search_result result = { 0 };
     mclr_errors err;
 
     err = mclr_error_none;
@@ -792,8 +792,8 @@ mclr_errors mclr_example_search_query_basic_test(void)
 
 mclr_errors mclr_example_search_query_advanced_test(void)
 {
-    mclr_search_filter filter;
-    mclr_search_result result;
+    mclr_search_filter filter = { 0 };
+    mclr_search_result result = { 0 };
     uint64_t basetime;
     mclr_errors err;
 
@@ -939,8 +939,8 @@ mclr_errors mclr_example_search_index_update_test(void)
 
                         if (err == mclr_error_none)
                         {
-                            mclr_search_filter filter;
-                            mclr_search_result result;
+                            mclr_search_filter filter = { 0 };
+                            mclr_search_result result = { 0 };
 
                             /* test query on updated index */
                             mclr_search_filter_init(&filter);
@@ -965,8 +965,8 @@ mclr_errors mclr_example_search_index_update_test(void)
 
 static mclr_errors mclr_example_wrapper_regression_update_twice_test(void)
 {
-    mclr_search_filter filter;
-    mclr_search_result result;
+    mclr_search_filter filter = { 0 };
+    mclr_search_result result = { 0 };
     mclr_errors err;
     bool foundnew;
     size_t i;
@@ -1045,11 +1045,11 @@ mclr_errors mclr_example_wrapper_regression_test(void)
     uint8_t root[MCEL_BLOCK_HASH_SIZE] = { 0U };
     char fpath[MCLR_EXAMPLE_MAX_PATH] = { 0U };
     char missing[MCLR_EXAMPLE_MAX_PATH] = { 0U };
-    mclr_record_proof proof;
-    mclr_record_proof proof2;
-    mclr_search_result detached;
-    mclr_inclusion_proof iproof;
-    mclr_logging_state tmpstate;
+    mclr_record_proof proof = { 0 };
+    mclr_record_proof proof2 = { 0 };
+    mclr_search_result detached = { 0 };
+    mclr_inclusion_proof iproof = { 0 };
+    mclr_logging_state tmpstate = { 0 };
     const mcel_record_header* hdr;
     const uint8_t* payload;
     const void* oldsig;

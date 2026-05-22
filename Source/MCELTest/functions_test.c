@@ -1832,7 +1832,7 @@ static bool mceltest_store_flush(void* context, const uint8_t* loc, size_t locle
 
 bool mceltest_anchor_regression(void)
 {
-    mcel_anchor_reference aref;
+    mcel_anchor_reference aref = { 0 };
     uint8_t enc[64U] = { 0U };
     uint8_t encx[65U] = { 0U };
     const uint8_t chainid[4U] = { 0x4DU, 0x43U, 0x45U, 0x4CU };
@@ -1902,10 +1902,10 @@ bool mceltest_anchor_regression(void)
 
 bool mceltest_policy_regression(void)
 {
-    mcel_policy policy;
-    mcel_policy_context ctx;
-    mcel_record_header rec;
-    mcel_checkpoint_header chk;
+    mcel_policy policy = { 0 };
+    mcel_policy_context ctx = { 0 };
+    mcel_record_header rec = { 0 };
+    mcel_checkpoint_header chk = { 0 };
     mcel_policy_errors perr;
     bool res;
 
@@ -1965,7 +1965,7 @@ bool mceltest_policy_regression(void)
 
 bool mceltest_size_regression(void)
 {
-    mcel_record_header header;
+    mcel_record_header header = { 0 };
     uint8_t payload[MCEL_KEYROTATE_PAYLOAD_FIXED_SIZE + 8U] = { 0U };
     uint8_t keyid[MCEL_CHECKPOINT_KEYID_SIZE] = { 0U };
     uint8_t pubkey[8U] = { 0U };
@@ -2006,8 +2006,8 @@ bool mceltest_proof_regression(void)
     uint8_t root[MCEL_BLOCK_HASH_SIZE] = { 0U };
     uint8_t wrongroot[MCEL_BLOCK_HASH_SIZE] = { 0U };
     uint8_t enc[MCEL_PROOF_MAX_SERIALIZED_SIZE + 1U] = { 0U };
-    mcel_merkle_proof proof;
-    mcel_merkle_proof proof2;
+    mcel_merkle_proof proof = { 0 };
+    mcel_merkle_proof proof2 = { 0 };
     size_t written;
     bool res;
 
@@ -2090,17 +2090,13 @@ bool mceltest_encryption_regression(void)
 
 bool mceltest_ledger_recovery_regression(void)
 {
-    mceltest_head_store_state hstate;
-    mcel_store_callbacks store;
-    mcel_ledger_state ledger;
+    mceltest_head_store_state hstate = { 0 };
+    mcel_store_callbacks store = { 0 };
+    mcel_ledger_state ledger = { 0 };
     uint8_t headbuf[64U] = { 0U };
     uint8_t nsid[4U] = { 0x4DU, 0x43U, 0x45U, 0x4CU };
     uint8_t pubkey[MCEL_ASYMMETRIC_VERIFY_KEY_SIZE] = { 0U };
     bool res;
-
-    qsc_memutils_clear((uint8_t*)&hstate, sizeof(hstate));
-    qsc_memutils_clear((uint8_t*)&store, sizeof(store));
-    qsc_memutils_clear((uint8_t*)&ledger, sizeof(ledger));
 
     for (size_t i = 0U; i < sizeof(hstate.head); ++i)
     {
@@ -2148,6 +2144,8 @@ static bool mceltest_consistency_case(const uint8_t* leaves, size_t first, size_
     size_t goodlen;
     bool res;
 
+    goodlen = 0U;
+    maxproof = 0U;
     res = mcel_merkle_root(firstroot, leaves, first);
 
     if (res == true)
@@ -2158,7 +2156,6 @@ static bool mceltest_consistency_case(const uint8_t* leaves, size_t first, size_
     if (res == true)
     {
         maxproof = mcel_merkle_consistency_proof_size(first, second);
-        goodlen = 0U;
 
         if (maxproof > sizeof(proof))
         {
@@ -2175,7 +2172,6 @@ static bool mceltest_consistency_case(const uint8_t* leaves, size_t first, size_
     {
         if (first == second)
         {
-            goodlen = 0U;
             res = mcel_checkpoint_consistency_verify(firstroot, secondroot, first, second, proof, goodlen);
         }
         else
@@ -2426,6 +2422,7 @@ bool mceltest_commitment_vectors(void)
         reccommits[i] = (uint8_t)(0x30U + i);
     }
 
+    areflen = 0U;
     rh.sequence = 1U;
     rh.timestamp = 2U;
     rh.payload_len = (uint32_t)sizeof(payload);
@@ -2543,7 +2540,7 @@ bool mceltest_domain_separation_regression(void)
         mcel_domain_record,
         mcel_domain_anchor
     };
-    uint8_t digests[7U][MCEL_BLOCK_HASH_SIZE];
+    uint8_t digests[7U][MCEL_BLOCK_HASH_SIZE] = { 0U };
     const uint8_t msg[8U] = { 0x4DU, 0x43U, 0x45U, 0x4CU, 0x2DU, 0x54U, 0x45U, 0x53U };
     bool res;
 
@@ -2628,19 +2625,14 @@ static bool mceltest_store_read_short(void* context, const uint8_t* loc, size_t 
 
 bool mceltest_storage_callback_regression(void)
 {
-    mceltest_head_store_state hstate;
-    mcel_store_callbacks input;
-    mcel_store_callbacks output;
-    mcel_ledger_state ledger;
+    mceltest_head_store_state hstate = { 0 };
+    mcel_store_callbacks input = { 0 };
+    mcel_store_callbacks output = { 0 };
+    mcel_ledger_state ledger = { 0 };
     uint8_t nsid[4U] = { 0x4DU, 0x43U, 0x45U, 0x4CU };
     uint8_t pubkey[MCEL_ASYMMETRIC_VERIFY_KEY_SIZE] = { 0U };
     uint8_t headbuf[64U] = { 0U };
     bool res;
-
-    qsc_memutils_clear((uint8_t*)&hstate, sizeof(hstate));
-    qsc_memutils_clear((uint8_t*)&input, sizeof(input));
-    qsc_memutils_clear((uint8_t*)&output, sizeof(output));
-    qsc_memutils_clear((uint8_t*)&ledger, sizeof(ledger));
 
     input.context = &hstate;
     input.write = mceltest_store_write;
@@ -2715,16 +2707,13 @@ bool mceltest_query_index_regression(void)
     uint8_t* payload_ptrs[10U] = { 0U };
     const uint8_t* cpayload_ptrs[10U] = { 0U };
     size_t payloadlens[10U] = { 0U };
-    mcel_index idx;
-    mcel_query_filter filter;
-    mcel_query_result result;
-    mcel_query_result scanres;
+    mcel_index idx = { 0 };
+    mcel_query_filter filter = { 0 };
+    mcel_query_result result = { 0 };
+    mcel_query_result scanres = { 0 };
     size_t count;
     bool res;
 
-    qsc_memutils_clear((uint8_t*)&idx, sizeof(idx));
-    qsc_memutils_clear((uint8_t*)&result, sizeof(result));
-    qsc_memutils_clear((uint8_t*)&scanres, sizeof(scanres));
     create_test_records(headers, 10U);
     res = true;
 
@@ -2877,7 +2866,7 @@ bool mceltest_query_index_regression(void)
 
 bool mceltest_keyrotate_roundtrip(void)
 {
-    mcel_record_header header;
+    mcel_record_header header = { 0 };
     uint8_t payload[MCEL_KEYROTATE_PAYLOAD_FIXED_SIZE + 16U] = { 0U };
     uint8_t keyid[MCEL_RECORD_KEYID_SIZE] = { 0U };
     uint8_t pubkey[16U] = { 0U };
@@ -2886,8 +2875,6 @@ bool mceltest_keyrotate_roundtrip(void)
     uint16_t pklen;
     size_t plen;
     bool res;
-
-    qsc_memutils_clear((uint8_t*)&header, sizeof(header));
 
     for (size_t i = 0U; i < sizeof(keyid); ++i)
     {
