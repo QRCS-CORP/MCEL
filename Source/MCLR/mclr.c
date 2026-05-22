@@ -31,8 +31,7 @@ static void mclr_record_header_init(mcel_record_header* header, const uint8_t* k
     header->version = MCEL_RECORD_VERSION;
 }
 
-static void mclr_checkpoint_header_init(mcel_checkpoint_header* header, const uint8_t* keyid, uint64_t chksequence, uint64_t firstrecordseq,
-    uint64_t timestamp, uint32_t recordcount, uint8_t flags)
+static void mclr_checkpoint_header_init(mcel_checkpoint_header* header, const uint8_t* keyid, uint64_t chksequence, uint64_t firstrecordseq, uint64_t timestamp, uint32_t recordcount, uint8_t flags)
 {
     MCLR_ASSERT(header != NULL);
     MCLR_ASSERT(keyid != NULL);
@@ -229,8 +228,7 @@ mclr_errors mclr_block_set_header(mclr_block_builder* bldr, const mcel_block_hea
     return res;
 }
 
-mclr_errors mclr_checkpoint_build_audit_path(mclr_logging_state* state, uint64_t fromchkseq, uint64_t tochkseq, uint8_t* bundlebuf,
-    size_t bundlebuflen, mcel_checkpoint_audit_item* items, size_t* itemcount)
+mclr_errors mclr_checkpoint_build_audit_path(mclr_logging_state* state, uint64_t fromchkseq, uint64_t tochkseq, uint8_t* bundlebuf, size_t bundlebuflen, mcel_checkpoint_audit_item* items, size_t* itemcount)
 {
     MCLR_ASSERT(state != NULL);
     MCLR_ASSERT(bundlebuf != NULL);
@@ -476,10 +474,10 @@ mclr_errors mclr_checkpoint_export_log(mclr_logging_state* state, const char* fi
     MCLR_ASSERT(iobuflen != 0U);
     MCLR_ASSERT(outlen != NULL);
 
-    mclr_errors res;
     uint64_t loglen64;
     size_t loglen;
     size_t outread;
+    mclr_errors res;
 
     res = mclr_error_none;
     loglen64 = 0U;

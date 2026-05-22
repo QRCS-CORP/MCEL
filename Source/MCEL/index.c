@@ -99,7 +99,7 @@ static bool index_resize(mcel_index* index, size_t newbucketcount)
     return res;
 }
 
-bool mcel_index_create(mcel_index* index, size_t bucket_count, uint8_t indextype)
+bool mcel_index_create(mcel_index* index, size_t bucketcount, uint8_t indextype)
 {
     MCEL_ASSERT(index != NULL);
     
@@ -111,17 +111,17 @@ bool mcel_index_create(mcel_index* index, size_t bucket_count, uint8_t indextype
     {
         qsc_memutils_clear((uint8_t*)index, sizeof(mcel_index));
         
-        if (bucket_count == 0U)
+        if (bucketcount == 0U)
         {
-            bucket_count = MCEL_INDEX_DEFAULT_BUCKETS;
+            bucketcount = MCEL_INDEX_DEFAULT_BUCKETS;
         }
         
-        index->buckets = (mcel_index_entry**)qsc_memutils_malloc(bucket_count * sizeof(mcel_index_entry*));
+        index->buckets = (mcel_index_entry**)qsc_memutils_malloc(bucketcount * sizeof(mcel_index_entry*));
         
         if (index->buckets != NULL)
         {
-            qsc_memutils_clear((uint8_t*)index->buckets, bucket_count * sizeof(mcel_index_entry*));
-            index->bucketcount = bucket_count;
+            qsc_memutils_clear((uint8_t*)index->buckets, bucketcount * sizeof(mcel_index_entry*));
+            index->bucketcount = bucketcount;
             index->entrycount = 0U;
             index->indexedthrough = 0U;
             index->indextype = indextype;
@@ -231,14 +231,14 @@ bool mcel_index_lookup(const mcel_index* index, const uint8_t* key, size_t keyle
         mcel_index_entry* entry;
         size_t match_count;
         uint64_t* positions;
-        size_t alloc_size;
+        size_t allocsize;
         
         *positionsout = NULL;
         *countout = 0U;
         
         hash = index_hash_key(key, keylen, index->bucketcount);
         
-        /* First pass: count matches */
+        /* first pass: count matches */
         match_count = 0U;
         entry = index->buckets[hash];
         
@@ -260,8 +260,8 @@ bool mcel_index_lookup(const mcel_index* index, const uint8_t* key, size_t keyle
         else
         {
             /* second pass: collect positions */
-            alloc_size = match_count * sizeof(uint64_t);
-            positions = (uint64_t*)qsc_memutils_malloc(alloc_size);
+            allocsize = match_count * sizeof(uint64_t);
+            positions = (uint64_t*)qsc_memutils_malloc(allocsize);
             
             if (positions != NULL)
             {
@@ -291,30 +291,29 @@ bool mcel_index_lookup(const mcel_index* index, const uint8_t* key, size_t keyle
     return res;
 }
 
-bool mcel_index_rebuild(mcel_index* index, const void** recheaders, const uint8_t** recpayloads, const size_t* payloadlens, 
-    size_t reccount, mcel_index_key_extractor extractor)
+bool mcel_index_rebuild(mcel_index* index, const void** recheaders, const uint8_t** recpayloads, const size_t* payloadlens, size_t reccount, mcel_index_key_extractor extractor)
 {
     MCEL_ASSERT(index != NULL);
     MCEL_ASSERT(recheaders != NULL);
     MCEL_ASSERT(extractor != NULL);
 
     bool res;
-    size_t saved_bucketcount;
-    uint8_t saved_indextype;
+    size_t savedbucketcount;
+    uint8_t savedindextype;
 
     res = false;
 
     if (index != NULL && recheaders != NULL && extractor != NULL)
     {
-        /* Save parameters before disposal */
-        saved_bucketcount = index->bucketcount;
-        saved_indextype = index->indextype;
+        /* save parameters before disposal */
+        savedbucketcount = index->bucketcount;
+        savedindextype = index->indextype;
 
-        /* Clear existing entries */
+        /* clear existing entries */
         mcel_index_dispose(index);
 
-        /* Recreate with saved parameters */
-        if (mcel_index_create(index, saved_bucketcount, saved_indextype) == true)
+        /* recreate with saved parameters */
+        if (mcel_index_create(index, savedbucketcount, savedindextype) == true)
         {
             res = mcel_index_update(index, recheaders, recpayloads, payloadlens, reccount, extractor);
         }
@@ -323,8 +322,7 @@ bool mcel_index_rebuild(mcel_index* index, const void** recheaders, const uint8_
     return res;
 }
 
-bool mcel_index_update(mcel_index* index, const void** recheaders, const uint8_t** recpayloads, const size_t* payloadlens, 
-    size_t record_count, mcel_index_key_extractor extractor)
+bool mcel_index_update(mcel_index* index, const void** recheaders, const uint8_t** recpayloads, const size_t* payloadlens, size_t record_count, mcel_index_key_extractor extractor)
 {
     MCEL_ASSERT(index != NULL);
     MCEL_ASSERT(recheaders != NULL);
@@ -421,7 +419,7 @@ bool mcel_index_compute_hash(const mcel_index* index, uint8_t* output)
         qsc_sha3_update(&kstate, QSC_KECCAK_256_RATE, (const uint8_t*)&index->indexedthrough, sizeof(index->indexedthrough));
         qsc_sha3_update(&kstate, QSC_KECCAK_256_RATE, &index->indextype, sizeof(index->indextype));
         
-        /* Hash all entries in bucket order */
+        /* hash all entries in bucket order */
         for (size_t i = 0U; i < index->bucketcount; ++i)
         {
             mcel_index_entry* entry;
