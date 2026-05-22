@@ -386,7 +386,7 @@ MCLR_EXPORT_API mclr_errors mclr_search_load_records(const mclr_logging_state* s
  *
  * \param idx A pointer to the search index structure.
  * \param recheaders [const] Array of pointers to record headers.
- * \param recpayloads [const] Array of pointers to record payloads (can be NULL).
+ * \param recpayloads Array of pointers to record payloads (can be NULL).
  * \param payloadlens Array of payload lengths (can be NULL if no payloads).
  * \param reccount The number of records to index.
  *

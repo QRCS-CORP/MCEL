@@ -187,7 +187,12 @@ static bool mclr_example_get_storage_path(char* fpath, size_t pathlen)
 {
     bool res;
 
+#if defined(QSC_SYSTEM_OS_WINDOWS)
+    qsc_folderutils_get_directory(qsc_folderutils_directories_user_app_data, fpath);
+#else
     qsc_folderutils_get_directory(qsc_folderutils_directories_user_documents, fpath);
+#endif
+
     qsc_folderutils_append_delimiter(fpath);
     qsc_stringutils_concat_strings(fpath, pathlen, MCLR_EXAMPLE_APP_PATH);
     res = qsc_folderutils_directory_exists(fpath);
@@ -214,7 +219,7 @@ static bool mclr_example_make_directory(const char* fpath)
     return res;
 }
 
-static bool mclr_example_build_path(void* context, char* output, size_t outlen, const uint8_t* location, size_t loclen)
+static bool mclr_example_build_path(void* context, char* output, size_t outlen, const char* location, size_t loclen)
 {
     size_t slen;
     bool res;
@@ -283,7 +288,7 @@ static bool mclr_example_store_size(void* context, const uint8_t* location, size
     *length = 0;
     sctx = (mclr_example_storage*)context;
 
-    if (mclr_example_build_path(sctx, fpath, sizeof(fpath), location, *length) == true)
+    if (mclr_example_build_path(sctx, fpath, sizeof(fpath), (const char*)location, *length) == true)
     {
         if (qsc_fileutils_valid_path(fpath) == true)
         {
@@ -306,13 +311,10 @@ static bool mclr_example_store_read(void* context, const uint8_t* location, size
 
     mclr_example_storage* sctx;
     char fpath[MCLR_EXAMPLE_MAX_PATH] = { 0U };
-    bool res;
-
-    res = false;
     sctx = (mclr_example_storage*)context;
     *readlen = 0;
 
-    if (mclr_example_build_path(sctx, fpath, sizeof(fpath), location, loclen) == true)
+    if (mclr_example_build_path(sctx, fpath, sizeof(fpath), (const char*)location, loclen) == true)
     {
         if (qsc_fileutils_valid_path(fpath) == true)
         {
@@ -322,7 +324,7 @@ static bool mclr_example_store_read(void* context, const uint8_t* location, size
             {
                 size_t r;
 
-                r = qsc_fileutils_read(output, outlen, 0U, fp);
+                r = qsc_fileutils_read((char*)output, outlen, 0U, fp);
                 qsc_fileutils_close(fp);
 
                 *readlen = r;
@@ -330,7 +332,6 @@ static bool mclr_example_store_read(void* context, const uint8_t* location, size
             else
             {
                 /* empty file */
-                res = true;
             }
         }
     }
@@ -354,7 +355,7 @@ static bool mclr_example_store_write(void* context, const uint8_t* location, siz
     res = false;
     sctx = (mclr_example_storage*)context;
 
-    if (mclr_example_build_path(sctx, fpath, sizeof(fpath), location, loclen) == true)
+    if (mclr_example_build_path(sctx, fpath, sizeof(fpath), (const char*)location, loclen) == true)
     {
         if (qsc_fileutils_valid_path(fpath) == true)
         {
@@ -389,7 +390,7 @@ static bool mclr_example_store_append(void* context, const uint8_t* location, si
     res = false;
     sctx = (mclr_example_storage*)context;
 
-    if (mclr_example_build_path(sctx, fpath, sizeof(fpath), location, loclen) == true)
+    if (mclr_example_build_path(sctx, fpath, sizeof(fpath), (const char*)location, loclen) == true)
     {
         if (qsc_fileutils_valid_path(fpath) == true)
         {
@@ -403,7 +404,7 @@ static bool mclr_example_store_append(void* context, const uint8_t* location, si
                 if (qsc_fileutils_seekto(fp, w) == true)
                 {
                     /* append */
-                    w = qsc_fileutils_write(input, inlen, w, fp);
+                    w = qsc_fileutils_write((const char*)input, inlen, w, fp);
                     qsc_fileutils_close(fp);
 
                     if (w == inlen)
@@ -578,6 +579,7 @@ mclr_errors mclr_example_checkpoint_seal_test(uint8_t blkroot[MCEL_BLOCK_HASH_SI
 
 mclr_errors mclr_example_export_checkpoint_test(uint8_t blkroot[MCEL_BLOCK_HASH_SIZE], uint8_t bundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE])
 {
+    (void)blkroot;
     /* export checkpoint bundle */
     mcel_checkpoint_header vhdr = { 0U };
     uint8_t vcommit[MCEL_BLOCK_HASH_SIZE] = { 0U };
@@ -605,6 +607,7 @@ mclr_errors mclr_example_export_checkpoint_test(uint8_t blkroot[MCEL_BLOCK_HASH_
 
 mclr_errors mclr_example_inclusion_proof_test(uint8_t blkroot[MCEL_BLOCK_HASH_SIZE], uint8_t bundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE], uint8_t reccommits[3U * MCEL_BLOCK_HASH_SIZE])
 {
+    (void)bundle;
     /* inclusion proof for record #2 */
     mclr_inclusion_proof ip = { 0U };
     uint8_t pbuf[1024U] = { 0U };
@@ -733,7 +736,6 @@ mclr_errors mclr_example_search_query_basic_test(void)
 
         if (err == mclr_error_none)
         {
-            char msg[256U] = { 0U };
             size_t i;
 
             /* display first few results */
@@ -760,7 +762,6 @@ mclr_errors mclr_example_search_query_basic_test(void)
     /* search by flags */
     if (err == mclr_error_none)
     {
-        char msg[256U] = { 0U };
 
         /* search for records with flag 0x02 */
         mclr_search_filter_init(&filter);
@@ -778,7 +779,6 @@ mclr_errors mclr_example_search_query_basic_test(void)
     if (err == mclr_error_none)
     {
         size_t count;
-        char msg[256U] = { 0U };
 
         /* count records of type 1 */
         mclr_search_filter_init(&filter);
@@ -820,7 +820,6 @@ mclr_errors mclr_example_search_query_advanced_test(void)
     /* pagination */
     if (err == mclr_error_none)
     {
-        char msg[256U] = { 0U };
 
         /* paginated query (offset=2, limit=3) */
         mclr_search_filter_init(&filter);
@@ -927,7 +926,6 @@ mclr_errors mclr_example_search_index_update_test(void)
 
                     if (allocok == true)
                     {
-                        char buf[256U] = { 0U };
 
                         /* update global count */
                         m_loaded_count = totalcount;
@@ -960,6 +958,316 @@ mclr_errors mclr_example_search_index_update_test(void)
                 }
             }
         }
+    }
+
+    return err;
+}
+
+static mclr_errors mclr_example_wrapper_regression_update_twice_test(void)
+{
+    mclr_search_filter filter;
+    mclr_search_result result;
+    mclr_errors err;
+    bool foundnew;
+    size_t i;
+
+    err = mclr_error_none;
+    foundnew = false;
+
+    mclr_example_search_cleanup();
+
+    err = mclr_example_search_index_create_test();
+
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_search_index_update_test();
+    }
+
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_search_index_update_test();
+    }
+
+    if (err == mclr_error_none)
+    {
+        mclr_search_filter_init(&filter);
+        mclr_search_filter_set_event_type(&filter, 2U);
+        qsc_memutils_clear((uint8_t*)&result, sizeof(result));
+
+        err = mclr_search_execute(&m_search_index, &filter, &result);
+
+        if (err == mclr_error_none)
+        {
+            for (i = 0U; i < result.mcelresult.count; ++i)
+            {
+                const mcel_record_header* hdr;
+
+                hdr = NULL;
+                err = mclr_search_result_get_header(&result, i, &hdr);
+
+                if (err != mclr_error_none)
+                {
+                    break;
+                }
+
+                if (hdr != NULL && hdr->sequence > 17U)
+                {
+                    foundnew = true;
+                }
+            }
+
+            mclr_search_result_dispose(&result);
+
+            if (err == mclr_error_none && foundnew == false)
+            {
+                err = mclr_error_integrity_failure;
+            }
+        }
+    }
+
+    mclr_example_search_cleanup();
+
+    return err;
+}
+
+mclr_errors mclr_example_wrapper_regression_test(void)
+{
+    uint8_t blkroot[MCEL_BLOCK_HASH_SIZE] = { 0U };
+    uint8_t bundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE] = { 0U };
+    uint8_t imported[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE] = { 0U };
+    uint8_t reccommits[3U * MCEL_BLOCK_HASH_SIZE] = { 0U };
+    uint8_t proofbuf[1024U] = { 0U };
+    uint8_t serbuf[2048U] = { 0U };
+    uint8_t wrongroot[MCEL_BLOCK_HASH_SIZE] = { 0U };
+    uint8_t new_sigkey[MCEL_ASYMMETRIC_SIGNING_KEY_SIZE] = { 0U };
+    uint8_t new_verkey[MCEL_ASYMMETRIC_VERIFY_KEY_SIZE] = { 0U };
+    uint8_t leaves[3U * MCEL_BLOCK_HASH_SIZE] = { 0U };
+    uint8_t root[MCEL_BLOCK_HASH_SIZE] = { 0U };
+    char fpath[MCLR_EXAMPLE_MAX_PATH] = { 0U };
+    char missing[MCLR_EXAMPLE_MAX_PATH] = { 0U };
+    mclr_record_proof proof;
+    mclr_record_proof proof2;
+    mclr_search_result detached;
+    mclr_inclusion_proof iproof;
+    mclr_logging_state tmpstate;
+    const mcel_record_header* hdr;
+    const uint8_t* payload;
+    const void* oldsig;
+    const uint8_t* oldpub;
+    size_t outlen;
+    size_t written;
+    size_t payloadlen;
+    size_t i;
+    mclr_errors err;
+
+    err = mclr_example_initialization_test();
+
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_append_record_test();
+    }
+
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_block_seal_test(blkroot, reccommits);
+    }
+
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_checkpoint_seal_test(blkroot, bundle);
+    }
+
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_export_checkpoint_test(blkroot, bundle);
+    }
+
+    if (err == mclr_error_none)
+    {
+        qsc_stringutils_copy_string(fpath, sizeof(fpath), m_mclr_example_storage.basepath);
+        qsc_folderutils_append_delimiter(fpath);
+        qsc_stringutils_concat_strings(fpath, sizeof(fpath), "mclr_checkpoint_0001.mcel");
+
+        outlen = 0U;
+        err = mclr_checkpoint_import_bundle(fpath, imported, sizeof(imported), &outlen);
+
+        if (err == mclr_error_none)
+        {
+            if (outlen != MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE ||
+                qsc_memutils_are_equal(imported, bundle, MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE) == false)
+            {
+                err = mclr_error_integrity_failure;
+            }
+        }
+    }
+
+    if (err == mclr_error_none)
+    {
+        outlen = 0U;
+        err = mclr_checkpoint_import_bundle(fpath, imported, MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE - 1U, &outlen);
+
+        if (err == mclr_error_storage_failure)
+        {
+            err = mclr_error_none;
+        }
+        else
+        {
+            err = mclr_error_integrity_failure;
+        }
+    }
+
+    if (err == mclr_error_none)
+    {
+        qsc_stringutils_copy_string(missing, sizeof(missing), m_mclr_example_storage.basepath);
+        qsc_folderutils_append_delimiter(missing);
+        qsc_stringutils_concat_strings(missing, sizeof(missing), "missing_checkpoint_bundle.mcel");
+        outlen = 0U;
+        err = mclr_checkpoint_import_bundle(missing, imported, sizeof(imported), &outlen);
+
+        if (err == mclr_error_storage_failure)
+        {
+            err = mclr_error_none;
+        }
+        else
+        {
+            err = mclr_error_integrity_failure;
+        }
+    }
+
+    if (err == mclr_error_none)
+    {
+        oldsig = m_mclr_logging_state.sigkey;
+        oldpub = m_mclr_logging_state.pubkey;
+        mcel_signature_generate_keypair(new_verkey, new_sigkey, mclr_example_rng_generate);
+        err = mclr_ledger_rotate_signing_key(&m_mclr_logging_state, new_sigkey, new_verkey, MCEL_ASYMMETRIC_VERIFY_KEY_SIZE - 1U);
+
+        if (err == mclr_error_authentication && m_mclr_logging_state.sigkey == oldsig && m_mclr_logging_state.pubkey == oldpub)
+        {
+            err = mclr_error_none;
+        }
+        else
+        {
+            err = mclr_error_integrity_failure;
+        }
+    }
+
+    if (err == mclr_error_none)
+    {
+        for (i = 0U; i < sizeof(leaves); ++i)
+        {
+            leaves[i] = (uint8_t)(i + 1U);
+        }
+
+        if (mcel_merkle_root(root, leaves, 3U) == true)
+        {
+            qsc_memutils_copy(wrongroot, root, sizeof(wrongroot));
+            wrongroot[0U] ^= 0x80U;
+            qsc_memutils_clear((uint8_t*)&iproof, sizeof(iproof));
+            err = mclr_inclusion_prove(wrongroot, leaves, 3U, 1U, proofbuf, sizeof(proofbuf), &iproof);
+
+            if (err == mclr_error_integrity_failure)
+            {
+                err = mclr_error_none;
+            }
+            else
+            {
+                err = mclr_error_integrity_failure;
+            }
+        }
+        else
+        {
+            err = mclr_error_integrity_failure;
+        }
+    }
+
+    if (err == mclr_error_none)
+    {
+        qsc_memutils_clear((uint8_t*)&proof, sizeof(proof));
+        qsc_memutils_clear((uint8_t*)&proof2, sizeof(proof2));
+
+        if (mcel_proof_generate(&proof.mcelproof, leaves, 3U, 1U, root) == true)
+        {
+            proof.recsequence = 2U;
+            proof.eventtype = 2U;
+            written = 0U;
+            err = mclr_record_proof_serialize(&proof, serbuf, sizeof(serbuf), &written);
+
+            if (err == mclr_error_none)
+            {
+                err = mclr_record_proof_deserialize(serbuf, written, &proof2);
+
+                if (err == mclr_error_none)
+                {
+                    mclr_record_proof_dispose(&proof2);
+                    serbuf[written] = 0xA5U;
+                    err = mclr_record_proof_deserialize(serbuf, written + 1U, &proof2);
+
+                    if (err == mclr_error_invalid_input)
+                    {
+                        err = mclr_error_none;
+                    }
+                    else
+                    {
+                        err = mclr_error_integrity_failure;
+                    }
+                }
+            }
+
+            mclr_record_proof_dispose(&proof);
+        }
+        else
+        {
+            err = mclr_error_integrity_failure;
+        }
+    }
+
+    if (err == mclr_error_none)
+    {
+        qsc_memutils_clear((uint8_t*)&detached, sizeof(detached));
+        hdr = NULL;
+        payload = NULL;
+        payloadlen = 0U;
+
+        err = mclr_search_result_get_header(&detached, 0U, &hdr);
+
+        if (err == mclr_error_invalid_input)
+        {
+            err = mclr_search_result_get_payload(&detached, 0U, &payload, &payloadlen);
+        }
+
+        if (err == mclr_error_invalid_input)
+        {
+            err = mclr_error_none;
+        }
+        else
+        {
+            err = mclr_error_integrity_failure;
+        }
+    }
+
+    if (err == mclr_error_none)
+    {
+        qsc_memutils_clear((uint8_t*)&tmpstate, sizeof(tmpstate));
+        err = mclr_ledger_initialize(&tmpstate, &m_mcel_store_callbacks, m_mclr_logging_state.nsid, m_mclr_logging_state.nsidlen,
+            m_mclr_example_signature_keypair.verkey, MCEL_ASYMMETRIC_VERIFY_KEY_SIZE, m_mclr_example_signature_keypair.sigkey, (mclr_startup_mode)99U);
+
+        if (err == mclr_error_invalid_input)
+        {
+            err = mclr_error_none;
+        }
+        else
+        {
+            err = mclr_error_integrity_failure;
+        }
+
+        mclr_ledger_close(&tmpstate);
+    }
+
+    mclr_example_cleanup();
+
+    if (err == mclr_error_none)
+    {
+        err = mclr_example_wrapper_regression_update_twice_test();
     }
 
     return err;

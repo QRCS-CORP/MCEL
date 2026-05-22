@@ -252,6 +252,18 @@ mclr_errors mclr_example_search_index_update_test(void);
  */
 mclr_errors mclr_example_search_integration_test(void);
 
+/*!
+ * \brief Run MCLR wrapper regression tests.
+ *
+ * \details
+ * Exercises wrapper-level regressions for checkpoint import, key rotation,
+ * inclusion proof root validation, record proof serialization, detached search
+ * result accessors, startup mode validation, and repeated search-index updates.
+ *
+ * \return Returns mclr_error_none on success, or an error code on failure.
+ */
+mclr_errors mclr_example_wrapper_regression_test(void);
+
 /**
  * \brief Clean up MCLR resources and close ledger.
  *

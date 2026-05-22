@@ -9,25 +9,14 @@ size_t mcel_merkle_consistency_proof_size(size_t oldcount, size_t newcount)
     MCEL_ASSERT(newcount > 0U);
     MCEL_ASSERT(oldcount <= newcount);
 
-    size_t bits;
-    size_t m;
     size_t res;
 
     res = 0U;
 
-    if (oldcount != 0U && newcount != 0U && oldcount <= newcount)
+    if (oldcount != 0U && newcount != 0U && oldcount <= newcount &&
+        newcount <= (SIZE_MAX / (size_t)MCEL_MERKLE_HASH_SIZE))
     {
-        /* worst case is O(log m) hashes, bounded by 2 * log2(m) + 1 */
-        m = newcount;
-        bits = 0U;
-
-        while (m > 1U)
-        {
-            m >>= 1;
-            ++bits;
-        }
-
-        res = (size_t)MCEL_MERKLE_HASH_SIZE * (2U * bits + 1U);
+        res = newcount * (size_t)MCEL_MERKLE_HASH_SIZE;
     }
 
     return res;

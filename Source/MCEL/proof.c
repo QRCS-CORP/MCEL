@@ -85,6 +85,9 @@ bool mcel_proof_generate(mcel_merkle_proof* proof, const uint8_t* reccommits, si
 
                     if (levelnodes != NULL && levelcounts != NULL)
                     {
+                        qsc_memutils_clear((uint8_t*)levelnodes, (maxdepth + 1U) * sizeof(uint8_t*));
+                        qsc_memutils_clear((uint8_t*)levelcounts, (maxdepth + 1U) * sizeof(size_t));
+
                         /* initialize leaf level */
                         levelcounts[0U] = reccount;
                         levelnodes[0U] = (uint8_t*)qsc_memutils_malloc(reccount * MCEL_BLOCK_HASH_SIZE);
@@ -233,7 +236,10 @@ bool mcel_proof_verify(const mcel_merkle_proof* proof, const uint8_t* exproot, u
         /* verify proof metadata - reject if any check fails */
         if (proof->ledgerrecordcount == exprecordcount &&
             proof->recordposition < proof->ledgerrecordcount &&
-            proof->version == MCEL_PROOF_VERSION)
+            proof->version == MCEL_PROOF_VERSION &&
+            proof->pathlength <= MCEL_MERKLE_PROOF_HASHES_MAX &&
+            qsc_memutils_are_equal(proof->merkleroot, exproot, MCEL_BLOCK_HASH_SIZE) == true &&
+            (proof->pathlength == 0U || (proof->pathhashes != NULL && proof->pathdirections != NULL)))
         {
             /* start with record hash */
             qsc_memutils_copy(comphash, proof->recordhash, MCEL_BLOCK_HASH_SIZE);
@@ -247,6 +253,12 @@ bool mcel_proof_verify(const mcel_merkle_proof* proof, const uint8_t* exproot, u
                 const uint8_t* left;
                 const uint8_t* right;
                 bool isright;
+
+                if (proof->pathhashes[i] == NULL)
+                {
+                    res = false;
+                    break;
+                }
 
                 isright = (proof->pathdirections[i] != 0U);
 
@@ -357,35 +369,28 @@ bool mcel_proof_deserialize(mcel_merkle_proof* proof, const uint8_t* input, size
     
     res = false;
     
-    if (proof != NULL && input != NULL && inplen > 0U)
+    if (proof != NULL && input != NULL && inplen >= MCEL_PROOF_HEADER_SIZE)
     {
         size_t pos;
         size_t path_length;
+        size_t reqsize;
         
-        if (inplen >= MCEL_PROOF_HEADER_SIZE)
+        qsc_memutils_clear((uint8_t*)proof, sizeof(mcel_merkle_proof));
+
+        pos = 0U;
+
+        /* read version */
+        proof->version = input[pos];
+        pos += sizeof(uint8_t);
+
+        /* read path length */
+        path_length = input[pos];
+        pos += sizeof(uint8_t);
+
+        reqsize = mcel_proof_serialized_size(path_length);
+
+        if (proof->version == MCEL_PROOF_VERSION && reqsize != 0U && reqsize == inplen)
         {
-            qsc_memutils_clear((uint8_t*)proof, sizeof(mcel_merkle_proof));
-
-            pos = 0U;
-
-            /* read version */
-            proof->version = input[pos];
-            pos += sizeof(uint8_t);
-
-            if (proof->version != MCEL_PROOF_VERSION)
-            {
-                return false;
-            }
-
-            /* read path length */
-            path_length = input[pos];
-            pos += sizeof(uint8_t);
-
-            if (path_length > MCEL_MERKLE_PROOF_HASHES_MAX)
-            {
-                return false;
-            }
-
             /* read record position */
             proof->recordposition = qsc_intutils_be8to64(input + pos);
             pos += sizeof(uint64_t);
@@ -402,53 +407,57 @@ bool mcel_proof_deserialize(mcel_merkle_proof* proof, const uint8_t* input, size
             qsc_memutils_copy(proof->merkleroot, input + pos, MCEL_BLOCK_HASH_SIZE);
             pos += MCEL_BLOCK_HASH_SIZE;
 
-            /* verify remaining input length */
-            if (inplen < pos + (path_length * MCEL_BLOCK_HASH_SIZE) + path_length)
+            if (path_length == 0U)
             {
-                return false;
-            }
-
-            /* allocate path arrays */
-            proof->pathhashes = (uint8_t**)qsc_memutils_malloc(path_length * sizeof(uint8_t*));
-            proof->pathdirections = (uint8_t*)qsc_memutils_malloc(path_length * sizeof(uint8_t));
-
-            if (proof->pathhashes != NULL && proof->pathdirections != NULL)
-            {
-                /* initialize hash pointers */
-                for (size_t i = 0U; i < path_length; ++i)
-                {
-                    proof->pathhashes[i] = NULL;
-                }
-
-                /* read path hashes */
-                for (size_t i = 0U; i < path_length; ++i)
-                {
-                    proof->pathhashes[i] = (uint8_t*)qsc_memutils_malloc(MCEL_BLOCK_HASH_SIZE);
-
-                    if (proof->pathhashes[i] == NULL)
-                    {
-                        mcel_proof_dispose(proof);
-                        return false;
-                    }
-
-                    qsc_memutils_copy(proof->pathhashes[i], input + pos, MCEL_BLOCK_HASH_SIZE);
-                    pos += MCEL_BLOCK_HASH_SIZE;
-                }
-
-                /* read direction bits */
-                for (size_t i = 0U; i < path_length; ++i)
-                {
-                    proof->pathdirections[i] = input[pos];
-                    pos += sizeof(uint8_t);
-                }
-
-                proof->pathlength = path_length;
+                proof->pathlength = 0U;
                 res = true;
             }
             else
             {
-                mcel_proof_dispose(proof);
+                /* allocate path arrays */
+                proof->pathhashes = (uint8_t**)qsc_memutils_malloc(path_length * sizeof(uint8_t*));
+                proof->pathdirections = (uint8_t*)qsc_memutils_malloc(path_length * sizeof(uint8_t));
+
+                if (proof->pathhashes != NULL && proof->pathdirections != NULL)
+                {
+                    qsc_memutils_clear((uint8_t*)proof->pathhashes, path_length * sizeof(uint8_t*));
+                    qsc_memutils_clear(proof->pathdirections, path_length * sizeof(uint8_t));
+
+                    res = true;
+
+                    /* read path hashes */
+                    for (size_t i = 0U; i < path_length; ++i)
+                    {
+                        proof->pathhashes[i] = (uint8_t*)qsc_memutils_malloc(MCEL_BLOCK_HASH_SIZE);
+
+                        if (proof->pathhashes[i] == NULL)
+                        {
+                            res = false;
+                            break;
+                        }
+
+                        qsc_memutils_copy(proof->pathhashes[i], input + pos, MCEL_BLOCK_HASH_SIZE);
+                        pos += MCEL_BLOCK_HASH_SIZE;
+                    }
+
+                    if (res == true)
+                    {
+                        /* read direction bits */
+                        for (size_t i = 0U; i < path_length; ++i)
+                        {
+                            proof->pathdirections[i] = input[pos];
+                            pos += sizeof(uint8_t);
+                        }
+
+                        proof->pathlength = path_length;
+                    }
+                }
             }
+        }
+
+        if (res == false)
+        {
+            mcel_proof_dispose(proof);
         }
     }
     
@@ -461,9 +470,10 @@ size_t mcel_proof_serialized_size(size_t pathlen)
     
     size = 0U;
     
-    if (pathlen <= MCEL_MERKLE_PROOF_HASHES_MAX)
+    if (pathlen <= MCEL_MERKLE_PROOF_HASHES_MAX &&
+        pathlen <= ((SIZE_MAX - (size_t)MCEL_PROOF_HEADER_SIZE) / ((size_t)MCEL_BLOCK_HASH_SIZE + 1U)))
     {
-        size = MCEL_PROOF_HEADER_SIZE + (pathlen * MCEL_BLOCK_HASH_SIZE) + pathlen;
+        size = (size_t)MCEL_PROOF_HEADER_SIZE + (pathlen * ((size_t)MCEL_BLOCK_HASH_SIZE + 1U));
     }
     
     return size;

@@ -9,88 +9,15 @@
 #include "sha3.h"
 #include "timestamp.h"
 
-static bool checkpoint_subtree_root(uint8_t* output, const uint8_t* leaves, size_t start, size_t count)
-{
-    uint8_t* level;
-    size_t lcount;
-    bool res;
-
-    res = false;
-
-    if (output != NULL && leaves != NULL && count > 0U)
-    {
-        lcount = count;
-        level = (uint8_t*)qsc_memutils_malloc(lcount * (size_t)MCEL_BLOCK_HASH_SIZE);
-
-        if (level != NULL)
-        {
-            qsc_memutils_copy(level, leaves + (start * (size_t)MCEL_BLOCK_HASH_SIZE), lcount * (size_t)MCEL_BLOCK_HASH_SIZE);
-            res = true;
-
-            while (lcount > 1U && res == true)
-            {
-                uint8_t* next;
-                size_t ncount;
-
-                ncount = (lcount + 1U) / 2U;
-                next = (uint8_t*)qsc_memutils_malloc(ncount * (size_t)MCEL_BLOCK_HASH_SIZE);
-
-                if (next == NULL)
-                {
-                    res = false;
-                    break;
-                }
-
-                for (size_t i = 0; i < ncount; ++i)
-                {
-                    const uint8_t* left;
-                    const uint8_t* right;
-
-                    left = level + ((i * 2U) * (size_t)MCEL_BLOCK_HASH_SIZE);
-
-                    if ((i * 2U + 1U) < lcount)
-                    {
-                        right = level + (((i * 2U) + 1U) * (size_t)MCEL_BLOCK_HASH_SIZE);
-                    }
-                    else
-                    {
-                        right = left;
-                    }
-
-                    res = mcel_merkle_node_hash(next + (i * (size_t)MCEL_BLOCK_HASH_SIZE), left, right);
-
-                    if (res == false)
-                    {
-                        break;
-                    }
-                }
-
-                qsc_memutils_alloc_free(level);
-                level = next;
-                lcount = ncount;
-            }
-
-            if (res == true)
-            {
-                qsc_memutils_copy(output, level, MCEL_BLOCK_HASH_SIZE);
-            }
-
-            qsc_memutils_alloc_free(level);
-        }
-    }
-
-    return res;
-}
-
-static bool policy_record_type_allowed(uint32_t mask, uint32_t rectype)
+static bool policy_record_type_allowed(uint32_t mask, uint32_t type)
 {
     bool res;
 
     res = false;
 
-    if (rectype < 32U)
+    if (type < 32U)
     {
-        res = (((mask >> rectype) & 1U) == 1U);
+        res = ((mask & (1UL << type)) != 0U);
     }
 
     return res;
@@ -178,7 +105,8 @@ size_t mcel_block_encoded_size(size_t reccount)
 
     res = 0U;
 
-    if (reccount > 0U)
+    if (reccount > 0U &&
+        reccount <= ((SIZE_MAX - (size_t)MCEL_BLOCK_ENCODED_FIXED_SIZE) / (size_t)MCEL_BLOCK_HASH_SIZE))
     {
         res = (size_t)MCEL_BLOCK_ENCODED_FIXED_SIZE + (reccount * (size_t)MCEL_BLOCK_HASH_SIZE);
     }
@@ -315,7 +243,12 @@ size_t mcel_checkpoint_bundle_encoded_size(size_t siglen)
 
     size_t res;
 
-    res = (size_t)MCEL_CHECKPOINT_BUNDLE_FIXED_SIZE + siglen;
+    res = 0U;
+
+    if (siglen != 0U && siglen <= (SIZE_MAX - (size_t)MCEL_CHECKPOINT_BUNDLE_FIXED_SIZE))
+    {
+        res = (size_t)MCEL_CHECKPOINT_BUNDLE_FIXED_SIZE + siglen;
+    }
 
     return res;
 }
@@ -528,139 +461,30 @@ bool mcel_checkpoint_consistency_verify(const uint8_t* firstroot, const uint8_t*
 
     if (firstroot != NULL && secondroot != NULL && first > 0U && second > 0U && first <= second)
     {
-        size_t pcount;
-
-        pcount = prooflen / (size_t)MCEL_BLOCK_HASH_SIZE;
-
-        if ((prooflen % (size_t)MCEL_BLOCK_HASH_SIZE) != 0U)
+        if (first == second && prooflen == 0U)
         {
-            res = false;
+            res = (qsc_intutils_are_equal8(firstroot, secondroot, MCEL_BLOCK_HASH_SIZE) == true);
         }
-        else if (first == second)
+        else if (proof != NULL && prooflen == (second * (size_t)MCEL_BLOCK_HASH_SIZE))
         {
-            /* identical trees: proof must be empty and roots must match */
-            res = (pcount == 0U) && (qsc_intutils_are_equal8(firstroot, secondroot, MCEL_BLOCK_HASH_SIZE) == true);
-        }
-        else if (proof == NULL || pcount == 0U)
-        {
-            /* for first < second: proof must be non-empty */
-            res = false;
-        }
-        else
-        {
-            uint8_t fr[MCEL_BLOCK_HASH_SIZE] = { 0U };
-            uint8_t sr[MCEL_BLOCK_HASH_SIZE] = { 0U };
-            uint8_t tmp[MCEL_BLOCK_HASH_SIZE] = { 0U };
-            size_t fn;
-            size_t pi;
-            size_t sn;
+            uint8_t cfirst[MCEL_BLOCK_HASH_SIZE] = { 0U };
+            uint8_t csecond[MCEL_BLOCK_HASH_SIZE] = { 0U };
 
-            /* step 3: fn = first - 1, sn = second - 1 */
-            fn = first - 1U;
-            sn = second - 1U;
-            pi = 0U;
+            res = mcel_merkle_root(cfirst, proof, first);
 
-            /* step 2: if first is power of two, conceptually prepend firstroot to proof.
-             * That means we set fr=sr=firstroot and start consuming proof from proof[0].
-             * Otherwise fr=sr=proof[0] and consume starting at proof[1]. */
-            if (qsc_intutils_is_power_of_two(first) == true)
+            if (res == true)
             {
-                qsc_memutils_copy(fr, firstroot, MCEL_BLOCK_HASH_SIZE);
-                qsc_memutils_copy(sr, firstroot, MCEL_BLOCK_HASH_SIZE);
-            }
-            else
-            {
-                qsc_memutils_copy(fr, proof + (pi * (size_t)MCEL_BLOCK_HASH_SIZE), MCEL_BLOCK_HASH_SIZE);
-                qsc_memutils_copy(sr, proof + (pi * (size_t)MCEL_BLOCK_HASH_SIZE), MCEL_BLOCK_HASH_SIZE);
-                ++pi;
-            }
-
-            /* step 4: if LSB(fn) set, right shift fn and sn until LSB(fn) not set */
-            if (qsc_intutils_lsb_is_set(fn) == true)
-            {
-                while (qsc_intutils_lsb_is_set(fn) == true)
-                {
-                    fn >>= 1;
-                    sn >>= 1;
-                }
-            }
-
-            res = true;
-
-            /* step 6: iterate remaining proof elements */
-            for (; pi < pcount && res == true; ++pi)
-            {
-                const uint8_t* c;
-
-                if (sn == 0U)
-                {
-                    res = false;
-                    break;
-                }
-
-                c = proof + (pi * (size_t)MCEL_BLOCK_HASH_SIZE);
-
-                if (qsc_intutils_lsb_is_set(fn) == true || fn == sn)
-                {
-                    /* fr = H(c || fr) */
-                    res = mcel_merkle_node_hash(tmp, c, fr);
-
-                    if (res == true)
-                    {
-                        qsc_memutils_copy(fr, tmp, MCEL_BLOCK_HASH_SIZE);
-                    }
-
-                    /* sr = H(c || sr) */
-                    if (res == true)
-                    {
-                        res = mcel_merkle_node_hash(tmp, c, sr);
-
-                        if (res == true)
-                        {
-                            qsc_memutils_copy(sr, tmp, MCEL_BLOCK_HASH_SIZE);
-                        }
-                    }
-
-                    /* if LSB(fn) not set, right shift fn and sn until either LSB(fn) set or fn == 0 */
-                    if (res == true && qsc_intutils_lsb_is_set(fn) == false)
-                    {
-                        while (qsc_intutils_lsb_is_set(fn) == false && fn != 0U)
-                        {
-                            fn >>= 1;
-                            sn >>= 1;
-                        }
-                    }
-                }
-                else
-                {
-                    /* sr = H(sr || c) */
-                    res = mcel_merkle_node_hash(tmp, sr, c);
-
-                    if (res == true)
-                    {
-                        qsc_memutils_copy(sr, tmp, MCEL_BLOCK_HASH_SIZE);
-                    }
-                }
-
-                /* finally, right shift fn and sn one time */
-                fn >>= 1;
-                sn >>= 1;
+                res = mcel_merkle_root(csecond, proof, second);
             }
 
             if (res == true)
             {
-                /* step 7: must end with sn == 0 and matching roots */
-                res = (sn == 0U);
+                res = (qsc_intutils_are_equal8(cfirst, firstroot, MCEL_BLOCK_HASH_SIZE) == true);
+            }
 
-                if (res == true)
-                {
-                    res = (qsc_intutils_are_equal8(fr, firstroot, MCEL_BLOCK_HASH_SIZE) == true);
-                }
-
-                if (res == true)
-                {
-                    res = (qsc_intutils_are_equal8(sr, secondroot, MCEL_BLOCK_HASH_SIZE) == true);
-                }
+            if (res == true)
+            {
+                res = (qsc_intutils_are_equal8(csecond, secondroot, MCEL_BLOCK_HASH_SIZE) == true);
             }
         }
     }
@@ -752,113 +576,15 @@ bool mcel_checkpoint_prove_consistency(uint8_t* proof, size_t prooflen, const ui
 
     res = false;
 
-    if (proof != NULL && prooflen != 0U && leaves != NULL && oldcount > 0U && newcount > 0U && oldcount <= newcount)
+    if (proof != NULL && prooflen != 0U && leaves != NULL && oldcount > 0U && newcount > 0U && oldcount <= newcount &&
+        newcount <= (SIZE_MAX / (size_t)MCEL_BLOCK_HASH_SIZE))
     {
-        /* special case: identical trees, proof is empty (valid) */
-        if (oldcount == newcount)
+        const size_t req = newcount * (size_t)MCEL_BLOCK_HASH_SIZE;
+
+        if (prooflen >= req)
         {
+            qsc_memutils_copy(proof, leaves, req);
             res = true;
-        }
-        else
-        {
-            /* we build proof hashes into proof[] as a simple concatenation */
-            size_t pos;
-            size_t n;
-            size_t m;
-            size_t start;
-
-            res = true;
-            pos = 0U;
-            n = oldcount;
-            m = newcount;
-            start = 0U;
-
-            /* if n is a power of two, the first proof element is the root of the first n leaves.
-               otherwise, we will accumulate using the standard decomposition */
-            if (qsc_intutils_is_power_of_two(n) == true)
-            {
-                uint8_t h[MCEL_BLOCK_HASH_SIZE] = { 0U };
-
-                if (checkpoint_subtree_root(h, leaves, 0U, n) == false)
-                {
-                    res = false;
-                }
-                else if (prooflen < (size_t)MCEL_BLOCK_HASH_SIZE)
-                {
-                    res = false;
-                }
-                else
-                {
-                    qsc_memutils_copy(proof + pos, h, MCEL_BLOCK_HASH_SIZE);
-                    pos += (size_t)MCEL_BLOCK_HASH_SIZE;
-                }
-            }
-
-            if (res == true)
-            {
-                /* walk down the implicit binary tree describing [0..m) while tracking [0..n)
-                   using the standard approach: at each step, split by the largest power-of-two
-                   less than the current m */
-                while (n != m)
-                {
-                    size_t k = 1U;
-
-                    /* largest power-of-two less than m (highest bit) */
-                    while ((k << 1U) < m)
-                    {
-                        k <<= 1U;
-                    }
-
-                    if (n <= k)
-                    {
-                        uint8_t h[MCEL_BLOCK_HASH_SIZE] = { 0U };
-
-                        /* right subtree root is included for the new tree */
-                        if (checkpoint_subtree_root(h, leaves, start + k, m - k) == false)
-                        {
-                            res = false;
-                            break;
-                        }
-
-                        if (pos + (size_t)MCEL_BLOCK_HASH_SIZE > prooflen)
-                        {
-                            res = false;
-                            break;
-                        }
-
-                        qsc_memutils_copy(proof + pos, h, MCEL_BLOCK_HASH_SIZE);
-                        pos += (size_t)MCEL_BLOCK_HASH_SIZE;
-
-                        /* descend into left side */
-                        m = k;
-                    }
-                    else
-                    {
-                        uint8_t h[MCEL_BLOCK_HASH_SIZE] = { 0U };
-
-                        /* left subtree root is included for the old tree */
-                        if (checkpoint_subtree_root(h, leaves, start, k) == false)
-                        {
-                            res = false;
-                            break;
-                        }
-
-                        if (pos + (size_t)MCEL_BLOCK_HASH_SIZE > prooflen)
-                        {
-                            res = false;
-                            break;
-                        }
-
-                        qsc_memutils_copy(proof + pos, h, MCEL_BLOCK_HASH_SIZE);
-                        pos += (size_t)MCEL_BLOCK_HASH_SIZE;
-
-                        /* descend into right side, adjust start and n */
-                        start += k;
-                        n -= k;
-                        m -= k;
-                    }
-                }
-            }
         }
     }
 
@@ -954,7 +680,7 @@ size_t mcel_keyrotate_payload_size(size_t pubkeylen)
 
     res = 0U;
 
-    if (pubkeylen > 0U)
+    if (pubkeylen > 0U && pubkeylen <= (SIZE_MAX - (size_t)MCEL_KEYROTATE_PAYLOAD_FIXED_SIZE))
     {
         res = (size_t)MCEL_KEYROTATE_PAYLOAD_FIXED_SIZE + pubkeylen;
     }
@@ -976,12 +702,13 @@ size_t mcel_keyrotate_record_create(mcel_record_header* header, uint8_t* payload
 
     res = 0U;
 
-    if (header != NULL && payload != NULL && payloadlen != 0U && newkeyid != NULL && newpubkey != NULL && pubkeylen != 0U)
+    if (header != NULL && payload != NULL && payloadlen != 0U && newkeyid != NULL && newpubkey != NULL &&
+        pubkeylen != 0U && pubkeylen <= (size_t)UINT16_MAX)
     {
         size_t pos;
         const size_t req = mcel_keyrotate_payload_size(pubkeylen);
 
-        if (req != 0U && payloadlen >= req)
+        if (req != 0U && payloadlen >= req && req <= (size_t)UINT32_MAX)
         {
             pos = 0U;
 
@@ -1005,6 +732,7 @@ size_t mcel_keyrotate_record_create(mcel_record_header* header, uint8_t* payload
             header->flags = flags;
             header->sequence = sequence;
             header->timestamp = qsc_timestamp_datetime_utc();
+            header->payload_len = (uint32_t)res;
         }
     }
 
@@ -1137,32 +865,26 @@ bool mcel_ledger_initialize(mcel_ledger_state* state, const mcel_store_callbacks
         headlen = 0U;
         outread = 0U;
 
-        /* if no head exists yet, initialization still succeeds */
-        if (state->store.size != NULL && state->store.size(state->store.context, headloc, headloclen, &headlen) == true && headlen != 0U)
+        if (state->store.size == NULL || state->store.size(state->store.context, headloc, headloclen, &headlen) == false || headlen == 0U)
+        {
+            /* No readable head is present; initialize as a new empty ledger. */
+            res = true;
+        }
+        else if ((size_t)headlen <= headbuflen && state->store.read != NULL &&
+            state->store.read(state->store.context, headloc, headloclen, headbuf, (size_t)headlen, &outread) == true &&
+            outread == (size_t)headlen)
         {
             uint8_t blkroot[MCEL_BLOCK_HASH_SIZE] = { 0U };
             uint8_t prevcommit[MCEL_BLOCK_HASH_SIZE] = { 0U };
 
-            if ((size_t)headlen <= headbuflen)
-            {
-                if (state->store.read != NULL && state->store.read(state->store.context, headloc, headloclen, headbuf, (size_t)headlen, &outread) == true)
-                {
-                    if (outread >= (size_t)headlen)
-                    {
-                        /* verify and load head bundle */
-                        res = mcel_checkpoint_bundle_verify(state->head_commit, &state->head_header, blkroot, prevcommit, headbuf, (size_t)headlen, state->publickey);
+            /* A stored head is authoritative. It must verify, or initialization fails. */
+            res = mcel_checkpoint_bundle_verify(state->head_commit, &state->head_header, blkroot, prevcommit, headbuf, (size_t)headlen, state->publickey);
 
-                        if (res == true)
-                        {
-                            state->have_head = 1U;
-                        }
-                    }
-                }
+            if (res == true)
+            {
+                state->have_head = 1U;
             }
         }
-
-        /* no head present, treat as new/empty ledger */
-        res = true;
     }
 
     return res;
@@ -1483,85 +1205,93 @@ bool mcel_policy_apply(mcel_policy_errors* perr, const mcel_policy* policy, cons
     MCEL_ASSERT(policy != NULL);
     MCEL_ASSERT(state != NULL);
 
-    *perr = mcel_policyerr_none;
+    bool res;
 
-    if (perr != NULL || policy != NULL || state != NULL)
+    res = false;
+
+    if (perr != NULL)
     {
-        if (op == mcel_policyop_append_record)
-        {
-            MCEL_ASSERT(recordhdr != NULL);
+        *perr = mcel_policyerr_none;
 
-            if (recordhdr == NULL)
+        if (policy != NULL && state != NULL)
+        {
+            if (op == mcel_policyop_append_record)
             {
-                *perr = mcel_policyerr_invalid_parameter;
-            }
-            else if (policy->max_payload_size != 0U && (size_t)recordhdr->payload_len > policy->max_payload_size)
-            {
-                *perr = mcel_policyerr_payload_too_large;
-            }
-            else if (policy->allowed_record_mask != 0U && policy_record_type_allowed(policy->allowed_record_mask, recordhdr->type) == false)
-            {
-                *perr = mcel_policyerr_record_type_denied;
-            }
-            else if (policy->require_encryption != 0U)
-            {
-                if ((recordhdr->flags & (uint8_t)MCEL_RECORD_FLAG_ENCRYPTED) == 0U)
+                MCEL_ASSERT(recordhdr != NULL);
+
+                if (recordhdr == NULL)
+                {
+                    *perr = mcel_policyerr_invalid_parameter;
+                }
+
+                if (*perr == mcel_policyerr_none && policy->max_payload_size != 0U && (size_t)recordhdr->payload_len > policy->max_payload_size)
+                {
+                    *perr = mcel_policyerr_payload_too_large;
+                }
+
+                if (*perr == mcel_policyerr_none && policy->allowed_record_mask != 0U && policy_record_type_allowed(policy->allowed_record_mask, recordhdr->type) == false)
+                {
+                    *perr = mcel_policyerr_record_type_denied;
+                }
+
+                if (*perr == mcel_policyerr_none && policy->require_encryption != 0U && (recordhdr->flags & (uint8_t)MCEL_RECORD_FLAG_ENCRYPTED) == 0U)
                 {
                     *perr = mcel_policyerr_plaintext_denied;
                 }
-            }
-            else if (policy->enforce_monotonic_seq != 0U && state->last_record_sequence != 0U)
-            {
-                if (recordhdr->sequence <= state->last_record_sequence)
-                {
-                    *perr = mcel_policyerr_sequence_invalid;
-                }
-            }
-            else if (policy->enforce_monotonic_time != 0U && state->last_record_timestamp != 0U)
-            {
-                if (recordhdr->timestamp < state->last_record_timestamp)
-                {
-                    *perr = mcel_policyerr_timestamp_invalid;
-                }
-            }
-        }
-        else if (op == mcel_policyop_seal_checkpoint)
-        {
-            MCEL_ASSERT(checkpointhdr != NULL);
 
-            if (checkpointhdr == NULL)
-            {
-                *perr = mcel_policyerr_invalid_parameter;
-            }
-            else if (policy->enforce_monotonic_seq != 0U && state->have_checkpoint != 0U)
-            {
-                if (checkpointhdr->chk_sequence != (state->checkpoint.chk_sequence + 1U))
+                if (*perr == mcel_policyerr_none && policy->enforce_monotonic_seq != 0U && state->last_record_sequence != 0U &&
+                    recordhdr->sequence <= state->last_record_sequence)
                 {
                     *perr = mcel_policyerr_sequence_invalid;
                 }
-            }
-            else if (policy->enforce_monotonic_time != 0U && state->have_checkpoint != 0U)
-            {
-                if (checkpointhdr->timestamp < state->checkpoint.timestamp)
+
+                if (*perr == mcel_policyerr_none && policy->enforce_monotonic_time != 0U && state->last_record_timestamp != 0U &&
+                    recordhdr->timestamp < state->last_record_timestamp)
                 {
                     *perr = mcel_policyerr_timestamp_invalid;
                 }
             }
-            else if (policy->enforce_keyid_link != 0U && state->have_checkpoint != 0U)
+            else if (op == mcel_policyop_seal_checkpoint)
             {
-                if (qsc_intutils_are_equal8(checkpointhdr->keyid, state->checkpoint.keyid, MCEL_CHECKPOINT_KEYID_SIZE) == false)
+                MCEL_ASSERT(checkpointhdr != NULL);
+
+                if (checkpointhdr == NULL)
+                {
+                    *perr = mcel_policyerr_invalid_parameter;
+                }
+
+                if (*perr == mcel_policyerr_none && policy->enforce_monotonic_seq != 0U && state->have_checkpoint != 0U &&
+                    checkpointhdr->chk_sequence != (state->checkpoint.chk_sequence + 1U))
+                {
+                    *perr = mcel_policyerr_sequence_invalid;
+                }
+
+                if (*perr == mcel_policyerr_none && policy->enforce_monotonic_time != 0U && state->have_checkpoint != 0U &&
+                    checkpointhdr->timestamp < state->checkpoint.timestamp)
+                {
+                    *perr = mcel_policyerr_timestamp_invalid;
+                }
+
+                if (*perr == mcel_policyerr_none && policy->enforce_keyid_link != 0U && state->have_checkpoint != 0U &&
+                    qsc_intutils_are_equal8(checkpointhdr->keyid, state->checkpoint.keyid, MCEL_CHECKPOINT_KEYID_SIZE) == false)
                 {
                     *perr = mcel_policyerr_keyid_mismatch;
                 }
             }
+            else
+            {
+                *perr = mcel_policyerr_invalid_parameter;
+            }
         }
-    }
-    else
-    {
-        *perr = mcel_policyerr_invalid_parameter;
+        else
+        {
+            *perr = mcel_policyerr_invalid_parameter;
+        }
+
+        res = (*perr == mcel_policyerr_none);
     }
 
-    return (*perr == mcel_policyerr_none);
+    return res;
 }
 
 bool mcel_record_decrypt_payload(uint8_t* output, const uint8_t* ciphertext, size_t ctlen, const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce)
@@ -1631,13 +1361,17 @@ bool mcel_record_encode_header(uint8_t* output, const mcel_record_header* header
     return res;
 }
 
-void mcel_record_encrypt_payload(uint8_t* output, const uint8_t* plaintext, size_t ptlen, const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce)
+bool mcel_record_encrypt_payload(uint8_t* output, const uint8_t* plaintext, size_t ptlen, const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce)
 {
     MCEL_ASSERT(output != NULL);
     MCEL_ASSERT(plaintext != NULL);
     MCEL_ASSERT(ptlen != 0U);
     MCEL_ASSERT(key != NULL);
     MCEL_ASSERT(nonce != NULL);
+
+    bool res;
+
+    res = false;
 
     if (output != NULL && plaintext != NULL && ptlen != 0U && key != NULL && nonce != NULL)
     {
@@ -1651,9 +1385,12 @@ void mcel_record_encrypt_payload(uint8_t* output, const uint8_t* plaintext, size
             qsc_rcs_set_associated(&state, ad, adlen);
         }
 
-        qsc_rcs_transform(&state, output, plaintext, ptlen);
+        (void)qsc_rcs_transform(&state, output, plaintext, ptlen);
         qsc_rcs_dispose(&state);
+        res = true;
     }
+
+    return res;
 }
 
 bool mcel_record_commit(uint8_t* output, const mcel_record_header* header, const uint8_t* pldcommit)

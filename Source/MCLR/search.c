@@ -156,27 +156,15 @@ mclr_errors mclr_search_count(const mclr_search_index* idx, const mclr_search_fi
     MCLR_ASSERT(filter != NULL);
     MCLR_ASSERT(countout != NULL);
 
-    const mcel_index* selidx;
     mclr_errors err;
-
-    err = mclr_error_none;
 
     if (idx != NULL && filter != NULL && countout != NULL)
     {
-        /* select optimal index */
-        selidx = NULL;
-
-        if (filter->useeventtype == true && (idx->indexflags & MCLR_INDEX_SECONDARY_ACTIVE) != 0U)
+        if (mcel_query_count(countout, idx->recheaders, idx->recordcount, &filter->mcelfilter) == true)
         {
-            selidx = &idx->secondary;
+            err = mclr_error_none;
         }
-        else if ((idx->indexflags & MCLR_INDEX_PRIMARY_ACTIVE) != 0U)
-        {
-            selidx = &idx->primary;
-        }
-
-        /* execute count query */
-        if (mcel_query_count(countout, idx->recheaders, idx->recordcount, &filter->mcelfilter) == false)
+        else
         {
             err = mclr_error_invalid_input;
         }
@@ -217,12 +205,15 @@ mclr_errors mclr_search_execute(mclr_search_index* idx, const mclr_search_filter
         }
 
         /* execute query */
-        if (mcel_query_execute(&result->mcelresult, idx->recheaders, idx->recpayloads, idx->payloadlens, idx->recordcount, &filter->mcelfilter, selidx) == false)
+        if (mcel_query_execute(&result->mcelresult, idx->recheaders, (uint8_t**)idx->recpayloads, idx->payloadlens, idx->recordcount, &filter->mcelfilter, selidx) == true)
+        {
+            result->sourceindex = idx;
+            err = mclr_error_none;
+        }
+        else
         {
             err = mclr_error_invalid_input;
         }
-
-        result->sourceindex = idx;
     }
     else
     {
@@ -350,8 +341,6 @@ mclr_errors mclr_search_index_build(mclr_search_index* idx, const void** rechead
 {
     MCLR_ASSERT(idx != NULL);
     MCLR_ASSERT(recheaders != NULL);
-    MCLR_ASSERT(recpayloads != NULL);
-    MCLR_ASSERT(payloadlens != NULL);
 
     mclr_errors err;
 
@@ -456,6 +445,10 @@ mclr_errors mclr_search_index_create(mclr_search_index* idx, bool createsecondar
             err = mclr_error_initialization;
         }
     }
+    else
+    {
+        err = mclr_error_invalid_input;
+    }
 
     return err;
 }
@@ -492,32 +485,75 @@ mclr_errors mclr_search_index_update(mclr_search_index* idx, const void** newhea
     MCLR_ASSERT(newheaders != NULL);
 
     mclr_errors err;
+    const void** buildheaders;
+    const uint8_t** buildpayloads;
+    const size_t* buildlens;
+    size_t totalcount;
+
     err = mclr_error_none;
+    buildheaders = NULL;
+    buildpayloads = NULL;
+    buildlens = NULL;
+    totalcount = 0U;
 
     if (idx != NULL && newheaders != NULL && newcount != 0U)
     {
-        /* update primary index */
-        if ((idx->indexflags & MCLR_INDEX_PRIMARY_ACTIVE) != 0U)
+        if (idx->recordcount == 0U)
         {
-            if (mcel_index_update(&idx->primary, newheaders, newpayloads, newpayloadlens, newcount, extract_key_sequence) == false)
+            buildheaders = newheaders;
+            buildpayloads = newpayloads;
+            buildlens = newpayloadlens;
+            totalcount = newcount;
+
+            idx->recheaders = newheaders;
+            idx->recpayloads = newpayloads;
+            idx->payloadlens = (size_t*)newpayloadlens;
+        }
+        else if (idx->recheaders != NULL)
+        {
+            /* MCEL's low-level index update stores positions relative to the
+             * supplied array. For an existing MCLR index, appended records must
+             * retain their absolute ledger positions, so the wrapper rebuilds
+             * all active indexes over the complete record arrays instead of
+             * applying a local-position incremental update.
+             */
+            buildheaders = idx->recheaders;
+            buildpayloads = idx->recpayloads;
+            buildlens = idx->payloadlens;
+            totalcount = idx->recordcount + newcount;
+        }
+        else
+        {
+            err = mclr_error_invalid_input;
+        }
+
+        if (err == mclr_error_none)
+        {
+            if (totalcount < idx->recordcount)
+            {
+                err = mclr_error_invalid_input;
+            }
+        }
+
+        if (err == mclr_error_none && (idx->indexflags & MCLR_INDEX_PRIMARY_ACTIVE) != 0U)
+        {
+            if (mcel_index_rebuild(&idx->primary, buildheaders, buildpayloads, buildlens, totalcount, extract_key_sequence) == false)
             {
                 err = mclr_error_initialization;
             }
         }
 
-        /* update secondary index */
         if (err == mclr_error_none && (idx->indexflags & MCLR_INDEX_SECONDARY_ACTIVE) != 0U)
         {
-            if (mcel_index_update(&idx->secondary, newheaders, newpayloads, newpayloadlens, newcount, extract_key_type) == false)
+            if (mcel_index_rebuild(&idx->secondary, buildheaders, buildpayloads, buildlens, totalcount, extract_key_type) == false)
             {
                 err = mclr_error_initialization;
             }
         }
 
-        /* update tertiary index */
         if (err == mclr_error_none && (idx->indexflags & MCLR_INDEX_TERTIARY_ACTIVE) != 0U)
         {
-            if (mcel_index_update(&idx->tertiary, newheaders, newpayloads, newpayloadlens, newcount, extract_key_keyid) == false)
+            if (mcel_index_rebuild(&idx->tertiary, buildheaders, buildpayloads, buildlens, totalcount, extract_key_keyid) == false)
             {
                 err = mclr_error_initialization;
             }
@@ -525,8 +561,7 @@ mclr_errors mclr_search_index_update(mclr_search_index* idx, const void** newhea
 
         if (err == mclr_error_none)
         {
-             /* update record count */
-            idx->recordcount += newcount;
+            idx->recordcount = totalcount;
         }
     }
     else
@@ -630,32 +665,27 @@ mclr_errors mclr_record_proof_deserialize(const uint8_t* input, size_t inplen, m
     size_t pos;
     mclr_errors err;
 
-    err = mclr_error_none;
-
     if (input != NULL && proof != NULL)
     {
-        /* calculate MCEL proof size from header */
+        qsc_memutils_clear((uint8_t*)proof, sizeof(mclr_record_proof));
+
         if (inplen >= 2U)
         {
-            /* read path length to calculate size */
             mlen = mcel_proof_serialized_size((size_t)input[1]);
 
-            if (inplen >= mlen + sizeof(uint64_t) + sizeof(uint32_t))
+            if (mlen != 0U && inplen == mlen + sizeof(uint64_t) + sizeof(uint32_t))
             {
-                /* deserialize MCEL proof */
                 if (mcel_proof_deserialize(&proof->mcelproof, input, mlen) == true)
                 {
                     pos = mlen;
-
-                    /* read MCLR metadata */
                     proof->recsequence = qsc_intutils_be8to64(input + pos);
                     pos += sizeof(uint64_t);
-
                     proof->eventtype = qsc_intutils_be8to32(input + pos);
-                    pos += sizeof(uint32_t);
+                    err = mclr_error_none;
                 }
                 else
                 {
+                    mclr_record_proof_dispose(proof);
                     err = mclr_error_invalid_input;
                 }
             }
@@ -687,25 +717,22 @@ mclr_errors mclr_record_proof_serialize(const mclr_record_proof* proof, uint8_t*
     size_t pos;
     mclr_errors err;
 
-    err = mclr_error_none;
-
     if (proof != NULL && output != NULL && writtenout != NULL)
     {
-        /* serialize MCEL proof */
+        *writtenout = 0U;
+
         if (mcel_proof_serialize(output, outlen, &proof->mcelproof, &mcel_written) == true)
         {
             pos = mcel_written;
 
-            /* append MCLR metadata */
-            if (outlen >= pos + sizeof(uint64_t) + sizeof(uint32_t))
+            if (pos <= outlen && outlen - pos >= sizeof(uint64_t) + sizeof(uint32_t))
             {
                 qsc_intutils_be64to8(output + pos, proof->recsequence);
                 pos += sizeof(uint64_t);
-
                 qsc_intutils_be32to8(output + pos, proof->eventtype);
                 pos += sizeof(uint32_t);
-
                 *writtenout = pos;
+                err = mclr_error_none;
             }
             else
             {
@@ -739,7 +766,14 @@ size_t mclr_record_proof_serialized_size(const mclr_record_proof* proof)
 
         if (plen > 0U)
         {
-            plen += sizeof(uint64_t) + sizeof(uint32_t);
+            if (plen <= SIZE_MAX - sizeof(uint64_t) - sizeof(uint32_t))
+            {
+                plen += sizeof(uint64_t) + sizeof(uint32_t);
+            }
+            else
+            {
+                plen = 0U;
+            }
         }
     }
 
@@ -791,8 +825,10 @@ mclr_errors mclr_search_result_get_header(const mclr_search_result* result, size
     
     err = mclr_error_none;
 
-    if (result != NULL && headerout != NULL)
+    if (result != NULL && headerout != NULL && result->sourceindex != NULL && result->mcelresult.recpositions != NULL)
     {
+        *headerout = NULL;
+
         if (resindex < result->mcelresult.count)
         {
             recpos = result->mcelresult.recpositions[resindex];
@@ -830,8 +866,11 @@ mclr_errors mclr_search_result_get_payload(const mclr_search_result* result, siz
 
     err = mclr_error_none;
 
-    if (result != NULL && payloadout != NULL && payloadlenout != NULL)
+    if (result != NULL && payloadout != NULL && payloadlenout != NULL && result->sourceindex != NULL && result->mcelresult.recpositions != NULL)
     {
+        *payloadout = NULL;
+        *payloadlenout = 0U;
+
         if (resindex < result->mcelresult.count)
         {
             recpos = result->mcelresult.recpositions[resindex];
@@ -888,15 +927,16 @@ mclr_errors mclr_search_result_generate_proof(const mclr_search_result* result, 
 
     err = mclr_error_none;
 
-    if (result != NULL && reccommits != NULL && blockroot != NULL && proof != NULL)
+    if (result != NULL && reccommits != NULL && blockroot != NULL && proof != NULL && result->sourceindex != NULL && result->mcelresult.recpositions != NULL)
     {
         if (resindex < result->mcelresult.count)
         {
             recpos = result->mcelresult.recpositions[resindex];
 
-            if (recpos < commitcount)
+            if (recpos < commitcount && recpos < result->sourceindex->recordcount)
             {
-                /* generate proof */
+                qsc_memutils_clear((uint8_t*)proof, sizeof(mclr_record_proof));
+
                 if (mcel_proof_generate(&proof->mcelproof, reccommits, commitcount, recpos, blockroot) == true)
                 {
                     /* add MCLR metadata */
@@ -938,7 +978,7 @@ mclr_errors mclr_search_result_generate_all_proofs(const mclr_search_result* res
 
     err = mclr_error_none;
 
-    if (result != NULL && reccommits != NULL && blockroot != NULL && proofs != NULL)
+    if (result != NULL && reccommits != NULL && blockroot != NULL && proofs != NULL && result->sourceindex != NULL && result->mcelresult.recpositions != NULL)
     {
         if (proofscapacity >= result->mcelresult.count)
         {

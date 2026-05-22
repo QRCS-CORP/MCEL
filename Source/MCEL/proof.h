@@ -88,13 +88,13 @@
  * \def MCEL_PROOF_HEADER_SIZE
  * \brief The fixed-size portion of a serialized proof header in bytes.
  */
-#define MCEL_PROOF_HEADER_SIZE 50U
+#define MCEL_PROOF_HEADER_SIZE 90U
 
 /*!
  * \def MCEL_PROOF_MAX_SERIALIZED_SIZE
  * \brief The maximum size of a serialized Merkle proof in bytes.
  */
-#define MCEL_PROOF_MAX_SERIALIZED_SIZE (MCEL_PROOF_HEADER_SIZE + (MCEL_MERKLE_PROOF_HASHES_MAX * MCEL_BLOCK_HASH_SIZE) + 4U)
+#define MCEL_PROOF_MAX_SERIALIZED_SIZE (MCEL_PROOF_HEADER_SIZE + (MCEL_MERKLE_PROOF_HASHES_MAX * (MCEL_BLOCK_HASH_SIZE + 1U)))
 
 /*!
  * \struct mcel_merkle_proof
@@ -131,7 +131,7 @@ MCEL_EXPORT_API typedef struct mcel_merkle_proof
  * \return Returns true if the proof was generated successfully.
  */
 MCEL_EXPORT_API bool mcel_proof_generate(mcel_merkle_proof* proof, const uint8_t* reccommits, size_t reccount,
-    uint64_t recoposition, const uint8_t* merkleroot);
+    uint64_t recposition, const uint8_t* merkleroot);
 
 /*!
  * \brief Verify a Merkle inclusion proof against an expected root.

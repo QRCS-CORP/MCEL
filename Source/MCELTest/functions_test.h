@@ -46,7 +46,7 @@
  * are provided in the accompanying LICENSE file or at https://www.qrcscorp.ca.
  *
  * Written by: John G. Underhill
- * Contact: contact\qrcscorp.ca
+ * Contact: contact@qrcscorp.ca
  */
 
 #ifndef MCEL_TEST_FUNCTIONS_H
@@ -200,6 +200,49 @@ bool mceltest_proof_end_to_end(void);
 bool mceltest_extensions_run(void);
 
 
+
+
+/*!
+ * \brief Run MCEL anchor reference regression tests.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_anchor_regression(void);
+
+/*!
+ * \brief Run MCEL policy regression tests.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_policy_regression(void);
+
+/*!
+ * \brief Run MCEL encoded-size and key-rotation regression tests.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_size_regression(void);
+
+/*!
+ * \brief Run MCEL structured proof regression tests.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_proof_regression(void);
+
+/*!
+ * \brief Run MCEL payload encryption wrapper regression tests.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_encryption_regression(void);
+
+/*!
+ * \brief Run MCEL ledger recovery regression tests.
+ *
+ * \return Returns true if the test passed, false on failure.
+ */
+bool mceltest_ledger_recovery_regression(void);
 
 /*!
  * \brief Run an end-to-end MCEL self-test over record, block, and checkpoint sealing and verification.

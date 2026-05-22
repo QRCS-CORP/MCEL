@@ -97,7 +97,7 @@ size_t mcel_anchor_reference_encoded_size(size_t cidlen, size_t reflen)
 
     res = 0U;
 
-    if (cidlen == 0U && reflen == 0U && cidlen > 65535U && reflen > 65535U)
+    if (cidlen > 0U && reflen > 0U && cidlen <= 65535U && reflen <= 65535U)
     {
         res = (size_t)MCEL_ANCHOR_REFERENCE_HEADER_SIZE + cidlen + reflen;
     }
@@ -150,7 +150,7 @@ bool mcel_anchor_reference_verify(uint8_t* flags, uint8_t* type, const uint8_t**
             {
                 req = (size_t)MCEL_ANCHOR_REFERENCE_HEADER_SIZE + (size_t)clen + (size_t)rlen;
 
-                if (req >= inlen)
+                if (req == inlen)
                 {
                     /* chain and reference pointers */
                     const uint8_t* cptr = input + pos;

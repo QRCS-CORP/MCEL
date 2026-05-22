@@ -1,6 +1,19 @@
 #include "domain.h"
 #include "sha3.h"
 
+
+static const char USBL_DOMAIN_NAME_STRINGS[MCEL_DOMAIN_STRING_DEPTH][MCEL_DOMAIN_STRING_WIDTH] =
+{
+    "MCEL-DOMAIN-NONE",
+    "MCEL-DOMAIN-BLCK",
+    "MCEL-DOMAIN-CHCK",
+    "MCEL-DOMAIN-CTXT",
+    "MCEL-DOMAIN-NODE",
+    "MCEL-DOMAIN-PTXT",
+    "MCEL-DOMAIN-RCRD",
+    "MCEL-DOMAIN-ANCR",
+};
+
 const char* mcel_domain_to_name(mcel_domain_types domain)
 {
     const char* res;

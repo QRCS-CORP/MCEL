@@ -3,6 +3,19 @@
 #include "memutils.h"
 #include "merkle.h"
 
+static const char MCLR_ERROR_STRINGS[MCLR_ERROR_STRING_DEPTH][MCLR_ERROR_STRING_WIDTH] =
+{
+    "The operation completed successfully.",
+    "invalid input parameter or inconsistent argument state",
+    "failed to initialize ledger, storage, or cryptographic context",
+    "integrity check failed, ledger state or cryptographic linkage invalid",
+    "storage backend error during read, write, or append operation",
+    "authentication or signature verification failure",
+    "failed to append record to the log or commit payload",
+    "failed to seal block or checkpoint chain",
+    "unknown or unspecified mclr error",
+};
+
 static void mclr_record_header_init(mcel_record_header* header, const uint8_t* keyid, uint64_t sequence, uint64_t timestamp, uint32_t type, uint8_t flags, uint32_t payloadlen)
 {
     MCLR_ASSERT(header != NULL);
@@ -42,8 +55,6 @@ mclr_errors mclr_block_add_commit(mclr_block_builder* bldr, const uint8_t* commi
 
     mclr_errors res;
 
-    res = mclr_error_none;
-
     if (bldr != NULL && commit != NULL && bldr->commits != NULL && bldr->capacity != 0U)
     {
         if (bldr->count < bldr->capacity)
@@ -51,11 +62,16 @@ mclr_errors mclr_block_add_commit(mclr_block_builder* bldr, const uint8_t* commi
             uint8_t* dst = bldr->commits + (bldr->count * (size_t)MCEL_BLOCK_HASH_SIZE);
             qsc_memutils_copy(dst, commit, (size_t)MCEL_BLOCK_HASH_SIZE);
             ++bldr->count;
+            res = mclr_error_none;
         }
         else
         {
             res = mclr_error_initialization;
         }
+    }
+    else
+    {
+        res = mclr_error_invalid_input;
     }
 
     return res;
@@ -73,12 +89,19 @@ mclr_errors mclr_block_begin(mclr_block_builder* bldr, uint8_t* commits, size_t 
 
     if (bldr != NULL && commits != NULL && capacity != 0U)
     {
-        qsc_memutils_clear(bldr, sizeof(*bldr));
-        bldr->commits = commits;
-        bldr->capacity = capacity;
-        bldr->count = 0U;
+        if (capacity <= SIZE_MAX / (size_t)MCEL_BLOCK_HASH_SIZE)
+        {
+            qsc_memutils_clear(bldr, sizeof(*bldr));
+            bldr->commits = commits;
+            bldr->capacity = capacity;
+            bldr->count = 0U;
 
-        qsc_memutils_clear(commits, capacity * (size_t)MCEL_BLOCK_HASH_SIZE);
+            qsc_memutils_clear(commits, capacity * (size_t)MCEL_BLOCK_HASH_SIZE);
+        }
+        else
+        {
+            res = mclr_error_invalid_input;
+        }
     }
     else
     {
@@ -235,10 +258,12 @@ mclr_errors mclr_checkpoint_build_audit_path(mclr_logging_state* state, uint64_t
                 {
                     if (loglen64 != 0U)
                     {
-                        const size_t loglen = (size_t)loglen64;
-                        const size_t bundsz = (size_t)MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE;
+                        if (loglen64 <= (uint64_t)SIZE_MAX)
+                        {
+                            const size_t loglen = (size_t)loglen64;
+                            const size_t bundsz = (size_t)MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE;
 
-                        if (bundsz != 0U && (loglen % bundsz) == 0U)
+                            if (bundsz != 0U && (loglen % bundsz) == 0U)
                         {
                             const uint64_t total_bundles = (uint64_t)(loglen / bundsz);
 
@@ -256,7 +281,7 @@ mclr_errors mclr_checkpoint_build_audit_path(mclr_logging_state* state, uint64_t
 
                                     if (state->store.read(state->store.context, logloc, logloclen, bundlebuf, loglen, &outread) == true)
                                     {
-                                        if (outread >= loglen)
+                                        if (outread == loglen)
                                         {
                                             /* slice requested range into items, ordered from oldest to newest */
                                             const size_t start_idx = (size_t)(fromchkseq - 1U);
@@ -318,9 +343,14 @@ mclr_errors mclr_checkpoint_build_audit_path(mclr_logging_state* state, uint64_t
                                 res = mclr_error_integrity_failure;
                             }
                         }
+                            else
+                            {
+                                res = mclr_error_integrity_failure;
+                            }
+                        }
                         else
                         {
-                            res = mclr_error_integrity_failure;
+                            res = mclr_error_storage_failure;
                         }
                     }
                     else
@@ -486,13 +516,21 @@ mclr_errors mclr_checkpoint_export_log(mclr_logging_state* state, const char* fi
             }
             else
             {
-                loglen = (size_t)loglen64;
+                if (loglen64 <= (uint64_t)SIZE_MAX)
+                {
+                    loglen = (size_t)loglen64;
+                }
+                else
+                {
+                    loglen = 0U;
+                    res = mclr_error_storage_failure;
+                }
 
-                if (loglen <= iobuflen)
+                if (res == mclr_error_none && loglen <= iobuflen)
                 {
                     if (state->store.read(state->store.context, logloc, logloclen, iobuf, loglen, &outread) == true)
                     {
-                        if (outread >= loglen)
+                        if (outread == loglen)
                         {
                             FILE* fp = qsc_fileutils_open(filepath, qsc_fileutils_mode_write, true);
 
@@ -581,10 +619,10 @@ mclr_errors mclr_checkpoint_import_bundle(const char* filepath, uint8_t* outbuf,
 
     mclr_errors err;
 
-    *outlen = 0U;
-
-    if (filepath != NULL && outbuf == NULL && outbuflen == 0U && outlen == NULL)
+    if (filepath != NULL && outbuf != NULL && outbuflen != 0U && outlen != NULL)
     {
+        *outlen = 0U;
+
         if (qsc_fileutils_valid_path(filepath) == true && qsc_fileutils_exists(filepath) == true)
         {
             const size_t flen = qsc_fileutils_get_size(filepath);
@@ -633,7 +671,7 @@ mclr_errors mclr_checkpoint_seal(mclr_logging_state* state, const uint8_t* chkey
 
     mclr_errors err;
 
-    if (state != NULL && chkeyid != NULL && blkroot != NULL && bundlebuf != NULL && bundlebuflen != 0U && outchk != NULL)
+    if (state != NULL && chkeyid != NULL && blkroot != NULL && bundlebuf != NULL && bundlebuflen != 0U && outchk != NULL && state->sigkey != NULL)
     {
         const size_t req = mcel_checkpoint_bundle_encoded_size((size_t)MCEL_ASYMMETRIC_SIGNATURE_SIZE);
 
@@ -669,7 +707,7 @@ mclr_errors mclr_checkpoint_seal(mclr_logging_state* state, const uint8_t* chkey
     }
     else
     {
-        err = mclr_error_chain_seal;
+        err = mclr_error_invalid_input;
     }
 
     return err;
@@ -814,11 +852,13 @@ mclr_errors mclr_event_append(mclr_logging_state* state, const uint8_t* reckeyid
 {
     MCLR_ASSERT(state != NULL);
     MCLR_ASSERT(reckeyid != NULL);
+    MCLR_ASSERT(payload != NULL);
+    MCLR_ASSERT(payloadlen != 0U);
     MCLR_ASSERT(outreceipt != NULL);
 
     mclr_errors res;
 
-    if (state != NULL && reckeyid != NULL && outreceipt != NULL)
+    if (state != NULL && reckeyid != NULL && payload != NULL && payloadlen != 0U && outreceipt != NULL)
     {
         if (payloadlen <= (size_t)MCEL_PAYLOAD_MAX_SIZE)
         {
@@ -891,18 +931,28 @@ mclr_errors mclr_inclusion_prove(const uint8_t* merkleroot, const uint8_t* leave
 
             if (req != 0U && proofbuflen >= req)
             {
-                if (mcel_merkle_prove_member(proofbuf, req, leaves, count, index) == true)
+                uint8_t cmproot[MCEL_BLOCK_HASH_SIZE] = { 0U };
+
+                if (mcel_merkle_root(cmproot, leaves, count) == true &&
+                    qsc_memutils_are_equal(cmproot, merkleroot, MCEL_BLOCK_HASH_SIZE) == true)
                 {
-                    qsc_memutils_clear(outproof, sizeof(mclr_inclusion_proof));
-                    qsc_memutils_copy(outproof->merkle_root, merkleroot, MCEL_BLOCK_HASH_SIZE);
-                    qsc_memutils_copy(outproof->leaf_commit, leaves + (index * (size_t)MCEL_BLOCK_HASH_SIZE), MCEL_BLOCK_HASH_SIZE);
+                    if (mcel_merkle_prove_member(proofbuf, req, leaves, count, index) == true)
+                    {
+                        qsc_memutils_clear(outproof, sizeof(mclr_inclusion_proof));
+                        qsc_memutils_copy(outproof->merkle_root, merkleroot, MCEL_BLOCK_HASH_SIZE);
+                        qsc_memutils_copy(outproof->leaf_commit, leaves + (index * (size_t)MCEL_BLOCK_HASH_SIZE), MCEL_BLOCK_HASH_SIZE);
 
-                    outproof->leafcount = count;
-                    outproof->leafindex = index;
-                    outproof->proof = proofbuf;
-                    outproof->proof_len = req;
+                        outproof->leafcount = count;
+                        outproof->leafindex = index;
+                        outproof->proof = proofbuf;
+                        outproof->proof_len = req;
 
-                    err = mclr_error_none;
+                        err = mclr_error_none;
+                    }
+                    else
+                    {
+                        err = mclr_error_integrity_failure;
+                    }
                 }
                 else
                 {
@@ -985,28 +1035,46 @@ mclr_errors mclr_ledger_initialize(mclr_logging_state* state, const mcel_store_c
 
     if (state != NULL && store != NULL && nsid != NULL && pubkey != NULL)
     {
-        if (nsidlen <= MCEL_LEDGER_NAMESPACE_ID_MAX && pubkeylen == (size_t)MCEL_ASYMMETRIC_VERIFY_KEY_SIZE)
+        if (mode == mclr_startup_create_if_missing ||
+            mode == mclr_startup_verify_existing ||
+            mode == mclr_startup_verify_or_create)
         {
-            qsc_memutils_clear(state, sizeof(mclr_logging_state));
-            qsc_memutils_copy(&state->store, store, sizeof(mcel_store_callbacks));
-            qsc_memutils_copy(state->nsid, nsid, nsidlen);
-
-            state->nsidlen = nsidlen;
-            state->pubkey = pubkey;
-            state->pubkeylen = pubkeylen;
-            state->sigkey = sigkey;
-
-            if (mcel_ledger_initialize(&state->ledger, &state->store, state->nsid, state->nsidlen, state->pubkey, state->headbuf, sizeof(state->headbuf)) == true)
+            if (nsidlen <= MCEL_LEDGER_NAMESPACE_ID_MAX && pubkeylen == (size_t)MCEL_ASYMMETRIC_VERIFY_KEY_SIZE)
             {
-                if (mode == mclr_startup_verify_existing)
-                {
-                    /* in verify_existing, require that a checkpoint head exists */
-                    uint8_t commit[MCEL_BLOCK_HASH_SIZE] = { 0U };
-                    mcel_checkpoint_header header = { 0U };
+                qsc_memutils_clear(state, sizeof(mclr_logging_state));
+                qsc_memutils_copy(&state->store, store, sizeof(mcel_store_callbacks));
+                qsc_memutils_copy(state->nsid, nsid, nsidlen);
 
-                    if (mcel_ledger_get_checkpoint_head(&state->ledger, commit, &header) == true)
+                state->nsidlen = nsidlen;
+                state->pubkey = pubkey;
+                state->pubkeylen = pubkeylen;
+                state->sigkey = sigkey;
+
+                if (mcel_ledger_initialize(&state->ledger, &state->store, state->nsid, state->nsidlen, state->pubkey, state->headbuf, sizeof(state->headbuf)) == true)
+                {
+                    if (mode == mclr_startup_verify_existing)
                     {
-                        /* verify stored head (and optional audit path later, if supplied) */
+                        uint8_t commit[MCEL_BLOCK_HASH_SIZE] = { 0U };
+                        mcel_checkpoint_header header = { 0U };
+
+                        if (mcel_ledger_get_checkpoint_head(&state->ledger, commit, &header) == true)
+                        {
+                            if (mcel_ledger_verify_integrity(&state->ledger, state->headbuf, sizeof(state->headbuf), NULL, 0U) == true)
+                            {
+                                res = mclr_error_none;
+                            }
+                            else
+                            {
+                                res = mclr_error_integrity_failure;
+                            }
+                        }
+                        else
+                        {
+                            res = mclr_error_initialization;
+                        }
+                    }
+                    else if (mode == mclr_startup_verify_or_create)
+                    {
                         if (mcel_ledger_verify_integrity(&state->ledger, state->headbuf, sizeof(state->headbuf), NULL, 0U) == true)
                         {
                             res = mclr_error_none;
@@ -1014,28 +1082,16 @@ mclr_errors mclr_ledger_initialize(mclr_logging_state* state, const mcel_store_c
                         else
                         {
                             res = mclr_error_integrity_failure;
-                        }                        
+                        }
                     }
                     else
-                    {
-                        res = mclr_error_initialization;
-                    }
-                }
-                else if (mode == mclr_startup_verify_or_create)
-                {
-                    /* MCEL treats a missing head as a valid empty ledger, so only fail on real integrity errors */
-                    if (mcel_ledger_verify_integrity(&state->ledger, state->headbuf, sizeof(state->headbuf), NULL, 0U) == true)
                     {
                         res = mclr_error_none;
-                    }
-                    else
-                    {
-                        res = mclr_error_integrity_failure;
                     }
                 }
                 else
                 {
-                    res = mclr_error_none;
+                    res = mclr_error_initialization;
                 }
             }
             else
@@ -1045,7 +1101,7 @@ mclr_errors mclr_ledger_initialize(mclr_logging_state* state, const mcel_store_c
         }
         else
         {
-            res = mclr_error_initialization;
+            res = mclr_error_invalid_input;
         }
     }
     else
@@ -1060,24 +1116,22 @@ mclr_errors mclr_ledger_rotate_signing_key(mclr_logging_state* state, const void
 {
     MCLR_ASSERT(state != NULL);
     MCLR_ASSERT(sigkey != NULL);
+    MCLR_ASSERT(pubkey != NULL);
 
     mclr_errors res;
 
-    res = mclr_error_none;
-
     if (state != NULL && sigkey != NULL && pubkey != NULL)
     {
-        /* update signing key */
-        state->sigkey = sigkey;
-
-        if (pubkeylen != (size_t)MCEL_ASYMMETRIC_VERIFY_KEY_SIZE)
+        if (pubkeylen == (size_t)MCEL_ASYMMETRIC_VERIFY_KEY_SIZE)
         {
-            res = mclr_error_authentication;
+            state->sigkey = sigkey;
+            state->pubkey = pubkey;
+            state->pubkeylen = pubkeylen;
+            res = mclr_error_none;
         }
         else
         {
-            state->pubkey = pubkey;
-            state->pubkeylen = pubkeylen;
+            res = mclr_error_authentication;
         }
     }
     else

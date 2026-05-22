@@ -46,7 +46,7 @@
  * are provided in the accompanying LICENSE file or at https://www.qrcscorp.ca.
  *
  * Written by: John G. Underhill
- * Contact: contact\qrcscorp.ca
+ * Contact: contact@qrcscorp.ca
  */
 
 /*
@@ -1130,8 +1130,10 @@ MCEL_EXPORT_API bool mcel_record_decrypt_payload(uint8_t* output, const uint8_t*
  * \param adlen The associated data length in bytes.
  * \param key [const] A pointer to the cipher key.
  * \param nonce A pointer to the nonce array of size \c MCEL_RCS_NONCE_SIZE.
+ *
+ * eturn Returns true if the input parameters were valid and encryption was applied.
  */
-MCEL_EXPORT_API void mcel_record_encrypt_payload(uint8_t* output, const uint8_t* plaintext, size_t ptlen,
+MCEL_EXPORT_API bool mcel_record_encrypt_payload(uint8_t* output, const uint8_t* plaintext, size_t ptlen,
     const uint8_t* ad, size_t adlen, const uint8_t* key, uint8_t* nonce);
 
 /*!

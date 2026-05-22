@@ -46,7 +46,7 @@
  * are provided in the accompanying LICENSE file or at https://www.qrcscorp.ca.
  *
  * Written by: John G. Underhill
- * Contact: contact\qrcscorp.ca
+ * Contact: contact@qrcscorp.ca
  */
 
 #ifndef MCEL_DOMAIN_H
@@ -99,18 +99,6 @@ typedef enum mcel_domain_types
     mcel_domain_record = 6U,			    /*!< Record commitment domain */
 	mcel_domain_anchor = 7U,				/*!< Anchor commitment domain */
 } mcel_domain_types;
-
-static const char USBL_DOMAIN_NAME_STRINGS[MCEL_DOMAIN_STRING_DEPTH][MCEL_DOMAIN_STRING_WIDTH] =
-{
-	"MCEL-DOMAIN-NONE",
-	"MCEL-DOMAIN-BLCK",
-	"MCEL-DOMAIN-CHCK",
-	"MCEL-DOMAIN-CTXT",
-	"MCEL-DOMAIN-NODE",
-	"MCEL-DOMAIN-PTXT",
-	"MCEL-DOMAIN-RCRD",
-	"MCEL-DOMAIN-ANCR",
-};
 
 /*!
  * \brief Returns the string representation of the domain types enumeration.

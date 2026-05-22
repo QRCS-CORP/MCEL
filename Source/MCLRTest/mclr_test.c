@@ -162,7 +162,6 @@ static bool mclr_ledger_tests_run()
 static bool mclr_search_tests_run()
 {
     uint8_t blkroot[MCEL_BLOCK_HASH_SIZE] = { 0U };
-    uint8_t bundle[MCEL_CHECKPOINT_BUNDLE_ENCODED_SIZE] = { 0U };
     uint8_t reccommits[3U * MCEL_BLOCK_HASH_SIZE] = { 0U };
     mclr_errors err;
 
@@ -275,6 +274,18 @@ int main(void)
     else
     {
         mclr_test_print_message("Failure! The MCLR search tests have failed.");
+    }
+
+    mclr_test_print_message("");
+    mclr_test_print_message("Running the MCLR wrapper regression test set.");
+
+    if (mclr_example_wrapper_regression_test() == mclr_error_none)
+    {
+        mclr_test_print_message("Success! The MCLR wrapper regression tests have succeeded.");
+    }
+    else
+    {
+        mclr_test_print_message("Failure! The MCLR wrapper regression tests have failed.");
     }
 
     mclr_test_print_message("");

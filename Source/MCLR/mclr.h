@@ -123,20 +123,6 @@ typedef enum mclr_startup_mode
 */
 #define MCLR_ERROR_STRING_WIDTH 128U
 
-/** \cond */
-static const char MCLR_ERROR_STRINGS[MCLR_ERROR_STRING_DEPTH][MCLR_ERROR_STRING_WIDTH] =
-{
-    "The operation completed succesfully.",
-    "invalid input parameter or inconsistent argument state",
-    "failed to initialize ledger, storage, or cryptographic context",
-    "integrity check failed, ledger state or cryptographic linkage invalid",
-    "storage backend error during read, write, or append operation",
-    "authentication or signature verification failure",
-    "failed to append record to the log or commit payload",
-    "failed to seal block or checkpoint chain",
-    "unknown or unspecified mclr error",
-};
-/** \endcond */
 
 /*!
  * \struct mclr_block_builder
@@ -474,7 +460,7 @@ MCLR_EXPORT_API const char* mclr_error_to_string(mclr_errors err);
  * \param timestamp The record timestamp value.
  * \param eventtype The application-defined event type identifier.
  * \param flags The record flags.
- * \param payload [const] A pointer to the payload bytes, can be NULL if \c payloadlen is 0.
+ * \param payload [const] A pointer to the payload bytes.
  * \param payloadlen The payload length in bytes.
  * \param outreceipt A pointer to the returned append receipt structure.
  *
