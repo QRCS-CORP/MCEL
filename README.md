@@ -1,4 +1,4 @@
-# Merkle-Chained Event Ledger (MCEL)
+# MCEL: Merkle-Chained Event Ledger
 
 ## Introduction 
 
