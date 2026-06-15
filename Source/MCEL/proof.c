@@ -238,6 +238,7 @@ bool mcel_proof_verify(const mcel_merkle_proof* proof, const uint8_t* exproot, u
             proof->recordposition < proof->ledgerrecordcount &&
             proof->version == MCEL_PROOF_VERSION &&
             proof->pathlength <= MCEL_MERKLE_PROOF_HASHES_MAX &&
+            proof->pathlength == merkle_tree_depth(proof->ledgerrecordcount) &&
             qsc_memutils_are_equal(proof->merkleroot, exproot, MCEL_BLOCK_HASH_SIZE) == true &&
             (proof->pathlength == 0U || (proof->pathhashes != NULL && proof->pathdirections != NULL)))
         {
@@ -260,7 +261,18 @@ bool mcel_proof_verify(const mcel_merkle_proof* proof, const uint8_t* exproot, u
                     break;
                 }
 
-                isright = (proof->pathdirections[i] != 0U);
+                /* Bind the proven position: derive the path direction from
+                   recordposition rather than trusting the serialized direction
+                   bit, and reject any proof whose stored bit is inconsistent.
+                   This ties the leaf to position i, matching the honest
+                   generator (direction[i] = (recordposition >> i) & 1). */
+                isright = (((proof->recordposition >> i) & 1U) != 0U);
+
+                if (((proof->pathdirections[i] != 0U) ? 1U : 0U) != (isright ? 1U : 0U))
+                {
+                    res = false;
+                    break;
+                }
 
                 if (isright == true)
                 {
